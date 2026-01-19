@@ -92,7 +92,7 @@ This is an upgraded version of the LifeDot application with modern, visually app
 ## How to Use
 
 1. Place all HTML files in your web server directory
-2. Ensure your backend API is running at `http://127.0.0.1:8000`
+2. Ensure your backend API is running at `https://lifedot.onrender.com`
 3. Open `index.html` in your browser to start
 4. All functionality remains the same as the original version
 
