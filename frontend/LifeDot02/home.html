@@ -569,7 +569,6 @@
   <nav>
     <div class="nav-container">
       <div class="logo" onclick="window.location.href='welcome.html'">
-        <div class="logo-icon">❤️</div>
         <span>LifeDot</span>
       </div>
       <div class="nav-right">
@@ -754,7 +753,7 @@
       formData.append("description", description);
 
       try {
-        const res = await fetch(`http://127.0.0.1:8000/upload-report/${userId}`, {
+        const res = await fetch(`https://lifedot.onrender.com/upload-report/${userId}`, {
           method: "POST",
           body: formData
         });

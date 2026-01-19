@@ -192,7 +192,7 @@
 
     async function fetchBpm() {
       try {
-        const res = await fetch("http://127.0.0.1:8000/bpm");
+        const res = await fetch("https://lifedot.onrender.com/bpm");
         const data = await res.json();
         bpmValue.textContent = `${data.bpm} bpm`;
         avgBpm.textContent = `Average: ${data.avg_bpm} bpm`;
@@ -212,7 +212,7 @@
       statusMsg.textContent = "📤 Sending emergency email...";
 
       try {
-        const res = await fetch("http://127.0.0.1:8000/emergency", { method: "POST" });
+        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
         const data = await res.json();
 
         if (data.success) {

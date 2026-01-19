@@ -345,7 +345,7 @@
       }
 
       try {
-        const res = await fetch('http://127.0.0.1:8000/login', {
+        const res = await fetch('https://lifedot.onrender.com/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -359,7 +359,6 @@
           localStorage.setItem("lifedot_user", data.user.name);
           localStorage.setItem("lifedot_user_id", data.user.id);
           localStorage.setItem("lifedot_user_email", data.user.email);
-          
           showToast('Login successful! Redirecting...');
           setTimeout(() => {
             window.location.href = "welcome.html";
@@ -382,7 +381,7 @@
       }
 
       try {
-        const res = await fetch('http://127.0.0.1:8000/forgot-password', {
+        const res = await fetch('https://lifedot.onrender.com/forgot-password', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
