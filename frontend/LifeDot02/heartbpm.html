@@ -439,7 +439,7 @@
 
     async function fetchBpm() {
       try {
-        const res = await fetch("http://127.0.0.1:8000/bpm");
+        const res = await fetch("https://lifedot.onrender.com/bpm");
         const data = await res.json();
         
         bpmValue.textContent = data.bpm;
@@ -486,7 +486,7 @@
       showStatus("📤 Sending emergency alert...", "");
       
       try {
-        const res = await fetch("http://127.0.0.1:8000/emergency", { method: "POST" });
+        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
         const data = await res.json();
 
         if (data.success) {
@@ -506,7 +506,7 @@
       showStatus("⚠️ Critical BPM detected! Sending automatic alert...", "");
 
       try {
-        const res = await fetch("http://127.0.0.1:8000/emergency", { method: "POST" });
+        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
         const data = await res.json();
 
         if (data.success) {
