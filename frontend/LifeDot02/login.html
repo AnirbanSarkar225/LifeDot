@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Login - LifeDot</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 450px;
+      width: 100%;
+      padding: 3rem;
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1a202c;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f7fafc;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .links a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      text-align: center;
+      color: #a0aec0;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlide 0.3s ease;
+    }
+
+    @keyframes modalSlide {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-content h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #1a202c;
+    }
+
+    .modal-content p {
+      color: #718096;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 0.8rem;
+      background: #edf2f7;
+      color: #2d3748;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .toast {
+      visibility: hidden;
+      min-width: 300px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      position: fixed;
+      z-index: 2000;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 2rem;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo-container">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to continue to LifeDot</p>
+    </div>
+
+    <div class="input-group">
+      <label>Email Address</label>
+      <input id="loginEmail" type="email" placeholder="your@email.com" required>
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="••••••••" required>
+    </div>
+
+    <button class="btn-login" onclick="handleLogin()">Sign In</button>
+
+    <div class="links">
+      <a href="#" id="forgotLink">Forgot your password?</a>
+    </div>
+
+    <div class="divider">Don't have an account?</div>
+
+    <div class="links">
+      <a href="register.html" style="font-size: 1rem;">Create an account →</a>
+    </div>
+  </div>
+
+  <div id="forgotModal" class="modal">
+    <div class="modal-content">
+      <h3>Reset Password</h3>
+      <p>Enter your email address and we'll send you a link to reset your password.</p>
+      <div class="input-group">
+        <input type="email" id="resetEmail" placeholder="your@email.com" required>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-login" onclick="sendResetLink()" style="margin-top: 0;">Send Link</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const forgotLink = document.getElementById('forgotLink');
+    const modal = document.getElementById('forgotModal');
+    const toast = document.getElementById('toast');
+
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.style.display = 'flex';
+    });
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      if (!email || !password) {
+        showToast('Please fill in all fields', true);
+        return;
+      }
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        console.log('Login response:', data); // Debug log
+
+        if (data.success && data.user) {
+          // Store user data properly
+          localStorage.setItem("lifedot_user", data.user.name);
+          localStorage.setItem("lifedot_user_id", data.user.id);
+          localStorage.setItem("lifedot_user_email", data.user.email);
+          
+          showToast('Login successful! Redirecting...');
+          setTimeout(() => {
+            window.location.href = "welcome.html";
+          }, 1000);
+        } else {
+          showToast('Invalid email or password', true);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showToast('Unable to connect to server. Check if backend is running at http://127.0.0.1:8000', true);
+      }
+    }
+
+    async function sendResetLink() {
+      const email = document.getElementById('resetEmail').value;
+
+      if (!email) {
+        showToast('Please enter your email address', true);
+        return;
+      }
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast('Password reset link sent to your email!');
+          closeModal();
+          document.getElementById('resetEmail').value = '';
+        } else {
+          showToast('Email not found in our system', true);
+        }
+      } catch (error) {
+        console.error('Reset error:', error);
+        showToast('Unable to send reset link. Check if backend is running.', true);
+      }
+    }
+
+    function showToast(message, isError = false) {
+      toast.textContent = message;
+      toast.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => {
+        toast.className = 'toast';
+      }, 3000);
+    }
+    document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    document.getElementById('loginEmail').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeDot - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 3rem;
+    }
+
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .floating-shape {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+      animation: float 25s infinite ease-in-out;
+    }
+
+    .shape1 { width: 400px; height: 400px; top: -100px; left: -100px; animation-delay: 0s; }
+    .shape2 { width: 300px; height: 300px; top: 50%; right: -100px; animation-delay: 7s; }
+    .shape3 { width: 250px; height: 250px; bottom: -100px; left: 40%; animation-delay: 14s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(50px, -70px) rotate(120deg); }
+      66% { transform: translate(-30px, 40px) rotate(240deg); }
+    }
+
+    nav {
+      position: relative;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .notification-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: #f7fafc;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+    }
+
+    .notification-btn:hover {
+      background: #edf2f7;
+      transform: scale(1.05);
+    }
+
+    .profile-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .profile-icon:hover {
+      transform: scale(1.05);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    .welcome-section {
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .welcome-section h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-section p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      gap: 2rem;
+      animation: fadeInUp 0.8s ease 0.2s backwards;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a202c;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+    }
+
+    .edit-btn {
+      padding: 0.65rem 1.25rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .edit-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f7fafc;
+    }
+
+    .input-field:disabled {
+      background: #f7fafc;
+      color: #2d3748;
+      cursor: not-allowed;
+    }
+
+    .input-field:focus:not(:disabled) {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea.input-field {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      display: none;
+      box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+    }
+
+    .heart-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      animation: fadeInUp 0.8s ease 0.6s backwards;
+    }
+
+    .heart-card .card-title {
+      color: white;
+      justify-content: center;
+    }
+
+    .heart-icon-large {
+      font-size: 4rem;
+      margin: 2rem 0;
+      animation: heartbeat 1.5s infinite;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .heart-card p {
+      opacity: 0.95;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .heart-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: white;
+      color: #667eea;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .heart-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .upload-section {
+      margin-top: 1.5rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f7fafc, #edf2f7);
+      border-radius: 16px;
+      border: 2px dashed #cbd5e0;
+      transition: all 0.3s ease;
+    }
+
+    .upload-section:hover {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+    }
+
+    .file-input {
+      width: 100%;
+      padding: 0.9rem;
+      margin: 0.75rem 0;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .file-input:hover {
+      border-color: #667eea;
+    }
+
+    .upload-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .upload-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .report-list {
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+
+    .report-item {
+      padding: 1.25rem;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .report-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-item strong {
+      color: #1a202c;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+    }
+
+    .report-item em {
+      color: #718096;
+      font-size: 0.95rem;
+    }
+
+    .emergency-section {
+      margin-top: 3rem;
+      padding: 3rem;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      border-radius: 24px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 15px 50px rgba(240, 147, 251, 0.4);
+      animation: fadeInUp 1s ease 0.8s backwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .emergency-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .emergency-section h3 {
+      position: relative;
+      z-index: 1;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .emergency-section p {
+      position: relative;
+      z-index: 1;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+    }
+
+    .emergency-btn {
+      position: relative;
+      z-index: 1;
+      padding: 1.2rem 3rem;
+      background: white;
+      color: #f5576c;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .emergency-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .status-message {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .status-message.success {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+    }
+
+    .status-message.error {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+
+      .emergency-section {
+        padding: 2rem;
+      }
+
+      .emergency-section h3 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+  </div>
+
+  <nav>
+    <div class="nav-container">
+      <div class="logo" onclick="window.location.href='welcome.html'">
+        <div class="logo-icon">❤️</div>
+        <span>LifeDot</span>
+      </div>
+      <div class="nav-right">
+        <button class="notification-btn">🔔</button>
+        <div class="profile-icon" id="profileIcon" onclick="showLogoutMenu()">U</div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="welcome-section">
+      <h1 id="welcomeText">Welcome!</h1>
+      <p>Complete your profile to unlock all health monitoring features</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">👤</div>
+            Personal Information
+          </div>
+          <button class="edit-btn" onclick="toggleEdit('user')">Edit</button>
+        </div>
+        
+        <div class="input-group">
+          <label>Full Name</label>
+          <input class="input-field" id="userName" type="text" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Date of Birth</label>
+          <input class="input-field" id="userDob" type="date" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Age</label>
+          <input class="input-field" id="userAge" type="number" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Email Address</label>
+          <input class="input-field" id="userEmail" type="email" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input class="input-field" id="userPhone" type="tel" disabled>
+        </div>
+        
+        <button class="save-btn" id="saveUser" onclick="saveUserDetails()">💾 Save Changes</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">🏠</div>
+            Emergency Contact
+          </div>
+          <button class="edit-btn" onclick="toggleEdit('family')">Edit</button>
+        </div>
+        
+        <div class="input-group">
+          <label>Contact Name</label>
+          <input class="input-field" id="familyName" type="text" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input class="input-field" id="familyPhone" type="tel" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Alternate Phone (Optional)</label>
+          <input class="input-field" id="familyAltPhone" type="tel" disabled>
+        </div>
+        
+        <div class="input-group">
+          <label>Email Address</label>
+          <input class="input-field" id="familyEmail" type="email" disabled>
+        </div>
+        
+        <button class="save-btn" id="saveFamily" onclick="saveFamilyDetails()">💾 Save Changes</button>
+      </div>
+
+      <div class="card heart-card">
+        <div class="card-title">❤️ Heart Health Monitor</div>
+        <div class="heart-icon-large">💓</div>
+        <p>Monitor your heart rate in real-time</p>
+        <p style="font-size: 0.95rem;">Get instant alerts for any irregularities</p>
+        <button class="heart-btn" onclick="window.location.href='heartbpm.html'">
+          View Heart Dashboard →
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">🏥</div>
+            Medical Reports
+          </div>
+        </div>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Upload and manage your medical documents securely</p>
+        
+        <div class="upload-section">
+          <label style="font-weight: 600; color: #2d3748; display: block; margin-bottom: 0.75rem;">📎 Select File</label>
+          <input type="file" class="file-input" id="reportFile" accept=".pdf,.jpg,.jpeg,.png">
+          
+          <label style="font-weight: 600; color: #2d3748; display: block; margin: 1rem 0 0.75rem;">📝 Describe Your Condition</label>
+          <textarea class="input-field" id="description" rows="3" placeholder="e.g., Routine checkup, blood test results..."></textarea>
+          
+          <button class="upload-btn" onclick="uploadReport()">📤 Upload Report</button>
+        </div>
+    <div class="emergency-section">
+      <h3>🚨 Emergency Alert System</h3>
+      <p>Send instant notifications to all your emergency contacts with one click</p>
+      <button class="emergency-btn" onclick="sendEmergency()">Send Emergency Alert</button>
+      <div class="status-message" id="statusMsg"></div>
+    </div>
+  </div>
+
+  <script>
+    const username = localStorage.getItem("lifedot_user") || "User";
+    const userId = localStorage.getItem("lifedot_user_id");
+    
+    if (!username || !userId) {
+      window.location.href = 'login.html';
+    }
+    
+    document.getElementById("welcomeText").textContent = `Welcome, ${username}!`;
+    document.getElementById("profileIcon").textContent = username.charAt(0).toUpperCase();
+
+    function showLogoutMenu() {
+      if (confirm('Do you want to logout?')) {
+        localStorage.removeItem("lifedot_user");
+        localStorage.removeItem("lifedot_user_id");
+        localStorage.removeItem("lifedot_user_email");
+        window.location.href = 'login.html';
+      }
+    }
+
+    function toggleEdit(type) {
+      const prefix = type === 'user' ? 'user' : 'family';
+      const saveBtn = document.getElementById(`save${type.charAt(0).toUpperCase() + type.slice(1)}`);
+      const inputs = document.querySelectorAll(`#${prefix}Name, #${prefix}Email, #${prefix}Phone, #${prefix}AltPhone, #${prefix}Dob, #${prefix}Age`);
+      
+      const isDisabled = inputs[0].disabled;
+      inputs.forEach(input => {
+        if (input) input.disabled = !isDisabled;
+      });
+      
+      saveBtn.style.display = isDisabled ? 'block' : 'none';
+    }
+
+    function saveUserDetails() {
+      alert('✅ Personal information updated successfully!');
+      toggleEdit('user');
+    }
+
+    function saveFamilyDetails() {
+      alert('✅ Emergency contact updated successfully!');
+      toggleEdit('family');
+    }
+
+
+    async function uploadReport() {
+      const fileInput = document.getElementById("reportFile");
+      const description = document.getElementById("description").value;
+
+      if (!fileInput.files.length) {
+        alert("Please select a file first!");
+        return;
+      }
+
+      if (!description) {
+        alert("Please describe your condition!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("report", fileInput.files[0]);
+      formData.append("description", description);
+
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/upload-report/${userId}`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Report uploaded successfully!");
+          
+          const reportList = document.getElementById("reportList");
+          if (reportList.children[0].querySelector('strong').textContent === "No reports uploaded yet") {
+            reportList.innerHTML = '';
+          }
+          
+          const li = document.createElement("li");
+          li.className = "report-item";
+          li.innerHTML = `<strong>${data.filename}</strong><em>${description}</em>`;
+          reportList.insertBefore(li, reportList.firstChild);
+
+          fileInput.value = '';
+          document.getElementById("description").value = '';
+        } else {
+          alert("❌ Upload failed. Please try again.");
+        }
+      } catch (error) {
+        alert("⚠️ Unable to connect to server.");
+      }
+    }
+  </script>
+</body>
+</html>

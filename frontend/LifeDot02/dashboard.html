@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LifeDot Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .container {
+      background: white;
+      max-width: 600px;
+      width: 100%;
+      padding: 3rem;
+      border-radius: 30px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: slideIn 0.6s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #718096;
+      margin-bottom: 2.5rem;
+      font-size: 1.05rem;
+    }
+
+    .bpm-display {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 25px;
+      padding: 2.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .bpm-value {
+      font-size: 5rem;
+      font-weight: 800;
+      color: white;
+      margin: 1rem 0;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .bpm-label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .bpm-average {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 600;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 1.05rem;
+    }
+
+    .emergency-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: white;
+      padding: 1.2rem 2rem;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.15rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .emergency-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(245, 87, 108, 0.4);
+    }
+
+    .status {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .status.success {
+      background: #c6f6d5;
+      color: #22543d;
+      border: 2px solid #9ae6b4;
+    }
+
+    .status.error {
+      background: #fed7d7;
+      color: #742a2a;
+      border: 2px solid #fc8181;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 2rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .bpm-value {
+        font-size: 4rem;
+      }
+
+      .emergency-btn {
+        padding: 1rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LifeDot Dashboard</h1>
+    <p class="subtitle">Monitor your heart rate and send alerts instantly</p>
+    
+    <div class="bpm-display">
+      <div class="bpm-label">CURRENT HEART RATE</div>
+      <div class="bpm-value" id="bpmValue">-- bpm</div>
+      <div class="bpm-average" id="avgBpm">Average: -- bpm</div>
+    </div>
+    
+    <button class="emergency-btn" onclick="sendEmergency()">
+      🚨 Send Emergency Alert
+    </button>
+    
+    <div class="status" id="statusMsg"></div>
+  </div>
+
+  <script>
+    const bpmValue = document.getElementById("bpmValue");
+    const avgBpm = document.getElementById("avgBpm");
+    const statusMsg = document.getElementById("statusMsg");
+
+    async function fetchBpm() {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/bpm");
+        const data = await res.json();
+        bpmValue.textContent = `${data.bpm} bpm`;
+        avgBpm.textContent = `Average: ${data.avg_bpm} bpm`;
+      } catch (error) {
+        bpmValue.textContent = "-- bpm";
+        avgBpm.textContent = "Average: -- bpm";
+      }
+    }
+
+    async function sendEmergency() {
+      if (!confirm("Are you sure you want to send an emergency alert?")) {
+        return;
+      }
+
+      statusMsg.style.display = "block";
+      statusMsg.className = "status";
+      statusMsg.textContent = "📤 Sending emergency email...";
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/emergency", { method: "POST" });
+        const data = await res.json();
+
+        if (data.success) {
+          statusMsg.textContent = "✅ Emergency email sent successfully!";
+          statusMsg.classList.add("success");
+        } else {
+          statusMsg.textContent = "❌ Failed to send emergency email.";
+          statusMsg.classList.add("error");
+        }
+      } catch (error) {
+        statusMsg.textContent = "⚠️ Server not reachable.";
+        statusMsg.classList.add("error");
+      }
+
+      setTimeout(() => {
+        statusMsg.style.display = "none";
+      }, 5000);
+    }
+
+    setInterval(fetchBpm, 1000);
+    fetchBpm();
+  </script>
+</body>
+</html>
