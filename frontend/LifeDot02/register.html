@@ -211,7 +211,7 @@
 
     <div class="input-group">
       <label>Full Name</label>
-      <input id="name" type="text" placeholder="John Doe" required>
+      <input id="name" type="text" placeholder="Enter Your Name" required>
     </div>
 
     <div class="input-group">
@@ -222,12 +222,12 @@
     <div class="grid-2">
       <div class="input-group">
         <label>Phone Number</label>
-        <input id="phone" type="tel" placeholder="+1 234 567 8900" required>
+        <input id="phone" type="tel" placeholder="+91xxxxxxxxxx" required>
       </div>
 
       <div class="input-group">
         <label>Alternate Phone</label>
-        <input id="altPhone" type="tel" placeholder="+1 234 567 8900">
+        <input id="altPhone" type="tel" placeholder="+91xxxxxxxxxx">
       </div>
     </div>
 
@@ -282,7 +282,7 @@
       };
 
       try {
-        const res = await fetch('http://127.0.0.1:8000/register', {
+        const res = await fetch('https://lifedot.onrender.com/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
