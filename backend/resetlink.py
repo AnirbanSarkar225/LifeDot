@@ -30,7 +30,7 @@ def send_reset_link(email):
         cur.execute("ALTER TABLE userinfo ADD COLUMN IF NOT EXISTS reset_token VARCHAR(200)")
         cur.execute("UPDATE userinfo SET reset_token = %s WHERE email = %s", (token, email))
         conn.commit()
-        reset_url = f"http://127.0.0.1:8000/resetpassword.html?token={token}"
+        reset_url = f"https://lifedot.onrender.com/resetpassword.html?token={token}"
         subject = "LifeDot Password Reset"
         body = f"Click the link below to reset your password:\n{reset_url}"
 

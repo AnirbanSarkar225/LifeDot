@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Health Flowchart - LifeDot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 2rem;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-back {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-back:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header-section h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-section p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2rem;
+    }
+
+    .flowchart-card {
+      background: white;
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      animation: fadeInUp 0.8s ease 0.2s backwards;
+    }
+
+    .flowchart-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-control {
+      padding: 0.75rem 1.5rem;
+      background: #f7fafc;
+      color: #2d3748;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .btn-control:hover {
+      background: #edf2f7;
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .btn-control.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: transparent;
+    }
+
+    .flowchart-container {
+      background: #f7fafc;
+      border-radius: 16px;
+      padding: 2rem;
+      overflow-x: auto;
+      min-height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    .info-section {
+      margin-top: 2rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+      border-radius: 16px;
+      border-left: 4px solid #667eea;
+    }
+
+    .info-section h3 {
+      color: #1a202c;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-section p {
+      color: #4a5568;
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      .header-section h1 {
+        font-size: 2rem;
+      }
+
+      .flowchart-card {
+        padding: 1.5rem;
+      }
+
+      .flowchart-container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="logo" onclick="window.location.href='home.html'">
+        <div class="logo-icon">❤️</div>
+        <span>LifeDot</span>
+      </div>
+      <button class="btn-back" onclick="window.location.href='home.html'">
+        ← Back to Dashboard
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header-section">
+      <h1>Health Monitoring Flowchart</h1>
+      <p>Visualize your health monitoring process and emergency response flow</p>
+    </div>
+
+    <div class="flowchart-card">
+      <div class="flowchart-controls">
+        <button class="btn-control active" onclick="showFlowchart('monitoring')">
+          📊 Monitoring Flow
+        </button>
+        <button class="btn-control" onclick="showFlowchart('emergency')">
+          🚨 Emergency Flow
+        </button>
+        <button class="btn-control" onclick="showFlowchart('system')">
+          ⚙️ System Architecture
+        </button>
+      </div>
+
+      <div class="flowchart-container">
+        <div class="mermaid" id="flowchartDiagram">
+          graph TD
+            A[Start Monitoring] --> B[Read Heart Rate]
+            B --> C{BPM Normal?}
+            C -->|Yes 60-100| D[Display BPM]
+            C -->|No| E{Critical?}
+            E -->|BPM < 40 or > 150| F[🚨 Trigger Alert]
+            E -->|BPM 40-59 or 101-149| G[⚠️ Show Warning]
+            F --> H[Send Email to Emergency Contact]
+            F --> I[Display Alert Message]
+            G --> D
+            H --> D
+            I --> D
+            D --> J[Wait 3 seconds]
+            J --> B
+            
+            style A fill:#667eea,stroke:#764ba2,stroke-width:3px,color:#fff
+            style F fill:#f5576c,stroke:#f093fb,stroke-width:3px,color:#fff
+            style H fill:#f5576c,stroke:#f093fb,stroke-width:3px,color:#fff
+            style D fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
+        </div>
+      </div>
+
+      <div class="info-section" id="infoSection">
+        <h3>💡 Monitoring Flow Information</h3>
+        <p>
+          This flowchart shows how LifeDot continuously monitors your heart rate in real-time. 
+          The system checks your BPM every 3 seconds and automatically triggers emergency alerts 
+          when critical values are detected (below 40 or above 150 BPM). Warning messages are shown 
+          for borderline values, helping you stay informed about your heart health at all times.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#667eea',
+        primaryTextColor: '#fff',
+        primaryBorderColor: '#764ba2',
+        lineColor: '#667eea',
+        secondaryColor: '#f7fafc',
+        tertiaryColor: '#edf2f7'
+      }
+    });
+
+    const flowcharts = {
+      monitoring: `
+        graph TD
+          A[Start Monitoring] --> B[Read Heart Rate]
+          B --> C{BPM Normal?}
+          C -->|Yes 60-100| D[Display BPM]
+          C -->|No| E{Critical?}
+          E -->|BPM < 40 or > 150| F[🚨 Trigger Alert]
+          E -->|BPM 40-59 or 101-149| G[⚠️ Show Warning]
+          F --> H[Send Email to Emergency Contact]
+          F --> I[Display Alert Message]
+          G --> D
+          H --> D
+          I --> D
+          D --> J[Wait 3 seconds]
+          J --> B
+          
+          style A fill:#667eea,stroke:#764ba2,stroke-width:3px,color:#fff
+          style F fill:#f5576c,stroke:#f093fb,stroke-width:3px,color:#fff
+          style H fill:#f5576c,stroke:#f093fb,stroke-width:3px,color:#fff
+          style D fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
+      `,
+      emergency: `
+        graph TD
+          A[Emergency Detected] --> B{Auto or Manual?}
+          B -->|Auto Trigger| C[Critical BPM Detected]
+          B -->|Manual| D[User Clicks Alert Button]
+          C --> E[Show Confirmation Modal]
+          D --> E
+          E --> F{User Confirms?}
+          F -->|Yes| G[Prepare Email Data]
+          F -->|No| H[Cancel Alert]
+          G --> I[Send POST Request to Server]
+          I --> J{Email Sent?}
+          J -->|Success| K[✅ Show Success Message]
+          J -->|Failed| L[❌ Show Error Message]
+          K --> M[Log Alert in System]
+          L --> N[Retry Option]
+          H --> O[Return to Dashboard]
+          M --> O
+          N --> G
+          
+          style A fill:#f5576c,stroke:#f093fb,stroke-width:3px,color:#fff
+          style K fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
+          style L fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+      `,
+      system: `
+        graph LR
+          A[User Browser] --> B[Frontend HTML/JS]
+          B --> C{Action Type}
+          C -->|Login/Register| D[Auth Endpoint]
+          C -->|Read BPM| E[/bpm Endpoint]
+          C -->|Send Alert| F[/emergency Endpoint]
+          C -->|Upload Report| G[/upload-report Endpoint]
+          D --> H[(Database)]
+          E --> H
+          F --> I[Email Service]
+          G --> J[File Storage]
+          H --> K[Return Data]
+          I --> L[Send Email]
+          J --> K
+          K --> B
+          L --> B
+          
+          style A fill:#667eea,stroke:#764ba2,stroke-width:2px,color:#fff
+          style H fill:#4facfe,stroke:#00f2fe,stroke-width:2px,color:#fff
+          style I fill:#f093fb,stroke:#f5576c,stroke-width:2px,color:#fff
+          style J fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
+      `
+    };
+
+    const infoTexts = {
+      monitoring: `
+        This flowchart shows how LifeDot continuously monitors your heart rate in real-time. 
+        The system checks your BPM every 3 seconds and automatically triggers emergency alerts 
+        when critical values are detected (below 40 or above 150 BPM). Warning messages are shown 
+        for borderline values, helping you stay informed about your heart health at all times.
+      `,
+      emergency: `
+        This flowchart illustrates the emergency alert process. Alerts can be triggered either 
+        automatically when critical BPM values are detected, or manually by clicking the emergency 
+        button. The system shows a confirmation modal, sends an email to your emergency contacts, 
+        and provides clear feedback on whether the alert was sent successfully. Failed attempts 
+        can be retried to ensure your emergency contacts are notified.
+      `,
+      system: `
+        This diagram shows the overall system architecture of LifeDot. The frontend communicates 
+        with various backend endpoints for authentication, BPM monitoring, emergency alerts, and 
+        medical report uploads. Data is stored in a database, emails are sent through an email 
+        service, and files are stored securely. All communication flows through the backend API 
+        hosted at lifedot.onrender.com.
+      `
+    };
+
+    function showFlowchart(type) {
+      // Update active button
+      document.querySelectorAll('.btn-control').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Update flowchart
+      const diagram = document.getElementById('flowchartDiagram');
+      diagram.textContent = flowcharts[type];
+      diagram.removeAttribute('data-processed');
+      mermaid.init(undefined, diagram);
+
+      // Update info text
+      const infoSection = document.getElementById('infoSection');
+      const titles = {
+        monitoring: '💡 Monitoring Flow Information',
+        emergency: '💡 Emergency Flow Information',
+        system: '💡 System Architecture Information'
+      };
+      infoSection.innerHTML = `
+        <h3>${titles[type]}</h3>
+        <p>${infoTexts[type]}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
