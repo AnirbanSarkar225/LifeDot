@@ -239,9 +239,6 @@
         <button class="btn-control" onclick="showFlowchart('emergency')">
           🚨 Emergency Flow
         </button>
-        <button class="btn-control" onclick="showFlowchart('system')">
-          ⚙️ System Architecture
-        </button>
       </div>
 
       <div class="flowchart-container">
@@ -340,29 +337,6 @@
           style K fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
           style L fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
       `,
-      system: `
-        graph LR
-          A[User Browser] --> B[Frontend HTML/JS]
-          B --> C{Action Type}
-          C -->|Login/Register| D[Auth Endpoint]
-          C -->|Read BPM| E[/bpm Endpoint]
-          C -->|Send Alert| F[/emergency Endpoint]
-          C -->|Upload Report| G[/upload-report Endpoint]
-          D --> H[(Database)]
-          E --> H
-          F --> I[Email Service]
-          G --> J[File Storage]
-          H --> K[Return Data]
-          I --> L[Send Email]
-          J --> K
-          K --> B
-          L --> B
-          
-          style A fill:#667eea,stroke:#764ba2,stroke-width:2px,color:#fff
-          style H fill:#4facfe,stroke:#00f2fe,stroke-width:2px,color:#fff
-          style I fill:#f093fb,stroke:#f5576c,stroke-width:2px,color:#fff
-          style J fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
-      `
     };
 
     const infoTexts = {
@@ -379,13 +353,6 @@
         and provides clear feedback on whether the alert was sent successfully. Failed attempts 
         can be retried to ensure your emergency contacts are notified.
       `,
-      system: `
-        This diagram shows the overall system architecture of LifeDot. The frontend communicates 
-        with various backend endpoints for authentication, BPM monitoring, emergency alerts, and 
-        medical report uploads. Data is stored in a database, emails are sent through an email 
-        service, and files are stored securely. All communication flows through the backend API 
-        hosted at lifedot.onrender.com.
-      `
     };
 
     function showFlowchart(type) {
