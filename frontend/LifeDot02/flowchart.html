@@ -336,7 +336,7 @@
           style A fill:#f5576c,stroke:#f093fb,stroke-width:3px,color:#fff
           style K fill:#48bb78,stroke:#38a169,stroke-width:2px,color:#fff
           style L fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
-      `,
+      `
     };
 
     const infoTexts = {
@@ -352,7 +352,7 @@
         button. The system shows a confirmation modal, sends an email to your emergency contacts, 
         and provides clear feedback on whether the alert was sent successfully. Failed attempts 
         can be retried to ensure your emergency contacts are notified.
-      `,
+      `
     };
 
     function showFlowchart(type) {
@@ -372,8 +372,7 @@
       const infoSection = document.getElementById('infoSection');
       const titles = {
         monitoring: '💡 Monitoring Flow Information',
-        emergency: '💡 Emergency Flow Information',
-        system: '💡 System Architecture Information'
+        emergency: '💡 Emergency Flow Information'
       };
       infoSection.innerHTML = `
         <h3>${titles[type]}</h3>

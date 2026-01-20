@@ -31,6 +31,7 @@ def send_reset_link(email):
         cur.execute("UPDATE userinfo SET reset_token = %s WHERE email = %s", (token, email))
         conn.commit()
         reset_url = f"https://lifedot.onrender.com/resetpassword.html?token={token}"
+        
         subject = "LifeDot Password Reset"
         body = f"Click the link below to reset your password:\n{reset_url}"
 
