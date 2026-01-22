@@ -81,13 +81,11 @@
       color: white;
       font-size: 1.2rem;
     }
-
     .nav-buttons {
       display: flex;
       gap: 1rem;
       align-items: center;
     }
-
     .btn {
       padding: 0.75rem 1.5rem;
       border-radius: 12px;
@@ -99,28 +97,22 @@
       text-decoration: none;
       display: inline-block;
     }
-
     .btn-secondary {
       background: transparent;
       color: #667eea;
     }
-
     .btn-secondary:hover {
       background: rgba(102, 126, 234, 0.1);
     }
-
     .btn-primary {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
-
     .btn-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
     }
-
-    /* Hero Section */
     .hero {
       position: relative;
       z-index: 1;
@@ -185,8 +177,6 @@
         transform: translateY(0);
       }
     }
-
-    /* Features Section */
     .features {
       position: relative;
       z-index: 1;
@@ -361,7 +351,6 @@
     <div class="floating-shape shape2"></div>
     <div class="floating-shape shape3"></div>
   </div>
-
   <nav>
     <div class="nav-container">
       <div class="logo">
@@ -373,7 +362,6 @@
       </div>
     </div>
   </nav>
-
   <section class="hero">
     <h1>Your Health,<br/>Always Monitored</h1>
     <p>Real-time heart monitoring, instant emergency alerts, and comprehensive health tracking all in one secure platform.</p>
@@ -382,7 +370,6 @@
       <a href="flowchart.html" class="btn btn-white btn-hero" title="View Flowcharts">Website Workflow</a>
     </div>
   </section>
-
   <section class="features" id="features">
     <div class="features-grid">
       <div class="feature-card">
@@ -390,13 +377,11 @@
         <h3>Real-time Monitoring</h3>
         <p>Track your heart rate 24/7 with instant updates and intelligent anomaly detection powered by advanced algorithms.</p>
       </div>
-
       <div class="feature-card">
         <div class="feature-icon icon-red">🚨</div>
         <h3>Emergency Alerts</h3>
         <p>Automatic notifications to your family members when critical health conditions are detected. Your safety is our priority.</p>
       </div>
-
       <div class="feature-card">
         <div class="feature-icon icon-green">📋</div>
         <h3>Medical Records</h3>
@@ -404,7 +389,6 @@
       </div>
     </div>
   </section>
-
   <section class="contact-section">
     <div class="contact-card">
       <h2>Get In Touch</h2>
@@ -424,20 +408,16 @@
       <button class="btn-submit" onclick="handleContact()">Send Message</button>
     </div>
   </section>
-
   <footer>
     <p>&copy; <span id="year"></span> LifeDot. All rights reserved. Your health, our mission.</p>
   </footer>
-
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-
     function handleContact() {
       const name = document.getElementById('contactName').value;
       const email = document.getElementById('contactEmail').value;
       const phone = document.getElementById('contactPhone').value;
       const message = document.getElementById('contactMessage').value;
-
       if (name && email && phone && message) {
         alert('Thank you for contacting us! We will get back to you soon.');
         document.getElementById('contactName').value = '';
