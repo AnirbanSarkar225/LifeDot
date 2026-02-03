@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Register - LifeDot</title>
+  <title>Register — LifeDot</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     * {
       margin: 0;
@@ -12,30 +12,124 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-darker: #050505;
+      --text-white: #ffffff;
+      --text-gray: #888888;
+      --accent: #00ff88;
+      --card-bg: rgba(255,255,255,0.02);
+      --card-border: rgba(255,255,255,0.05);
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1rem;
+      padding: 2rem;
+      cursor: none;
     }
 
-    .register-container {
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      max-width: 550px;
+    /* CUSTOM CURSOR */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+    
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ANIMATED GRID BACKGROUND */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 3rem;
-      animation: slideUp 0.5s ease;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      animation: gridMove 30s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
+
+    /* GRADIENT ORBS */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .orb1 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent);
+      top: -100px;
+      right: -100px;
+    }
+
+    .orb2 {
+      width: 300px;
+      height: 300px;
+      background: #00ddff;
+      bottom: -100px;
+      left: -100px;
+      animation-delay: 7s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(50px, -70px); }
+      66% { transform: translate(-30px, 40px); }
+    }
+
+    /* CONTAINER */
+    .register-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      max-width: 600px;
+      width: 100%;
+      padding: 4rem 3rem;
+      position: relative;
+      z-index: 10;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
@@ -43,61 +137,61 @@
       }
     }
 
-    .logo-container {
-      text-align: center;
-      margin-bottom: 2rem;
+    .register-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
     }
 
-    .logo-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
     }
 
-    h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #1a202c;
-      text-align: center;
+    .header h2 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
       margin-bottom: 0.5rem;
+      text-transform: uppercase;
     }
 
     .subtitle {
-      text-align: center;
-      color: #718096;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
+    /* FORM */
     .input-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
     }
 
     .input-group label {
       display: block;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-gray);
+      margin-bottom: 0.6rem;
     }
 
     .input-group input,
     .input-group textarea {
       width: 100%;
-      padding: 0.9rem 1rem;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
+      padding: 1.2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
       transition: all 0.3s ease;
-      background: #f7fafc;
     }
 
     .input-group textarea {
@@ -108,59 +202,98 @@
     .input-group input:focus,
     .input-group textarea:focus {
       outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
     }
 
+    .input-group input::placeholder,
+    .input-group textarea::placeholder {
+      color: var(--text-gray);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* BUTTON */
     .btn-register {
       width: 100%;
-      padding: 1rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
+      padding: 1.2rem;
+      background: var(--accent);
+      color: var(--bg-dark);
       border: none;
-      border-radius: 12px;
-      font-size: 1.05rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      cursor: pointer;
+      cursor: none;
       transition: all 0.3s ease;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-register::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s ease, height 0.5s ease;
+    }
+
+    .btn-register:hover::before {
+      width: 500px;
+      height: 500px;
     }
 
     .btn-register:hover {
+      background: var(--text-white);
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
     }
 
-    .btn-register:active {
-      transform: translateY(0);
+    .btn-register span {
+      position: relative;
+      z-index: 1;
     }
 
+    /* LINKS */
     .links {
       text-align: center;
       margin-top: 1.5rem;
-      color: #718096;
-      font-size: 0.9rem;
+      color: var(--text-gray);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .links a {
-      color: #667eea;
+      color: var(--accent);
       text-decoration: none;
-      font-weight: 600;
+      transition: color 0.3s ease;
     }
 
     .links a:hover {
-      text-decoration: underline;
+      color: var(--text-white);
     }
 
+    /* MESSAGE */
     .message {
       text-align: center;
-      margin-top: 1rem;
-      padding: 0.75rem;
-      border-radius: 10px;
+      margin-top: 1.5rem;
+      padding: 1rem;
       font-weight: 600;
+      font-size: 0.85rem;
       display: none;
       animation: fadeIn 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     @keyframes fadeIn {
@@ -169,49 +302,55 @@
     }
 
     .message.success {
-      background: #c6f6d5;
-      color: #22543d;
-      border: 2px solid #9ae6b4;
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
     }
 
     .message.error {
-      background: #fed7d7;
-      color: #742a2a;
-      border: 2px solid #fc8181;
+      background: rgba(255, 0, 100, 0.1);
+      border: 1px solid #ff0064;
+      color: #ff0064;
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    @media (max-width: 600px) {
-      .register-container {
-        padding: 2rem;
-      }
-
-      h2 {
-        font-size: 1.75rem;
-      }
-
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
       .grid-2 {
         grid-template-columns: 1fr;
-        gap: 1.25rem;
+      }
+
+      .register-container {
+        padding: 3rem 2rem;
+      }
+
+      body {
+        cursor: auto;
+      }
+      
+      .cursor-dot, 
+      .cursor-ring {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  
+  <div class="grid-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
   <div class="register-container">
-    <div class="logo-container">
+    <div class="header">
       <h2>Create Account</h2>
-      <p class="subtitle">Join LifeDot and start monitoring your health</p>
+      <p class="subtitle">Join LifeDot</p>
     </div>
 
     <div class="input-group">
       <label>Full Name</label>
-      <input id="name" type="text" placeholder="Enter Your Name" required>
+      <input id="name" type="text" placeholder="Enter your name" required>
     </div>
 
     <div class="input-group">
@@ -241,7 +380,9 @@
       <input id="password" type="password" placeholder="Min. 8 characters" required>
     </div>
 
-    <button class="btn-register" onclick="handleRegister()">Create Account</button>
+    <button class="btn-register" onclick="handleRegister()">
+      <span>Create Account</span>
+    </button>
 
     <div class="links">
       Already have an account? <a href="login.html">Sign in</a>
@@ -251,6 +392,32 @@
   </div>
 
   <script>
+    // Custom Cursor
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorRing = document.querySelector('.cursor-ring');
+    
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    });
+    
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
     const msg = document.getElementById('msg');
 
     async function handleRegister() {
@@ -261,14 +428,13 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Validation
       if (!name || !address || !phone || !email || !password) {
-        showMessage('Please fill in all required fields', 'error');
+        showMessage('Fill in all required fields', 'error');
         return;
       }
 
       if (password.length < 8) {
-        showMessage('Password must be at least 8 characters', 'error');
+        showMessage('Password must be 8+ characters', 'error');
         return;
       }
 
@@ -290,15 +456,15 @@
         const data = await res.json();
 
         if (data.success) {
-          showMessage('Account created successfully! Redirecting to login...', 'success');
+          showMessage('Account created successfully', 'success');
           setTimeout(() => {
             window.location.href = 'login.html';
           }, 2000);
         } else {
-          showMessage(data.error || 'Registration failed. Email may already be in use.', 'error');
+          showMessage(data.error || 'Registration failed', 'error');
         }
       } catch (error) {
-        showMessage('Unable to connect to server. Please try again.', 'error');
+        showMessage('Unable to connect', 'error');
       }
     }
 
@@ -311,6 +477,7 @@
         msg.style.display = 'none';
       }, 5000);
     }
+
     document.getElementById('password').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleRegister();
     });

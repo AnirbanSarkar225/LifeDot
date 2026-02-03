@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Login - LifeDot</title>
+  <title>Login — LifeDot</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     * {
       margin: 0;
@@ -12,30 +12,125 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-darker: #050505;
+      --text-white: #ffffff;
+      --text-gray: #888888;
+      --accent: #00ff88;
+      --card-bg: rgba(255,255,255,0.02);
+      --card-border: rgba(255,255,255,0.05);
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 2rem;
+      cursor: none;
+      overflow: hidden;
     }
 
-    .login-container {
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      max-width: 450px;
+    /* CUSTOM CURSOR */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+    
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ANIMATED GRID BACKGROUND */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 3rem;
-      animation: slideUp 0.5s ease;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      animation: gridMove 30s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
+
+    /* GRADIENT ORBS */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .orb1 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent);
+      top: -100px;
+      left: -100px;
+    }
+
+    .orb2 {
+      width: 300px;
+      height: 300px;
+      background: #00ddff;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: 7s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(50px, -70px); }
+      66% { transform: translate(-30px, 40px); }
+    }
+
+    /* CONTAINER */
+    .login-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      max-width: 500px;
+      width: 100%;
+      padding: 4rem 3rem;
+      position: relative;
+      z-index: 10;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
@@ -43,125 +138,188 @@
       }
     }
 
-    .logo-container {
-      text-align: center;
-      margin-bottom: 2rem;
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
     }
 
-    .logo-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    /* BACK LINK */
+    .back-link {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      color: var(--text-gray);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #1a202c;
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    /* HEADER */
+    .header {
       text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h2 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
       margin-bottom: 0.5rem;
+      text-transform: uppercase;
     }
 
     .subtitle {
-      text-align: center;
-      color: #718096;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
+    /* FORM */
     .input-group {
       margin-bottom: 1.5rem;
     }
 
     .input-group label {
       display: block;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-gray);
+      margin-bottom: 0.6rem;
     }
 
     .input-group input {
       width: 100%;
-      padding: 0.9rem 1rem;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
+      padding: 1.2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
       transition: all 0.3s ease;
-      background: #f7fafc;
     }
 
     .input-group input:focus {
       outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
     }
 
+    .input-group input::placeholder {
+      color: var(--text-gray);
+    }
+
+    /* BUTTON */
     .btn-login {
       width: 100%;
-      padding: 1rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
+      padding: 1.2rem;
+      background: var(--accent);
+      color: var(--bg-dark);
       border: none;
-      border-radius: 12px;
-      font-size: 1.05rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      cursor: pointer;
+      cursor: none;
       transition: all 0.3s ease;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s ease, height 0.5s ease;
+    }
+
+    .btn-login:hover::before {
+      width: 400px;
+      height: 400px;
     }
 
     .btn-login:hover {
+      background: var(--text-white);
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
     }
 
-    .btn-login:active {
-      transform: translateY(0);
+    .btn-login span {
+      position: relative;
+      z-index: 1;
     }
 
+    /* LINKS */
     .links {
       text-align: center;
       margin-top: 1.5rem;
+      font-size: 0.85rem;
     }
 
     .links a {
-      color: #667eea;
+      color: var(--accent);
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
+      transition: color 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .links a:hover {
-      text-decoration: underline;
+      color: var(--text-white);
     }
 
     .divider {
       text-align: center;
-      color: #a0aec0;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
+      color: var(--text-gray);
+      margin: 2rem 0;
+      font-size: 0.75rem;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    /* MODAL */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 2000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
       align-items: center;
       justify-content: center;
       animation: fadeIn 0.3s ease;
@@ -173,19 +331,18 @@
     }
 
     .modal-content {
-      background: white;
-      padding: 2.5rem;
-      border-radius: 20px;
-      max-width: 400px;
+      background: var(--bg-darker);
+      border: 1px solid var(--card-border);
+      padding: 3rem;
+      max-width: 450px;
       width: 90%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       animation: modalSlide 0.3s ease;
     }
 
     @keyframes modalSlide {
       from {
         opacity: 0;
-        transform: scale(0.9) translateY(-20px);
+        transform: scale(0.9) translateY(-30px);
       }
       to {
         opacity: 1;
@@ -194,58 +351,64 @@
     }
 
     .modal-content h3 {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.8rem;
+      font-weight: 900;
       margin-bottom: 0.5rem;
-      color: #1a202c;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
     }
 
     .modal-content p {
-      color: #718096;
-      margin-bottom: 1.5rem;
+      color: var(--text-gray);
+      margin-bottom: 2rem;
       font-size: 0.9rem;
+      line-height: 1.6;
     }
 
     .modal-buttons {
       display: flex;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
+      gap: 1rem;
+      margin-top: 2rem;
     }
 
     .btn-secondary {
       flex: 1;
-      padding: 0.8rem;
-      background: #edf2f7;
-      color: #2d3748;
-      border: none;
-      border-radius: 10px;
+      padding: 1rem;
+      background: transparent;
+      color: var(--text-white);
+      border: 1px solid var(--card-border);
       font-weight: 600;
-      cursor: pointer;
+      cursor: none;
       transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.85rem;
     }
 
     .btn-secondary:hover {
-      background: #e2e8f0;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
     }
 
+    /* TOAST */
     .toast {
       visibility: hidden;
       min-width: 300px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
+      background: var(--accent);
+      color: var(--bg-dark);
       text-align: center;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
+      padding: 1.2rem 1.5rem;
       position: fixed;
-      z-index: 2000;
+      z-index: 3000;
       left: 50%;
       bottom: 30px;
       transform: translateX(-50%);
-      font-size: 0.95rem;
-      font-weight: 600;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      font-size: 0.9rem;
+      font-weight: 700;
       opacity: 0;
       transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .toast.show {
@@ -255,25 +418,41 @@
     }
 
     .toast.error {
-      background: linear-gradient(135deg, #f093fb, #f5576c);
+      background: #ff0064;
+      color: white;
     }
 
-    @media (max-width: 480px) {
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
       .login-container {
-        padding: 2rem;
+        padding: 3rem 2rem;
       }
 
-      h2 {
-        font-size: 1.75rem;
+      body {
+        cursor: auto;
+      }
+      
+      .cursor-dot, 
+      .cursor-ring {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  
+  <div class="grid-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
   <div class="login-container">
-    <div class="logo-container">
+    <a href="index.html" class="back-link">← Back</a>
+    
+    <div class="header">
       <h2>Welcome Back</h2>
-      <p class="subtitle">Sign in to continue to LifeDot</p>
+      <p class="subtitle">Sign in to continue</p>
     </div>
 
     <div class="input-group">
@@ -286,29 +465,33 @@
       <input id="loginPassword" type="password" placeholder="••••••••" required>
     </div>
 
-    <button class="btn-login" onclick="handleLogin()">Sign In</button>
+    <button class="btn-login" onclick="handleLogin()">
+      <span>Sign In</span>
+    </button>
 
     <div class="links">
-      <a href="#" id="forgotLink">Forgot your password?</a>
+      <a href="#" id="forgotLink">Forgot Password?</a>
     </div>
 
-    <div class="divider">Don't have an account?</div>
+    <div class="divider">Don't Have An Account?</div>
 
     <div class="links">
-      <a href="register.html" style="font-size: 1rem;">Create an account →</a>
+      <a href="register.html">Create Account →</a>
     </div>
   </div>
 
   <div id="forgotModal" class="modal">
     <div class="modal-content">
       <h3>Reset Password</h3>
-      <p>Enter your email address and we'll send you a link to reset your password.</p>
+      <p>Enter your email and we'll send you a link to reset your password.</p>
       <div class="input-group">
         <input type="email" id="resetEmail" placeholder="your@email.com" required>
       </div>
       <div class="modal-buttons">
         <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn-login" onclick="sendResetLink()" style="margin-top: 0;">Send Link</button>
+        <button class="btn-login" onclick="sendResetLink()" style="margin-top: 0;">
+          <span>Send Link</span>
+        </button>
       </div>
     </div>
   </div>
@@ -316,6 +499,33 @@
   <div id="toast" class="toast"></div>
 
   <script>
+    // Custom Cursor
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorRing = document.querySelector('.cursor-ring');
+    
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    });
+    
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // Modal
     const forgotLink = document.getElementById('forgotLink');
     const modal = document.getElementById('forgotModal');
     const toast = document.getElementById('toast');
@@ -335,6 +545,7 @@
       }
     };
 
+    // Login
     async function handleLogin() {
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
@@ -352,23 +563,19 @@
         });
         const data = await res.json();
 
-        console.log('Login response:', data); // Debug log
-
         if (data.success && data.user) {
-          // Store user data properly
           localStorage.setItem("lifedot_user", data.user.name);
           localStorage.setItem("lifedot_user_id", data.user.id);
           localStorage.setItem("lifedot_user_email", data.user.email);
-          showToast('Login successful! Redirecting...');
+          showToast('Login successful');
           setTimeout(() => {
             window.location.href = "welcome.html";
           }, 1000);
         } else {
-          showToast('Invalid email or password', true);
+          showToast('Invalid credentials', true);
         }
       } catch (error) {
-        console.error('Login error:', error);
-        showToast('Unable to connect to server. Check if backend is running at https://lifedot.onrender.com', true);
+        showToast('Unable to connect', true);
       }
     }
 
@@ -376,7 +583,7 @@
       const email = document.getElementById('resetEmail').value;
 
       if (!email) {
-        showToast('Please enter your email address', true);
+        showToast('Enter email address', true);
         return;
       }
 
@@ -389,15 +596,14 @@
         const data = await res.json();
 
         if (data.success) {
-          showToast('Password reset link sent to your email!');
+          showToast('Reset link sent');
           closeModal();
           document.getElementById('resetEmail').value = '';
         } else {
-          showToast('Email not found in our system', true);
+          showToast('Email not found', true);
         }
       } catch (error) {
-        console.error('Reset error:', error);
-        showToast('Unable to send reset link. Check if backend is running.', true);
+        showToast('Unable to send link', true);
       }
     }
 
@@ -408,6 +614,7 @@
         toast.className = 'toast';
       }, 3000);
     }
+
     document.getElementById('loginPassword').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleLogin();
     });

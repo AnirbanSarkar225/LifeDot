@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifeDot - Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>LifeDot — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -12,449 +12,596 @@
       box-sizing: border-box;
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding-bottom: 3rem;
+    :root {
+      --bg-dark: #000000;
+      --bg-layer: #0a0a0a;
+      --text-white: #ffffff;
+      --text-gray: #666666;
+      --accent: #00ff9d;
+      --accent-blue: #00d4ff;
+      --accent-purple: #a855f7;
+      --card-bg: rgba(255,255,255,0.01);
+      --card-border: rgba(255,255,255,0.05);
     }
 
-    .bg-animation {
+    body {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-white);
+      min-height: 100vh;
+      cursor: none;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* CUSTOM CURSOR */
+    .cursor-trail {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+      z-index: 10000;
+      mix-blend-mode: screen;
+    }
+    
+    .cursor-trail canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 3D GRID BACKGROUND */
+    #grid-canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.2;
-      pointer-events: none;
+      opacity: 0.3;
     }
 
-    .floating-shape {
-      position: absolute;
-      border-radius: 50%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
-      animation: float 25s infinite ease-in-out;
-    }
-
-    .shape1 { width: 400px; height: 400px; top: -100px; left: -100px; animation-delay: 0s; }
-    .shape2 { width: 300px; height: 300px; top: 50%; right: -100px; animation-delay: 7s; }
-    .shape3 { width: 250px; height: 250px; bottom: -100px; left: 40%; animation-delay: 14s; }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      33% { transform: translate(50px, -70px) rotate(120deg); }
-      66% { transform: translate(-30px, 40px) rotate(240deg); }
-    }
-
+    /* NAVIGATION */
     nav {
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      animation: slideDown 0.6s ease;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1.25rem 2rem;
+      padding: 2rem 3rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      background: linear-gradient(135deg, var(--accent), var(--accent-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      cursor: pointer;
-    }
-
-    .logo-icon {
-      width: 45px;
-      height: 45px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      background-clip: text;
     }
 
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-    }
-
-    .notification-btn {
-      width: 45px;
-      height: 45px;
-      border-radius: 12px;
-      background: #f7fafc;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      transition: all 0.3s ease;
-    }
-
-    .notification-btn:hover {
-      background: #edf2f7;
-      transform: scale(1.05);
-    }
-
-    .profile-icon {
-      width: 45px;
-      height: 45px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .profile-icon:hover {
-      transform: scale(1.05);
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2.5rem 2rem;
-    }
-
-    .welcome-section {
-      margin-bottom: 3rem;
-      animation: fadeInUp 0.6s ease;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .welcome-section h1 {
-      font-size: 3rem;
-      font-weight: 800;
-      color: white;
-      margin-bottom: 0.5rem;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .welcome-section p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1.2rem;
-    }
-
-    .dashboard-grid {
-      display: grid;
       gap: 2rem;
-      animation: fadeInUp 0.8s ease 0.2s backwards;
     }
 
-    .card {
-      background: white;
-      border-radius: 24px;
-      padding: 2.5rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      transition: all 0.4s ease;
+    .nav-btn {
+      padding: 0.8rem 1.8rem;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-white);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
       position: relative;
       overflow: hidden;
     }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 255, 157, 0.1);
+      transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .nav-btn:hover::before {
+      left: 0;
+    }
+
+    .profile-btn {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+      color: var(--bg-dark);
+      border: none;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: none;
+      transition: all 0.3s ease;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .profile-btn:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 10px 30px rgba(0, 255, 157, 0.3);
+    }
+
+    /* MAIN CONTAINER */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 140px 3rem 5rem;
+    }
+
+    /* WELCOME SECTION */
+    .welcome {
+      margin-bottom: 5rem;
+      opacity: 0;
+      animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome h1 {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--text-white), var(--text-gray));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .welcome p {
+      color: var(--text-gray);
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    /* GRID LAYOUT */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+      gap: 2.5rem;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 3rem;
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
+      animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .card:nth-child(1) { animation-delay: 0.3s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+    .card:nth-child(3) { animation-delay: 0.5s; }
+    .card:nth-child(4) { animation-delay: 0.6s; }
 
     .card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      transform: scaleX(0);
-      transition: transform 0.4s ease;
+      width: 2px;
+      height: 0;
+      background: linear-gradient(180deg, var(--accent), var(--accent-blue));
+      transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-blue), transparent);
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      background: rgba(255,255,255,0.02);
+      border-color: rgba(0, 255, 157, 0.2);
+      transform: translateY(-10px);
     }
 
     .card:hover::before {
-      transform: scaleX(1);
+      height: 100%;
+    }
+
+    .card:hover::after {
+      width: 100%;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
     .card-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a202c;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .card-icon {
-      width: 45px;
-      height: 45px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-gray);
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .edit-btn {
-      padding: 0.65rem 1.25rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 12px;
+      padding: 0.7rem 1.5rem;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-white);
+      font-size: 0.7rem;
       font-weight: 600;
-      cursor: pointer;
+      cursor: none;
       transition: all 0.3s ease;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .edit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      transition: left 0.3s ease;
+      z-index: -1;
     }
 
     .edit-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      border-color: var(--accent);
+      color: var(--bg-dark);
     }
 
+    .edit-btn:hover::before {
+      left: 0;
+    }
+
+    /* FORM ELEMENTS */
     .input-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
     }
 
     .input-group label {
       display: block;
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-gray);
+      margin-bottom: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .input-field {
       width: 100%;
-      padding: 0.9rem 1rem;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
+      padding: 1.2rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-white);
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 1rem;
-      font-family: 'Inter', sans-serif;
       transition: all 0.3s ease;
-      background: #f7fafc;
+      outline: none;
     }
 
     .input-field:disabled {
-      background: #f7fafc;
-      color: #2d3748;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
     .input-field:focus:not(:disabled) {
-      outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.1);
     }
 
     textarea.input-field {
       resize: vertical;
-      min-height: 100px;
+      min-height: 120px;
     }
 
     .save-btn {
       width: 100%;
-      padding: 1rem;
-      background: linear-gradient(135deg, #48bb78, #38a169);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 1rem;
+      padding: 1.2rem;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
       display: none;
-      box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .save-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
     }
 
     .save-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+      color: var(--bg-dark);
     }
 
+    .save-btn:hover::before {
+      left: 0;
+    }
+
+    /* HEART MONITOR CARD */
     .heart-card {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(0,255,157,0.05), rgba(0,212,255,0.05));
+      border-color: rgba(0, 255, 157, 0.2);
       text-align: center;
-      animation: fadeInUp 0.8s ease 0.6s backwards;
+      padding: 5rem 3rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    .heart-card .card-title {
-      color: white;
-      justify-content: center;
+    .heart-card::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0,255,157,0.1), transparent);
+      transform: translate(-50%, -50%);
+      animation: pulse 3s ease-in-out infinite;
     }
 
-    .heart-icon-large {
-      font-size: 4rem;
-      margin: 2rem 0;
-      animation: heartbeat 1.5s infinite;
-      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+    }
+
+    .heart-icon {
+      font-size: 7rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 1;
+      animation: heartbeat 2s ease infinite;
     }
 
     @keyframes heartbeat {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
+      50% { transform: scale(1.1); }
+    }
+
+    .heart-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 1.5rem;
     }
 
     .heart-card p {
-      opacity: 0.95;
+      color: var(--text-gray);
+      margin-bottom: 3rem;
       font-size: 1.05rem;
-      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+      font-weight: 300;
     }
 
     .heart-btn {
-      width: 100%;
-      padding: 1.2rem;
-      background: white;
-      color: #667eea;
-      border: none;
-      border-radius: 12px;
+      padding: 1.5rem 3.5rem;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
       font-weight: 700;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 1.5rem;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      font-size: 0.85rem;
+      cursor: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .heart-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
     }
 
     .heart-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      color: var(--bg-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 60px rgba(0, 255, 157, 0.3);
     }
 
+    .heart-btn:hover::before {
+      left: 0;
+    }
+
+    /* MEDICAL REPORTS */
     .upload-section {
-      margin-top: 1.5rem;
-      padding: 2rem;
-      background: linear-gradient(135deg, #f7fafc, #edf2f7);
-      border-radius: 16px;
-      border: 2px dashed #cbd5e0;
+      margin-top: 2.5rem;
+      padding: 2.5rem;
+      background: rgba(255,255,255,0.01);
+      border: 1px dashed rgba(255,255,255,0.1);
       transition: all 0.3s ease;
     }
 
     .upload-section:hover {
-      border-color: #667eea;
-      background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+      border-color: var(--accent);
+      background: rgba(0, 255, 157, 0.02);
     }
 
     .file-input {
       width: 100%;
-      padding: 0.9rem;
-      margin: 0.75rem 0;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-family: 'Inter', sans-serif;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-white);
+      font-family: 'Space Grotesk', sans-serif;
       cursor: pointer;
       transition: all 0.3s ease;
+      outline: none;
     }
 
     .file-input:hover {
-      border-color: #667eea;
+      border-color: var(--accent);
     }
 
     .upload-btn {
       width: 100%;
-      padding: 1rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 1rem;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      padding: 1.2rem;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
     }
 
     .upload-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      color: var(--bg-dark);
+    }
+
+    .upload-btn:hover::before {
+      left: 0;
     }
 
     .report-list {
       list-style: none;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
 
     .report-item {
-      padding: 1.25rem;
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      border-left: 4px solid #667eea;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-left: 2px solid var(--accent);
+      margin-bottom: 1.2rem;
       transition: all 0.3s ease;
     }
 
     .report-item:hover {
-      transform: translateX(5px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(0, 255, 157, 0.2);
+      transform: translateX(10px);
     }
 
     .report-item strong {
-      color: #1a202c;
       display: block;
-      margin-bottom: 0.5rem;
-      font-size: 1.05rem;
+      margin-bottom: 0.7rem;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
     }
 
     .report-item em {
-      color: #718096;
-      font-size: 0.95rem;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+      font-style: normal;
     }
 
+    /* EMERGENCY SECTION */
     .emergency-section {
-      margin-top: 3rem;
-      padding: 3rem;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      border-radius: 24px;
+      margin-top: 4rem;
+      padding: 5rem 4rem;
+      background: linear-gradient(135deg, rgba(255,0,100,0.05), rgba(255,100,0,0.05));
+      border: 1px solid rgba(255,0,100,0.15);
       text-align: center;
-      color: white;
-      box-shadow: 0 15px 50px rgba(240, 147, 251, 0.4);
-      animation: fadeInUp 1s ease 0.8s backwards;
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
 
     .emergency-section::before {
@@ -464,7 +611,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,0,100,0.03) 0%, transparent 70%);
       animation: rotate 20s linear infinite;
     }
 
@@ -477,121 +624,150 @@
       position: relative;
       z-index: 1;
       font-size: 2rem;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
     }
 
     .emergency-section p {
       position: relative;
       z-index: 1;
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-      opacity: 0.95;
+      color: var(--text-gray);
+      margin-bottom: 3rem;
+      font-size: 1.05rem;
+      font-weight: 300;
     }
 
     .emergency-btn {
       position: relative;
       z-index: 1;
-      padding: 1.2rem 3rem;
-      background: white;
-      color: #f5576c;
-      border: none;
-      border-radius: 12px;
+      padding: 1.5rem 4rem;
+      background: transparent;
+      color: #ff0064;
+      border: 1px solid #ff0064;
       font-weight: 700;
-      font-size: 1.15rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      font-size: 0.85rem;
+      cursor: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      overflow: hidden;
+    }
+
+    .emergency-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: #ff0064;
+      transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
     }
 
     .emergency-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+      color: white;
+      transform: translateY(-5px);
+      box-shadow: 0 20px 60px rgba(255, 0, 100, 0.3);
+    }
+
+    .emergency-btn:hover::before {
+      left: 0;
     }
 
     .status-message {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      border-radius: 12px;
+      margin-top: 2rem;
+      padding: 1.2rem;
       font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       display: none;
-      animation: fadeIn 0.3s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .status-message.success {
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 255, 157, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
     }
 
     .status-message.error {
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(255, 0, 100, 0.1);
+      border: 1px solid #ff0064;
+      color: #ff0064;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .heart-card {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      body {
+        cursor: auto;
+      }
+
+      .cursor-trail {
+        display: none;
+      }
     }
 
     @media (max-width: 768px) {
       .container {
-        padding: 1.5rem 1rem;
+        padding: 110px 1.5rem 3rem;
       }
 
-      .welcome-section h1 {
-        font-size: 2.5rem;
-      }
-
-      .card {
+      nav {
         padding: 1.5rem;
       }
 
-      .emergency-section {
+      .card {
         padding: 2rem;
       }
 
-      .emergency-section h3 {
-        font-size: 1.5rem;
+      .emergency-section {
+        padding: 3rem 2rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="bg-animation">
-    <div class="floating-shape shape1"></div>
-    <div class="floating-shape shape2"></div>
-    <div class="floating-shape shape3"></div>
+  <div class="cursor-trail">
+    <canvas id="cursor-canvas"></canvas>
   </div>
+  
+  <canvas id="grid-canvas"></canvas>
 
   <nav>
-    <div class="nav-container">
-      <div class="logo" onclick="window.location.href='welcome.html'">
-        <span>LifeDot</span>
-      </div>
-      <div class="nav-right">
-        <button class="notification-btn" onclick="window.location.href='flowchart.html'" title="System Flowcharts">Workflow</button>
-        <button class="notification-btn"> 🔔</button>
-        <div class="profile-icon" id="profileIcon" onclick="showLogoutMenu()">U</div>
-      </div>
+    <div class="logo" onclick="window.location.href='welcome.html'">LIFEDOT</div>
+    <div class="nav-right">
+      <button class="nav-btn" onclick="window.location.href='flowchart.html'">Workflow</button>
+      <button class="profile-btn" id="profileIcon" onclick="showLogoutMenu()">U</button>
     </div>
   </nav>
 
   <div class="container">
-    <div class="welcome-section">
-      <h1 id="welcomeText">Welcome!</h1>
+    <div class="welcome">
+      <h1 id="welcomeText">WELCOME</h1>
       <p>Complete your profile to unlock all health monitoring features</p>
     </div>
 
     <div class="dashboard-grid">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">👤</div>
-            Personal Information
-          </div>
+          <div class="card-title">Personal Information</div>
           <button class="edit-btn" onclick="toggleEdit('user')">Edit</button>
         </div>
         
@@ -620,15 +796,12 @@
           <input class="input-field" id="userPhone" type="tel" disabled>
         </div>
         
-        <button class="save-btn" id="saveUser" onclick="saveUserDetails()">💾 Save Changes</button>
+        <button class="save-btn" id="saveUser" onclick="saveUserDetails()">Save Changes</button>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">🏠</div>
-            Emergency Contact
-          </div>
+          <div class="card-title">Emergency Contact</div>
           <button class="edit-btn" onclick="toggleEdit('family')">Edit</button>
         </div>
         
@@ -643,7 +816,7 @@
         </div>
         
         <div class="input-group">
-          <label>Alternate Phone (Optional)</label>
+          <label>Alternate Phone</label>
           <input class="input-field" id="familyAltPhone" type="tel" disabled>
         </div>
         
@@ -652,37 +825,41 @@
           <input class="input-field" id="familyEmail" type="email" disabled>
         </div>
         
-        <button class="save-btn" id="saveFamily" onclick="saveFamilyDetails()">💾 Save Changes</button>
+        <button class="save-btn" id="saveFamily" onclick="saveFamilyDetails()">Save Changes</button>
       </div>
 
       <div class="card heart-card">
-        <div class="card-title">❤️ Heart Health Monitor</div>
-        <div class="heart-icon-large">💓</div>
-        <p>Monitor your heart rate in real-time</p>
-        <p style="font-size: 0.95rem;">Get instant alerts for any irregularities</p>
-        <button class="heart-btn" onclick="window.location.href='heartbpm.html'">
-          View Heart Dashboard →
-        </button>
+        <div class="heart-icon">💓</div>
+        <h3>Heart Health Monitor</h3>
+        <p>Monitor your heart rate in real-time with instant alerts for any irregularities</p>
+        <button class="heart-btn" onclick="window.location.href='heartbpm.html'">View Dashboard →</button>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">🏥</div>
-            Medical Reports
-          </div>
+          <div class="card-title">Medical Reports</div>
         </div>
-        <p style="color: #718096; margin-bottom: 1.5rem;">Upload and manage your medical documents securely</p>
+        <p style="color: var(--text-gray); margin-bottom: 2rem; font-weight: 300;">Upload and manage your medical documents securely</p>
         
         <div class="upload-section">
-          <label style="font-weight: 600; color: #2d3748; display: block; margin-bottom: 0.75rem;">📎 Select File</label>
+          <label style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-gray); display: block; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace;">Select File</label>
           <input type="file" class="file-input" id="reportFile" accept=".pdf,.jpg,.jpeg,.png">
           
-          <label style="font-weight: 600; color: #2d3748; display: block; margin: 1rem 0 0.75rem;">📝 Describe Your Condition</label>
+          <label style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-gray); display: block; margin: 1.5rem 0 1rem; font-family: 'JetBrains Mono', monospace;">Describe Condition</label>
           <textarea class="input-field" id="description" rows="3" placeholder="e.g., Routine checkup, blood test results..."></textarea>
           
-          <button class="upload-btn" onclick="uploadReport()">📤 Upload Report</button>
+          <button class="upload-btn" onclick="uploadReport()">Upload Report</button>
         </div>
+
+        <ul class="report-list" id="reportList">
+          <li class="report-item">
+            <strong>No reports uploaded yet</strong>
+            <em>Upload your first medical report above</em>
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div class="emergency-section">
       <h3>🚨 Emergency Alert System</h3>
       <p>Send instant notifications to all your emergency contacts with one click</p>
@@ -692,6 +869,90 @@
   </div>
 
   <script>
+    // Enhanced Cursor Trail
+    const cursorTrail = document.querySelector('.cursor-trail');
+    const cursorCanvas = document.getElementById('cursor-canvas');
+    const cursorCtx = cursorCanvas.getContext('2d');
+    
+    cursorCanvas.width = 120;
+    cursorCanvas.height = 120;
+    
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let targetX = mouseX;
+    let targetY = mouseY;
+    
+    document.addEventListener('mousemove', (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+    });
+    
+    function animateCursor() {
+      mouseX += (targetX - mouseX) * 0.1;
+      mouseY += (targetY - mouseY) * 0.1;
+      
+      cursorTrail.style.left = (mouseX - 60) + 'px';
+      cursorTrail.style.top = (mouseY - 60) + 'px';
+      
+      cursorCtx.clearRect(0, 0, 120, 120);
+      cursorCtx.strokeStyle = 'rgba(0, 255, 157, 0.6)';
+      cursorCtx.lineWidth = 1;
+      
+      for (let i = 0; i < 5; i++) {
+        const size = 20 + i * 10;
+        const offset = Math.sin(Date.now() * 0.001 + i) * 5;
+        cursorCtx.beginPath();
+        cursorCtx.arc(60 + offset, 60 + offset, size, 0, Math.PI * 2);
+        cursorCtx.stroke();
+      }
+      
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // 3D Grid Background
+    const gridCanvas = document.getElementById('grid-canvas');
+    const gridCtx = gridCanvas.getContext('2d');
+    
+    function resizeCanvas() {
+      gridCanvas.width = window.innerWidth;
+      gridCanvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    function drawGrid() {
+      gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+      
+      const gridSize = 50;
+      const centerX = gridCanvas.width / 2;
+      const centerY = gridCanvas.height / 2;
+      
+      gridCtx.strokeStyle = 'rgba(0, 255, 157, 0.05)';
+      gridCtx.lineWidth = 1;
+      
+      // Perspective grid
+      for (let i = -10; i < 10; i++) {
+        const y = centerY + i * gridSize;
+        gridCtx.beginPath();
+        gridCtx.moveTo(0, y);
+        gridCtx.lineTo(gridCanvas.width, y);
+        gridCtx.stroke();
+        
+        const x = centerX + i * gridSize;
+        gridCtx.beginPath();
+        gridCtx.moveTo(x, 0);
+        gridCtx.lineTo(x, gridCanvas.height);
+        gridCtx.stroke();
+      }
+      
+      requestAnimationFrame(drawGrid);
+    }
+    
+    drawGrid();
+
+    // User Data
     const username = localStorage.getItem("lifedot_user") || "User";
     const userId = localStorage.getItem("lifedot_user_id");
     
@@ -699,7 +960,7 @@
       window.location.href = 'login.html';
     }
     
-    document.getElementById("welcomeText").textContent = `Welcome, ${username}!`;
+    document.getElementById("welcomeText").textContent = `WELCOME, ${username.toUpperCase()}`;
     document.getElementById("profileIcon").textContent = username.charAt(0).toUpperCase();
 
     function showLogoutMenu() {
@@ -733,7 +994,6 @@
       alert('✅ Emergency contact updated successfully!');
       toggleEdit('family');
     }
-
 
     async function uploadReport() {
       const fileInput = document.getElementById("reportFile");
@@ -781,6 +1041,37 @@
       } catch (error) {
         alert("⚠️ Unable to connect to server.");
       }
+    }
+
+    async function sendEmergency() {
+      if (!confirm("Are you sure you want to send an emergency alert?")) {
+        return;
+      }
+
+      const statusMsg = document.getElementById("statusMsg");
+      statusMsg.style.display = "block";
+      statusMsg.className = "status-message";
+      statusMsg.textContent = "Sending emergency email...";
+
+      try {
+        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
+        const data = await res.json();
+
+        if (data.success) {
+          statusMsg.textContent = "✅ Emergency email sent successfully!";
+          statusMsg.classList.add("success");
+        } else {
+          statusMsg.textContent = "❌ Failed to send emergency email.";
+          statusMsg.classList.add("error");
+        }
+      } catch (error) {
+        statusMsg.textContent = "⚠️ Server not reachable.";
+        statusMsg.classList.add("error");
+      }
+
+      setTimeout(() => {
+        statusMsg.style.display = "none";
+      }, 5000);
     }
   </script>
 </body>

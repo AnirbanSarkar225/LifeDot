@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LifeDot Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <title>LifeDot — Heart Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     * {
       margin: 0;
@@ -12,31 +12,121 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-darker: #050505;
+      --text-white: #ffffff;
+      --text-gray: #888888;
+      --accent: #00ff88;
+      --danger: #ff0064;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-white);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 2rem;
+      cursor: none;
+      overflow: hidden;
     }
 
-    .container {
-      background: white;
-      max-width: 600px;
+    /* CUSTOM CURSOR */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+    
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ANIMATED GRID BACKGROUND */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 3rem;
-      border-radius: 30px;
-      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 0;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* PULSE EFFECT */
+    .pulse-ring {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      z-index: 0;
+      animation: pulseRing 3s ease-out infinite;
+    }
+
+    .pulse-ring:nth-child(2) { animation-delay: 1s; }
+    .pulse-ring:nth-child(3) { animation-delay: 2s; }
+
+    @keyframes pulseRing {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+      }
+    }
+
+    /* CONTAINER */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      width: 100%;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 4rem 3rem;
       text-align: center;
-      animation: slideIn 0.6s ease;
+      animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes slideIn {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
@@ -44,82 +134,153 @@
       }
     }
 
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    /* HEADER */
+    .header {
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
       margin-bottom: 0.5rem;
+      text-transform: uppercase;
     }
 
-    .subtitle {
-      color: #718096;
-      margin-bottom: 2.5rem;
-      font-size: 1.05rem;
-    }
-
-    .bpm-display {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 25px;
-      padding: 2.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
-    }
-
-    .bpm-value {
-      font-size: 5rem;
-      font-weight: 800;
-      color: white;
-      margin: 1rem 0;
-      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    .bpm-label {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1rem;
-      font-weight: 600;
+    .header p {
+      color: var(--text-gray);
+      font-size: 0.95rem;
+      text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .bpm-average {
-      color: rgba(255, 255, 255, 0.85);
-      font-weight: 600;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 1.05rem;
+    /* BPM DISPLAY */
+    .bpm-display {
+      margin: 3rem 0;
+      padding: 3rem;
+      background: linear-gradient(135deg, rgba(0,255,136,0.05), rgba(0,221,255,0.05));
+      border: 1px solid rgba(0,255,136,0.2);
+      position: relative;
+      overflow: hidden;
     }
 
+    .bpm-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent);
+      animation: shimmer 3s ease infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .bpm-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-gray);
+      margin-bottom: 1rem;
+    }
+
+    .bpm-value {
+      font-size: clamp(4rem, 10vw, 7rem);
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      margin: 1rem 0;
+      animation: pulse 2s ease infinite;
+      text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .bpm-average {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-gray);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .bpm-average span {
+      color: var(--text-white);
+      font-weight: 700;
+    }
+
+    /* EMERGENCY BUTTON */
     .emergency-btn {
       width: 100%;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
+      padding: 1.5rem;
+      background: var(--danger);
       color: white;
-      padding: 1.2rem 2rem;
-      border-radius: 15px;
       border: none;
-      cursor: pointer;
       font-weight: 700;
-      font-size: 1.15rem;
+      font-size: 1rem;
+      cursor: none;
       transition: all 0.3s ease;
-      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .emergency-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s ease, height 0.5s ease;
+    }
+
+    .emergency-btn:hover::before {
+      width: 400px;
+      height: 400px;
     }
 
     .emergency-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(245, 87, 108, 0.4);
+      transform: scale(1.02);
     }
 
+    .emergency-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* STATUS MESSAGE */
     .status {
       margin-top: 1.5rem;
       padding: 1rem;
-      border-radius: 12px;
       font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       display: none;
       animation: fadeIn 0.3s ease;
     }
@@ -136,56 +297,128 @@
     }
 
     .status.success {
-      background: #c6f6d5;
-      color: #22543d;
-      border: 2px solid #9ae6b4;
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
     }
 
     .status.error {
-      background: #fed7d7;
-      color: #742a2a;
-      border: 2px solid #fc8181;
+      background: rgba(255, 0, 100, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
     }
 
-    @media (max-width: 600px) {
+    /* BACK BUTTON */
+    .back-btn {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      padding: 0.8rem 1.5rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-white);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: none;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(0,255,136,0.1);
+      border-color: var(--accent);
+      transform: translateX(-5px);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      body {
+        cursor: auto;
+      }
+
+      .cursor-dot,
+      .cursor-ring {
+        display: none;
+      }
+
       .container {
+        padding: 2rem 1.5rem;
+      }
+
+      .bpm-display {
         padding: 2rem;
       }
 
-      h1 {
-        font-size: 2rem;
-      }
-
-      .bpm-value {
-        font-size: 4rem;
-      }
-
-      .emergency-btn {
-        padding: 1rem;
-        font-size: 1rem;
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
       }
     }
   </style>
 </head>
 <body>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  
+  <div class="grid-bg"></div>
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+
+  <a href="home.html" class="back-btn">← Back</a>
+
   <div class="container">
-    <h1>LifeDot Dashboard</h1>
-    <p class="subtitle">Monitor your heart rate and send alerts instantly</p>
+    <div class="header">
+      <h1>Heart Monitor</h1>
+      <p>Real-time Cardiac Tracking</p>
+    </div>
     
     <div class="bpm-display">
-      <div class="bpm-label">CURRENT HEART RATE</div>
-      <div class="bpm-value" id="bpmValue">-- bpm</div>
-      <div class="bpm-average" id="avgBpm">Average: -- bpm</div>
+      <div class="bpm-label">Current Heart Rate</div>
+      <div class="bpm-value" id="bpmValue">--</div>
+      <div class="bpm-average">Average: <span id="avgBpm">-- BPM</span></div>
     </div>
     
     <button class="emergency-btn" onclick="sendEmergency()">
-      🚨 Send Emergency Alert
+      <span>🚨 Send Emergency Alert</span>
     </button>
     
     <div class="status" id="statusMsg"></div>
   </div>
 
   <script>
+    // Custom Cursor
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorRing = document.querySelector('.cursor-ring');
+    
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    });
+    
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // BPM Monitoring
     const bpmValue = document.getElementById("bpmValue");
     const avgBpm = document.getElementById("avgBpm");
     const statusMsg = document.getElementById("statusMsg");
@@ -194,11 +427,11 @@
       try {
         const res = await fetch("https://lifedot.onrender.com/bpm");
         const data = await res.json();
-        bpmValue.textContent = `${data.bpm} bpm`;
-        avgBpm.textContent = `Average: ${data.avg_bpm} bpm`;
+        bpmValue.textContent = data.bpm;
+        avgBpm.textContent = `${data.avg_bpm} BPM`;
       } catch (error) {
-        bpmValue.textContent = "-- bpm";
-        avgBpm.textContent = "Average: -- bpm";
+        bpmValue.textContent = "--";
+        avgBpm.textContent = "-- BPM";
       }
     }
 
@@ -209,21 +442,21 @@
 
       statusMsg.style.display = "block";
       statusMsg.className = "status";
-      statusMsg.textContent = "📤 Sending emergency email...";
+      statusMsg.textContent = "Sending emergency email...";
 
       try {
         const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
         const data = await res.json();
 
         if (data.success) {
-          statusMsg.textContent = "✅ Emergency email sent successfully!";
+          statusMsg.textContent = "✅ Emergency email sent successfully";
           statusMsg.classList.add("success");
         } else {
-          statusMsg.textContent = "❌ Failed to send emergency email.";
+          statusMsg.textContent = "❌ Failed to send emergency email";
           statusMsg.classList.add("error");
         }
       } catch (error) {
-        statusMsg.textContent = "⚠️ Server not reachable.";
+        statusMsg.textContent = "⚠️ Server not reachable";
         statusMsg.classList.add("error");
       }
 
