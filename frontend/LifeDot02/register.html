@@ -4,137 +4,71 @@
   <meta charset="utf-8">
   <title>Register — LifeDot</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg-dark: #0a0a0a;
-      --bg-darker: #050505;
-      --text-white: #ffffff;
-      --text-gray: #888888;
-      --accent: #00ff88;
-      --card-bg: rgba(255,255,255,0.02);
-      --card-border: rgba(255,255,255,0.05);
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem;
       cursor: none;
+      overflow-x: hidden;
     }
 
     /* CUSTOM CURSOR */
-    .cursor-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
+    .cursor {
       position: fixed;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transition: transform 0.15s ease;
-      mix-blend-mode: difference;
       transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
     }
     
-    .cursor-ring {
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--accent);
-      border-radius: 50%;
+    .cursor-follower {
       position: fixed;
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
       pointer-events: none;
-      z-index: 9999;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      mix-blend-mode: difference;
+      z-index: 10001;
       transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
     }
 
-    /* ANIMATED GRID BACKGROUND */
-    .grid-bg {
+    #gridCanvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
       z-index: 0;
-      animation: gridMove 30s linear infinite;
+      opacity: 0.1;
     }
 
-    @keyframes gridMove {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(60px, 60px); }
-    }
-
-    /* GRADIENT ORBS */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.15;
-      z-index: 0;
-      animation: float 20s ease-in-out infinite;
-    }
-
-    .orb1 {
-      width: 400px;
-      height: 400px;
-      background: var(--accent);
-      top: -100px;
-      right: -100px;
-    }
-
-    .orb2 {
-      width: 300px;
-      height: 300px;
-      background: #00ddff;
-      bottom: -100px;
-      left: -100px;
-      animation-delay: 7s;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0); }
-      33% { transform: translate(50px, -70px); }
-      66% { transform: translate(-30px, 40px); }
-    }
-
-    /* CONTAINER */
     .register-container {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.01);
+      border: 1px solid rgba(255,255,255,0.05);
       max-width: 600px;
       width: 100%;
-      padding: 4rem 3rem;
+      padding: 80px 60px;
       position: relative;
       z-index: 10;
       animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .register-container::before {
@@ -143,55 +77,55 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), transparent);
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
     }
 
-    /* HEADER */
     .header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 60px;
     }
 
     .header h2 {
-      font-size: clamp(2rem, 4vw, 2.5rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
+      font-size: 32px;
+      font-weight: 200;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
     }
 
     .subtitle {
-      color: var(--text-gray);
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-weight: 300;
     }
 
-    /* FORM */
     .input-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 30px;
     }
 
     .input-group label {
       display: block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-gray);
-      margin-bottom: 0.6rem;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 12px;
+      font-weight: 300;
     }
 
     .input-group input,
     .input-group textarea {
       width: 100%;
-      padding: 1.2rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      color: var(--text-white);
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.3s ease;
+      padding: 18px 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 15px;
+      transition: border-color 0.3s;
+      outline: none;
+      font-weight: 300;
+      font-family: inherit;
     }
 
     .input-group textarea {
@@ -201,188 +135,127 @@
 
     .input-group input:focus,
     .input-group textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .input-group input::placeholder,
-    .input-group textarea::placeholder {
-      color: var(--text-gray);
+      border-color: rgba(255,255,255,0.3);
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      gap: 30px;
     }
 
-    /* BUTTON */
     .btn-register {
       width: 100%;
-      padding: 1.2rem;
-      background: var(--accent);
-      color: var(--bg-dark);
+      padding: 20px;
+      background: #fff;
+      color: #000;
       border: none;
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 300;
       cursor: none;
       transition: all 0.3s ease;
-      margin-top: 1rem;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-register::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.5s ease, height 0.5s ease;
-    }
-
-    .btn-register:hover::before {
-      width: 500px;
-      height: 500px;
+      margin-top: 20px;
+      letter-spacing: 2px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
     }
 
     .btn-register:hover {
-      background: var(--text-white);
-      transform: translateY(-2px);
+      background: rgba(255,255,255,0.9);
+      transform: translateY(-3px);
     }
 
-    .btn-register span {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* LINKS */
     .links {
       text-align: center;
-      margin-top: 1.5rem;
-      color: var(--text-gray);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin-top: 30px;
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 1px;
+      font-weight: 300;
     }
 
     .links a {
-      color: var(--accent);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
-      transition: color 0.3s ease;
     }
 
     .links a:hover {
-      color: var(--text-white);
+      color: #fff;
     }
 
-    /* MESSAGE */
     .message {
       text-align: center;
-      margin-top: 1.5rem;
-      padding: 1rem;
-      font-weight: 600;
-      font-size: 0.85rem;
+      margin-top: 30px;
+      padding: 18px;
+      font-weight: 300;
+      font-size: 11px;
       display: none;
-      animation: fadeIn 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      letter-spacing: 2px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
     }
 
     .message.success {
-      background: rgba(0, 255, 136, 0.1);
-      border: 1px solid var(--accent);
-      color: var(--accent);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
     }
 
     .message.error {
-      background: rgba(255, 0, 100, 0.1);
-      border: 1px solid #ff0064;
-      color: #ff0064;
+      background: rgba(255,0,0,0.05);
+      border: 1px solid rgba(255,0,0,0.3);
+      color: #ff0000;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 768px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-
-      .register-container {
-        padding: 3rem 2rem;
-      }
-
-      body {
-        cursor: auto;
-      }
-      
-      .cursor-dot, 
-      .cursor-ring {
-        display: none;
-      }
+      .grid-2 { grid-template-columns: 1fr; }
+      .register-container { padding: 60px 40px; }
+      body { cursor: auto; }
+      .cursor, .cursor-follower { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
-  
-  <div class="grid-bg"></div>
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+  <canvas id="gridCanvas"></canvas>
 
   <div class="register-container">
     <div class="header">
       <h2>Create Account</h2>
-      <p class="subtitle">Join LifeDot</p>
+      <p class="subtitle">JOIN LIFEDOT</p>
     </div>
 
     <div class="input-group">
-      <label>Full Name</label>
+      <label>FULL NAME</label>
       <input id="name" type="text" placeholder="Enter your name" required>
     </div>
 
     <div class="input-group">
-      <label>Address</label>
+      <label>ADDRESS</label>
       <textarea id="address" placeholder="Your complete address" required></textarea>
     </div>
 
     <div class="grid-2">
       <div class="input-group">
-        <label>Phone Number</label>
+        <label>PHONE NUMBER</label>
         <input id="phone" type="tel" placeholder="+91xxxxxxxxxx" required>
       </div>
-
       <div class="input-group">
-        <label>Alternate Phone</label>
+        <label>ALTERNATE PHONE</label>
         <input id="altPhone" type="tel" placeholder="+91xxxxxxxxxx">
       </div>
     </div>
 
     <div class="input-group">
-      <label>Email Address</label>
+      <label>EMAIL ADDRESS</label>
       <input id="email" type="email" placeholder="your@email.com" required>
     </div>
 
     <div class="input-group">
-      <label>Password</label>
+      <label>PASSWORD</label>
       <input id="password" type="password" placeholder="Min. 8 characters" required>
     </div>
 
-    <button class="btn-register" onclick="handleRegister()">
-      <span>Create Account</span>
-    </button>
+    <button class="btn-register" onclick="handleRegister()">CREATE ACCOUNT</button>
 
     <div class="links">
       Already have an account? <a href="login.html">Sign in</a>
@@ -391,35 +264,52 @@
     <div id="msg" class="message"></div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Custom Cursor
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorRing = document.querySelector('.cursor-ring');
-    
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
+    // Cursor
+    const cursor = document.querySelector('.cursor');
+    const cursorFollower = document.querySelector('.cursor-follower');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let followerX = mouseX, followerY = mouseY;
     
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      
-      cursorDot.style.left = mouseX + 'px';
-      cursorDot.style.top = mouseY + 'px';
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
     });
     
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      
-      requestAnimationFrame(animateRing);
+    function animateFollower() {
+      followerX += (mouseX - followerX) * 0.1;
+      followerY += (mouseY - followerY) * 0.1;
+      cursorFollower.style.left = followerX + 'px';
+      cursorFollower.style.top = followerY + 'px';
+      requestAnimationFrame(animateFollower);
     }
-    animateRing();
+    animateFollower();
 
-    const msg = document.getElementById('msg');
+    // Grid
+    const canvas = document.getElementById('gridCanvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.set(0, 2, 5);
+    camera.rotation.x = -0.3;
+    
+    const gridHelper = new THREE.GridHelper(20, 20, 0xffffff, 0xffffff);
+    gridHelper.material.opacity = 0.05;
+    gridHelper.material.transparent = true;
+    scene.add(gridHelper);
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      gridHelper.rotation.y += 0.001;
+      renderer.render(scene, camera);
+    }
+    animate();
 
+    // Register
     async function handleRegister() {
       const name = document.getElementById('name').value;
       const address = document.getElementById('address').value;
@@ -427,6 +317,7 @@
       const altPhone = document.getElementById('altPhone').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      const msg = document.getElementById('msg');
 
       if (!name || !address || !phone || !email || !password) {
         showMessage('Fill in all required fields', 'error');
@@ -438,28 +329,24 @@
         return;
       }
 
-      const payload = {
-        name,
-        address,
-        phone_number: phone,
-        alt_phone_number: altPhone || phone,
-        email,
-        password
-      };
-
       try {
         const res = await fetch('https://lifedot.onrender.com/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({
+            name,
+            address,
+            phone_number: phone,
+            alt_phone_number: altPhone || phone,
+            email,
+            password
+          })
         });
         const data = await res.json();
 
         if (data.success) {
           showMessage('Account created successfully', 'success');
-          setTimeout(() => {
-            window.location.href = 'login.html';
-          }, 2000);
+          setTimeout(() => window.location.href = 'login.html', 2000);
         } else {
           showMessage(data.error || 'Registration failed', 'error');
         }
@@ -469,13 +356,11 @@
     }
 
     function showMessage(text, type) {
+      const msg = document.getElementById('msg');
       msg.textContent = text;
       msg.className = `message ${type}`;
       msg.style.display = 'block';
-
-      setTimeout(() => {
-        msg.style.display = 'none';
-      }, 5000);
+      setTimeout(() => msg.style.display = 'none', 5000);
     }
 
     document.getElementById('password').addEventListener('keypress', (e) => {

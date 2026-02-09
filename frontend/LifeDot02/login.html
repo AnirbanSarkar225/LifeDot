@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <title>Login — LifeDot</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     * {
       margin: 0;
@@ -12,19 +11,9 @@
       box-sizing: border-box;
     }
 
-    :root {
-      --bg-dark: #0a0a0a;
-      --bg-darker: #050505;
-      --text-white: #ffffff;
-      --text-gray: #888888;
-      --accent: #00ff88;
-      --card-bg: rgba(255,255,255,0.02);
-      --card-border: rgba(255,255,255,0.05);
-    }
-
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -35,96 +24,59 @@
     }
 
     /* CUSTOM CURSOR */
-    .cursor-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
+    .cursor {
       position: fixed;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transition: transform 0.15s ease;
-      mix-blend-mode: difference;
       transform: translate(-50%, -50%);
+      transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      mix-blend-mode: difference;
     }
     
-    .cursor-ring {
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--accent);
-      border-radius: 50%;
+    .cursor-follower {
       position: fixed;
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
       pointer-events: none;
-      z-index: 9999;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      mix-blend-mode: difference;
+      z-index: 10001;
       transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+    
+    .cursor.hover {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.05);
     }
 
-    /* ANIMATED GRID BACKGROUND */
-    .grid-bg {
+    /* GRID BACKGROUND */
+    #gridCanvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
       z-index: 0;
-      animation: gridMove 30s linear infinite;
-    }
-
-    @keyframes gridMove {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(60px, 60px); }
-    }
-
-    /* GRADIENT ORBS */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.15;
-      z-index: 0;
-      animation: float 20s ease-in-out infinite;
-    }
-
-    .orb1 {
-      width: 400px;
-      height: 400px;
-      background: var(--accent);
-      top: -100px;
-      left: -100px;
-    }
-
-    .orb2 {
-      width: 300px;
-      height: 300px;
-      background: #00ddff;
-      bottom: -100px;
-      right: -100px;
-      animation-delay: 7s;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0); }
-      33% { transform: translate(50px, -70px); }
-      66% { transform: translate(-30px, 40px); }
+      opacity: 0.1;
     }
 
     /* CONTAINER */
     .login-container {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.01);
+      border: 1px solid rgba(255,255,255,0.05);
       max-width: 500px;
       width: 100%;
-      padding: 4rem 3rem;
+      padding: 80px 60px;
       position: relative;
       z-index: 10;
       animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
     }
 
     @keyframes slideUp {
@@ -144,156 +96,130 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), transparent);
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
     }
 
     /* BACK LINK */
     .back-link {
       position: absolute;
-      top: 2rem;
-      left: 2rem;
-      color: var(--text-gray);
+      top: 30px;
+      left: 30px;
+      color: rgba(255,255,255,0.4);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 10px;
       transition: color 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 2px;
+      font-weight: 300;
     }
 
     .back-link:hover {
-      color: var(--accent);
+      color: rgba(255,255,255,0.8);
     }
 
     /* HEADER */
     .header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 60px;
     }
 
     .header h2 {
-      font-size: clamp(2rem, 4vw, 2.5rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
+      font-size: 32px;
+      font-weight: 200;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
     }
 
     .subtitle {
-      color: var(--text-gray);
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-weight: 300;
     }
 
     /* FORM */
     .input-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 35px;
     }
 
     .input-group label {
       display: block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-gray);
-      margin-bottom: 0.6rem;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 12px;
+      font-weight: 300;
     }
 
     .input-group input {
       width: 100%;
-      padding: 1.2rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      color: var(--text-white);
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
+      padding: 18px 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 15px;
       transition: all 0.3s ease;
+      outline: none;
+      font-weight: 300;
     }
 
     .input-group input:focus {
-      outline: none;
-      border-color: var(--accent);
-      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255,255,255,0.3);
     }
 
     .input-group input::placeholder {
-      color: var(--text-gray);
+      color: rgba(255,255,255,0.2);
     }
 
     /* BUTTON */
     .btn-login {
       width: 100%;
-      padding: 1.2rem;
-      background: var(--accent);
-      color: var(--bg-dark);
+      padding: 20px;
+      background: #fff;
+      color: #000;
       border: none;
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 300;
       cursor: none;
       transition: all 0.3s ease;
-      margin-top: 1rem;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-login::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.5s ease, height 0.5s ease;
-    }
-
-    .btn-login:hover::before {
-      width: 400px;
-      height: 400px;
+      margin-top: 20px;
+      letter-spacing: 2px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
     }
 
     .btn-login:hover {
-      background: var(--text-white);
-      transform: translateY(-2px);
-    }
-
-    .btn-login span {
-      position: relative;
-      z-index: 1;
+      background: rgba(255,255,255,0.9);
+      transform: translateY(-3px);
     }
 
     /* LINKS */
     .links {
       text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.85rem;
+      margin-top: 30px;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1px;
     }
 
     .links a {
-      color: var(--accent);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
       transition: color 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .links a:hover {
-      color: var(--text-white);
+      color: #fff;
     }
 
     .divider {
       text-align: center;
-      color: var(--text-gray);
-      margin: 2rem 0;
-      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      margin: 40px 0;
+      font-size: 10px;
       position: relative;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      font-weight: 300;
     }
 
     .divider::before,
@@ -301,9 +227,9 @@
       content: '';
       position: absolute;
       top: 50%;
-      width: 40%;
+      width: 35%;
       height: 1px;
-      background: var(--card-border);
+      background: rgba(255,255,255,0.05);
     }
 
     .divider::before { left: 0; }
@@ -331,84 +257,95 @@
     }
 
     .modal-content {
-      background: var(--bg-darker);
-      border: 1px solid var(--card-border);
-      padding: 3rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 60px;
       max-width: 450px;
       width: 90%;
       animation: modalSlide 0.3s ease;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
     }
 
     @keyframes modalSlide {
       from {
         opacity: 0;
-        transform: scale(0.9) translateY(-30px);
+        transform: translateY(-30px);
       }
       to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: translateY(0);
       }
     }
 
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
+    }
+
     .modal-content h3 {
-      font-size: 1.8rem;
-      font-weight: 900;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
+      font-size: 24px;
+      font-weight: 200;
+      margin-bottom: 15px;
+      letter-spacing: -0.5px;
     }
 
     .modal-content p {
-      color: var(--text-gray);
-      margin-bottom: 2rem;
-      font-size: 0.9rem;
-      line-height: 1.6;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 40px;
+      font-size: 12px;
+      line-height: 1.8;
+      font-weight: 300;
     }
 
     .modal-buttons {
       display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
+      gap: 15px;
+      margin-top: 40px;
     }
 
     .btn-secondary {
       flex: 1;
-      padding: 1rem;
+      padding: 18px;
       background: transparent;
-      color: var(--text-white);
-      border: 1px solid var(--card-border);
-      font-weight: 600;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      font-weight: 300;
       cursor: none;
       transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-size: 0.85rem;
+      letter-spacing: 2px;
+      font-size: 11px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255,255,255,0.3);
     }
 
     /* TOAST */
     .toast {
       visibility: hidden;
       min-width: 300px;
-      background: var(--accent);
-      color: var(--bg-dark);
+      background: #fff;
+      color: #000;
       text-align: center;
-      padding: 1.2rem 1.5rem;
+      padding: 20px 30px;
       position: fixed;
       z-index: 3000;
       left: 50%;
       bottom: 30px;
       transform: translateX(-50%);
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 300;
       opacity: 0;
       transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 2px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
     }
 
     .toast.show {
@@ -418,62 +355,49 @@
     }
 
     .toast.error {
-      background: #ff0064;
-      color: white;
+      background: rgba(255,0,0,0.1);
+      color: #ff0000;
+      border: 1px solid rgba(255,0,0,0.3);
     }
 
     /* RESPONSIVE */
     @media (max-width: 600px) {
-      .login-container {
-        padding: 3rem 2rem;
-      }
-
-      body {
-        cursor: auto;
-      }
-      
-      .cursor-dot, 
-      .cursor-ring {
-        display: none;
-      }
+      .login-container { padding: 60px 40px; }
+      body { cursor: auto; }
+      .cursor, .cursor-follower { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
-  
-  <div class="grid-bg"></div>
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+  <canvas id="gridCanvas"></canvas>
 
   <div class="login-container">
-    <a href="index.html" class="back-link">← Back</a>
+    <a href="index.html" class="back-link">← BACK</a>
     
     <div class="header">
       <h2>Welcome Back</h2>
-      <p class="subtitle">Sign in to continue</p>
+      <p class="subtitle">SIGN IN TO CONTINUE</p>
     </div>
 
     <div class="input-group">
-      <label>Email Address</label>
+      <label>EMAIL ADDRESS</label>
       <input id="loginEmail" type="email" placeholder="your@email.com" required>
     </div>
 
     <div class="input-group">
-      <label>Password</label>
+      <label>PASSWORD</label>
       <input id="loginPassword" type="password" placeholder="••••••••" required>
     </div>
 
-    <button class="btn-login" onclick="handleLogin()">
-      <span>Sign In</span>
-    </button>
+    <button class="btn-login" onclick="handleLogin()">SIGN IN</button>
 
     <div class="links">
       <a href="#" id="forgotLink">Forgot Password?</a>
     </div>
 
-    <div class="divider">Don't Have An Account?</div>
+    <div class="divider">OR</div>
 
     <div class="links">
       <a href="register.html">Create Account →</a>
@@ -488,49 +412,81 @@
         <input type="email" id="resetEmail" placeholder="your@email.com" required>
       </div>
       <div class="modal-buttons">
-        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn-login" onclick="sendResetLink()" style="margin-top: 0;">
-          <span>Send Link</span>
-        </button>
+        <button class="btn-secondary" onclick="closeModal()">CANCEL</button>
+        <button class="btn-login" onclick="sendResetLink()" style="margin-top: 0;">SEND LINK</button>
       </div>
     </div>
   </div>
 
   <div id="toast" class="toast"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     // Custom Cursor
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorRing = document.querySelector('.cursor-ring');
+    const cursor = document.querySelector('.cursor');
+    const cursorFollower = document.querySelector('.cursor-follower');
     
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let followerX = mouseX;
+    let followerY = mouseY;
     
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      
-      cursorDot.style.left = mouseX + 'px';
-      cursorDot.style.top = mouseY + 'px';
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
     });
     
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
+    function animateFollower() {
+      followerX += (mouseX - followerX) * 0.1;
+      followerY += (mouseY - followerY) * 0.1;
       
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
+      cursorFollower.style.left = followerX + 'px';
+      cursorFollower.style.top = followerY + 'px';
       
-      requestAnimationFrame(animateRing);
+      requestAnimationFrame(animateFollower);
     }
-    animateRing();
+    animateFollower();
+    
+    // Hover effect
+    document.querySelectorAll('a, button, input').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // Three.js Grid
+    const canvas = document.getElementById('gridCanvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    camera.position.z = 5;
+    camera.position.y = 2;
+    camera.rotation.x = -0.3;
+    
+    const gridHelper = new THREE.GridHelper(20, 20, 0xffffff, 0xffffff);
+    gridHelper.material.opacity = 0.05;
+    gridHelper.material.transparent = true;
+    scene.add(gridHelper);
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      gridHelper.rotation.y += 0.001;
+      renderer.render(scene, camera);
+    }
+    animate();
+    
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
     // Modal
-    const forgotLink = document.getElementById('forgotLink');
     const modal = document.getElementById('forgotModal');
-    const toast = document.getElementById('toast');
-
-    forgotLink.addEventListener('click', (e) => {
+    document.getElementById('forgotLink').addEventListener('click', (e) => {
       e.preventDefault();
       modal.style.display = 'flex';
     });
@@ -540,9 +496,7 @@
     }
 
     window.onclick = (event) => {
-      if (event.target === modal) {
-        closeModal();
-      }
+      if (event.target === modal) closeModal();
     };
 
     // Login
@@ -568,9 +522,7 @@
           localStorage.setItem("lifedot_user_id", data.user.id);
           localStorage.setItem("lifedot_user_email", data.user.email);
           showToast('Login successful');
-          setTimeout(() => {
-            window.location.href = "welcome.html";
-          }, 1000);
+          setTimeout(() => window.location.href = "welcome.html", 1000);
         } else {
           showToast('Invalid credentials', true);
         }
@@ -581,7 +533,6 @@
 
     async function sendResetLink() {
       const email = document.getElementById('resetEmail').value;
-
       if (!email) {
         showToast('Enter email address', true);
         return;
@@ -608,17 +559,15 @@
     }
 
     function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.className = 'toast show' + (isError ? ' error' : '');
-      setTimeout(() => {
-        toast.className = 'toast';
-      }, 3000);
+      setTimeout(() => toast.className = 'toast', 3000);
     }
 
     document.getElementById('loginPassword').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleLogin();
     });
-
     document.getElementById('loginEmail').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleLogin();
     });

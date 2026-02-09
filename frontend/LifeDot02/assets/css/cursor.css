@@ -1,0 +1,52 @@
+/* Active Theory Style Custom Cursor */
+.cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  mix-blend-mode: difference;
+}
+
+.cursor-follower {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10001;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: width 0.3s, height 0.3s;
+}
+
+.cursor.hover {
+  width: 60px;
+  height: 60px;
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.6);
+}
+
+/* Hide cursor on mobile */
+@media (max-width: 1024px) {
+  .cursor,
+  .cursor-follower {
+    display: none !important;
+  }
+}
+
+/* Hide default cursor on desktop */
+@media (min-width: 1025px) {
+  body {
+    cursor: none;
+  }
+  
+  a, button, input, textarea, select {
+    cursor: none;
+  }
+}
