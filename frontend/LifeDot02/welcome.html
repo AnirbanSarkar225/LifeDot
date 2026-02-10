@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WELCOME — LIFEDOT</title>
+  <title>Welcome — LifeDot</title>
   <style>
     * {
       margin: 0;
@@ -12,28 +12,45 @@
     }
     
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background: #000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0e1a;
       color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: none;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     
-    /* CUSTOM CURSOR */
+    /* CURSOR */
     .cursor {
       position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 1px solid rgba(0, 255, 255, 0.5);
+      width: 12px;
+      height: 12px;
+      background: rgba(0, 255, 255, 0.9);
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transition: transform 0.1s ease;
-      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+      mix-blend-mode: screen;
     }
     
-    /* 3D SCENE */
-    #scene {
+    .cursor-ring {
+      position: fixed;
+      width: 35px;
+      height: 35px;
+      border: 2px solid rgba(0, 255, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+      mix-blend-mode: screen;
+    }
+    
+    #canvas3d {
       position: fixed;
       top: 0;
       left: 0;
@@ -42,470 +59,294 @@
       z-index: 0;
     }
     
-    /* SCROLL SPINE */
-    .scroll-spine {
-      position: fixed;
-      left: 50%;
-      top: 0;
-      height: 100%;
-      width: 2px;
-      transform: translateX(-50%);
-      z-index: 1;
-      pointer-events: none;
-    }
-    
-    .spine-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 0%;
-      background: linear-gradient(to bottom, #00ffff, #00aaff, #0066ff);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-      transition: height 0.1s ease-out;
-    }
-    
-    /* NAVIGATION */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-      padding: 40px 50px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      mix-blend-mode: difference;
-    }
-    
-    .logo {
-      font-size: 14px;
-      letter-spacing: 2px;
-      font-weight: 400;
-      color: #00ffff;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    }
-    
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .greeting {
-      font-size: 12px;
-      color: #00ffff;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      opacity: 0.7;
-    }
-    
-    .profile-btn {
-      width: 45px;
-      height: 45px;
-      background: rgba(0, 255, 255, 0.2);
-      border: 1px solid #00ffff;
-      color: #00ffff;
-      font-weight: 900;
-      font-size: 16px;
-      cursor: none;
-      transition: all 0.3s ease;
-      font-family: 'Courier New', Courier, monospace;
-    }
-    
-    .profile-btn:hover {
-      transform: scale(1.1);
-      background: rgba(0, 255, 255, 0.3);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-    }
-    
-    /* CONTENT */
-    .content {
+    /* CONTAINER */
+    .welcome-container {
       position: relative;
-      z-index: 2;
-    }
-    
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 50px;
-    }
-    
-    .hero-content {
+      z-index: 1;
       text-align: center;
-      max-width: 1000px;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeInUp 1.2s ease 0.5s forwards;
+      max-width: 900px;
+      padding: 0 50px;
+      animation: fadeIn 1.5s ease;
     }
     
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
-    .hero h1 {
-      font-size: clamp(40px, 8vw, 90px);
-      font-weight: 400;
-      line-height: 1.1;
-      letter-spacing: -2px;
+    .welcome-icon {
+      font-size: 100px;
+      margin-bottom: 40px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.6));
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    h1 {
+      font-size: clamp(60px, 12vw, 100px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -3px;
       margin-bottom: 30px;
+      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
-    .hero h1 .highlight {
-      color: #00ffff;
-      text-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    .username {
+      color: rgba(0, 255, 255, 1);
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
     }
     
-    .hero p {
-      font-size: 14px;
-      line-height: 1.8;
-      letter-spacing: 1px;
-      opacity: 0.6;
-      max-width: 600px;
-      margin: 0 auto 50px;
+    p {
+      font-size: 15px;
+      line-height: 2;
+      letter-spacing: 3px;
+      opacity: 0.7;
+      margin-bottom: 60px;
+      font-weight: 300;
+      color: rgba(0, 255, 255, 0.8);
+      text-transform: uppercase;
     }
     
-    .hero-cta {
+    .button-group {
       display: flex;
-      gap: 20px;
+      gap: 25px;
       justify-content: center;
+      flex-wrap: wrap;
     }
     
     .btn {
-      padding: 15px 40px;
+      padding: 22px 60px;
       font-size: 12px;
-      letter-spacing: 1px;
+      letter-spacing: 3px;
       border: none;
       background: none;
       color: #fff;
       text-decoration: none;
-      transition: all 0.3s;
-      font-family: 'Courier New', Courier, monospace;
       cursor: none;
+      font-weight: 400;
+      transition: all 0.4s ease;
+      text-transform: uppercase;
+      border-radius: 35px;
     }
     
     .btn-primary {
-      background: #00ffff;
-      color: #000;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-    }
-    
-    .btn-primary:hover {
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
-      transform: translateY(-2px);
-    }
-    
-    .btn-secondary {
-      border: 1px solid rgba(0, 255, 255, 0.5);
-      color: #00ffff;
-    }
-    
-    .btn-secondary:hover {
-      border-color: #00ffff;
-      background: rgba(0, 255, 255, 0.1);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    }
-    
-    /* FEATURES SECTION */
-    .features-section {
-      min-height: 100vh;
-      padding: 150px 50px;
-      position: relative;
-    }
-    
-    .section-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      opacity: 0.5;
-      margin-bottom: 30px;
-      color: #00ffff;
-    }
-    
-    .section-title {
-      font-size: clamp(36px, 5vw, 72px);
-      font-weight: 400;
-      line-height: 1.2;
-      letter-spacing: -1px;
-      margin-bottom: 80px;
-      max-width: 800px;
-    }
-    
-    .section-title .highlight {
-      color: #00ffff;
-      text-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-    }
-    
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(0, 255, 255, 0.1);
-      max-width: 1200px;
-    }
-    
-    .feature {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 50px 40px;
-      transition: all 0.3s;
-      border: 1px solid transparent;
-    }
-    
-    .feature:hover {
-      background: rgba(0, 255, 255, 0.05);
-      border-color: rgba(0, 255, 255, 0.3);
+      background: rgba(0, 255, 255, 0.2);
+      border: 2px solid rgba(0, 255, 255, 0.5);
       box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
     }
     
-    .feature-icon {
-      font-size: 40px;
-      margin-bottom: 30px;
-      display: block;
+    .btn-primary:hover {
+      background: rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+      transform: translateY(-3px);
     }
     
-    .feature h3 {
-      font-size: 18px;
-      font-weight: 400;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
-      color: #00ffff;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    .btn-secondary {
+      border: 2px solid rgba(255, 255, 255, 0.25);
     }
     
-    .feature p {
-      font-size: 13px;
-      line-height: 1.7;
-      opacity: 0.5;
-      letter-spacing: 0.3px;
+    .btn-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-3px);
     }
     
-    /* CTA SECTION */
-    .cta-section {
-      min-height: 60vh;
+    /* LOADING */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0e1a;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 50px;
+      z-index: 10000;
+      transition: opacity 0.8s ease;
     }
     
-    .cta-content {
-      text-align: center;
-      max-width: 800px;
+    .loading.hide {
+      opacity: 0;
+      pointer-events: none;
     }
     
-    .cta-content h2 {
-      font-size: clamp(36px, 5vw, 60px);
-      font-weight: 400;
-      letter-spacing: -1px;
-      margin-bottom: 20px;
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(0, 255, 255, 0.2);
+      border-top: 3px solid rgba(0, 255, 255, 1);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
     }
     
-    .cta-content h2 .highlight {
-      color: #00ffff;
-      text-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-    }
-    
-    .cta-content p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-      margin-bottom: 40px;
-      line-height: 1.8;
-      letter-spacing: 0.5px;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     
     /* RESPONSIVE */
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
       body { cursor: auto; }
-      .cursor { display: none; }
-      nav { padding: 30px 20px; }
-      .hero, .features-section, .cta-section { padding-left: 20px; padding-right: 20px; }
-      .features-grid { grid-template-columns: 1fr; }
+      .cursor, .cursor-ring { display: none; }
+      .welcome-container { padding: 0 30px; }
+      .button-group { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
 <body>
-  <!-- Custom Cursor -->
-  <div class="cursor" id="cursor"></div>
+  <div class="cursor"></div>
+  <div class="cursor-ring"></div>
   
-  <!-- Scroll Spine -->
-  <div class="scroll-spine">
-    <div class="spine-progress" id="spineProgress"></div>
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
   </div>
   
-  <!-- 3D Scene -->
-  <canvas id="scene"></canvas>
+  <canvas id="canvas3d"></canvas>
   
-  <!-- Navigation -->
-  <nav>
-    <div class="logo">LIFEDOT</div>
-    <div class="user-info">
-      <span class="greeting" id="greeting">WELCOME</span>
-      <button class="profile-btn" id="profileIcon" onclick="showLogoutMenu()">U</button>
+  <div class="welcome-container">
+    <div class="welcome-icon">💓</div>
+    <h1>Welcome<br><span class="username" id="username">User</span></h1>
+    <p>Your health monitoring system is ready</p>
+    <div class="button-group">
+      <a href="home.html" class="btn btn-primary">Go to Dashboard</a>
+      <a href="flowchart.html" class="btn btn-secondary">View Workflow</a>
     </div>
-  </nav>
-  
-  <!-- Content -->
-  <div class="content">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-content">
-        <h1>
-          YOUR <span class="highlight">HEALTH</span>,<br>
-          ALWAYS <span class="highlight">MONITORED</span>
-        </h1>
-        <p>
-          REAL-TIME HEART MONITORING · INSTANT EMERGENCY ALERTS · COMPREHENSIVE HEALTH TRACKING
-        </p>
-        <div class="hero-cta">
-          <a href="home.html" class="btn btn-primary">GO TO DASHBOARD</a>
-          <a href="flowchart.html" class="btn btn-secondary">VIEW WORKFLOW</a>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Features -->
-    <section class="features-section">
-      <div class="section-label">/// FEATURES</div>
-      <h2 class="section-title"><span class="highlight">ADVANCED</span> MONITORING</h2>
-      
-      <div class="features-grid">
-        <div class="feature">
-          <span class="feature-icon">📊</span>
-          <h3>REAL-TIME MONITORING</h3>
-          <p>Track your heart rate 24/7 with instant updates and intelligent anomaly detection</p>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">🚨</span>
-          <h3>EMERGENCY ALERTS</h3>
-          <p>Automatic notifications to your family members when critical conditions are detected</p>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">📋</span>
-          <h3>MEDICAL RECORDS</h3>
-          <p>Securely store and manage all medical reports in one encrypted location</p>
-        </div>
-      </div>
-    </section>
-    
-    <!-- CTA -->
-    <section class="cta-section">
-      <div class="cta-content">
-        <h2>READY TO <span class="highlight">GET STARTED</span>?</h2>
-        <p>COMPLETE YOUR PROFILE TO UNLOCK ALL FEATURES AND START MONITORING YOUR HEALTH TODAY</p>
-        <button class="btn btn-primary" onclick="window.location.href='home.html'">COMPLETE PROFILE →</button>
-      </div>
-    </section>
   </div>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Custom Cursor
-    const cursor = document.getElementById('cursor');
+    // Cursor
+    const cursor = document.querySelector('.cursor');
+    const cursorRing = document.querySelector('.cursor-ring');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    
     document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
     });
     
-    // Scroll Spine
-    const spineProgress = document.getElementById('spineProgress');
-    function updateSpine() {
-      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      spineProgress.style.height = scrollPercent + '%';
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
     }
-    window.addEventListener('scroll', updateSpine);
-    updateSpine();
+    animateRing();
     
-    // Three.js Scene
+    // Three.js
+    const canvas = document.getElementById('canvas3d');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
-    camera.position.z = 5;
+    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.04);
+    camera.position.set(0, 5, 15);
     
+    // Particles
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2500;
+    const particlesCount = 3000;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
     
     for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 15;
-      posArray[i + 1] = (Math.random() - 0.5) * 15;
-      posArray[i + 2] = (Math.random() - 0.5) * 15;
+      posArray[i] = (Math.random() - 0.5) * 60;
+      posArray[i + 1] = (Math.random() - 0.5) * 60;
+      posArray[i + 2] = (Math.random() - 0.5) * 60;
       
-      colorArray[i] = 0;
-      colorArray[i + 1] = Math.random() * 0.5 + 0.5;
-      colorArray[i + 2] = Math.random() * 0.5 + 0.5;
+      const colorChoice = Math.random();
+      if (colorChoice < 0.4) {
+        colorArray[i] = 0;
+        colorArray[i + 1] = 1;
+        colorArray[i + 2] = 1;
+      } else if (colorChoice < 0.7) {
+        colorArray[i] = 0.4;
+        colorArray[i + 1] = 0;
+        colorArray[i + 2] = 1;
+      } else {
+        colorArray[i] = 0;
+        colorArray[i + 1] = 0.5;
+        colorArray[i + 2] = 1;
+      }
     }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
     
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.015,
+      size: 0.06,
       vertexColors: true,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending
     });
     
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
     
-    let mouseX = 0, mouseY = 0;
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.6);
+    scene.add(ambientLight);
+    
+    const pointLight1 = new THREE.PointLight(0x00ffff, 1.2, 100);
+    pointLight1.position.set(12, 12, 12);
+    scene.add(pointLight1);
+    
+    const pointLight2 = new THREE.PointLight(0x0066ff, 1, 100);
+    pointLight2.position.set(-12, -12, -12);
+    scene.add(pointLight2);
+    
+    // Mouse movement
+    let targetX = 0, targetY = 0;
     document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
     
+    // Animation
     function animate() {
       requestAnimationFrame(animate);
       
+      particlesMesh.rotation.y += 0.0006;
       particlesMesh.rotation.x += 0.0003;
-      particlesMesh.rotation.y += 0.0005;
       
-      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
-      camera.lookAt(scene.position);
+      camera.position.x += (targetX * 2.5 - camera.position.x) * 0.05;
+      camera.position.y += (targetY * 2.5 - camera.position.y + 5) * 0.05;
       
       renderer.render(scene, camera);
     }
-    
     animate();
     
+    // Resize
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // User Data
+    // Get username
     const username = localStorage.getItem("lifedot_user") || "User";
-    const userId = localStorage.getItem("lifedot_user_id");
+    document.getElementById("username").textContent = username;
     
-    if (!username || !userId) {
-      window.location.href = 'login.html';
-    }
-    
-    document.getElementById("greeting").textContent = `WELCOME, ${username.toUpperCase()}`;
-    document.getElementById("profileIcon").textContent = username.charAt(0).toUpperCase();
-    
-    function showLogoutMenu() {
-      if (confirm('DO YOU WANT TO LOGOUT?')) {
-        localStorage.removeItem("lifedot_user");
-        localStorage.removeItem("lifedot_user_id");
-        localStorage.removeItem("lifedot_user_email");
-        window.location.href = 'login.html';
-      }
-    }
+    // Loading
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hide');
+      }, 1000);
+    });
   </script>
 </body>
 </html>

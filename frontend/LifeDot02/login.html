@@ -1,43 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LOGIN — LIFEDOT</title>
+  <meta charset="utf-8">
+  <title>Login — LifeDot</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background: #000;
-      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0e1a;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 2rem;
       cursor: none;
       overflow: hidden;
     }
-    
+
     /* CUSTOM CURSOR */
     .cursor {
       position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 1px solid rgba(0, 255, 255, 0.5);
+      width: 12px;
+      height: 12px;
+      background: rgba(0, 255, 255, 0.9);
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transition: transform 0.1s ease;
-      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+      mix-blend-mode: screen;
     }
     
-    /* 3D SCENE */
-    #scene {
+    .cursor-ring {
+      position: fixed;
+      width: 35px;
+      height: 35px;
+      border: 2px solid rgba(0, 255, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+      mix-blend-mode: screen;
+    }
+
+    #canvas3d {
       position: fixed;
       top: 0;
       left: 0;
@@ -45,215 +58,209 @@
       height: 100%;
       z-index: 0;
     }
-    
-    /* BACK LINK */
+
+    /* BACK BUTTON */
     .back-link {
       position: fixed;
       top: 40px;
-      left: 50px;
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: #00ffff;
+      left: 60px;
+      padding: 14px 40px;
+      background: rgba(15, 25, 45, 0.7);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 35px;
+      font-size: 11px;
+      letter-spacing: 3px;
       text-decoration: none;
+      color: rgba(255, 255, 255, 0.9);
+      transition: all 0.4s ease;
+      backdrop-filter: blur(15px);
+      font-weight: 400;
       z-index: 100;
-      opacity: 0.7;
-      transition: all 0.3s;
-      mix-blend-mode: difference;
+      text-transform: uppercase;
     }
-    
+
     .back-link:hover {
-      opacity: 1;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      background: rgba(0, 255, 255, 0.15);
+      border-color: rgba(0, 255, 255, 0.8);
+      color: #fff;
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.4);
     }
-    
-    /* LOGIN CONTAINER */
+
+    /* CONTAINER */
     .login-container {
-      position: relative;
-      z-index: 1;
+      background: rgba(15, 25, 45, 0.5);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      border-radius: 30px;
+      max-width: 520px;
       width: 100%;
-      max-width: 500px;
-      padding: 60px 50px;
-      background: rgba(0, 30, 40, 0.3);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      box-shadow: 0 0 60px rgba(0, 255, 255, 0.1);
-      animation: slideIn 0.8s ease;
+      padding: 85px 65px;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(25px);
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 255, 255, 0.1);
     }
-    
-    @keyframes slideIn {
+
+    @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-    
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top, rgba(0, 255, 255, 0.12) 0%, transparent 70%);
+      border-radius: 30px;
+      pointer-events: none;
+    }
+
     /* HEADER */
     .header {
       text-align: center;
-      margin-bottom: 50px;
-    }
-    
-    .header h1 {
-      font-size: 32px;
-      font-weight: 400;
-      letter-spacing: -1px;
-      margin-bottom: 15px;
-      color: #00ffff;
-      text-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-    }
-    
-    .header p {
-      font-size: 12px;
-      letter-spacing: 2px;
-      opacity: 0.6;
-    }
-    
-    /* FORM */
-    .form-group {
-      margin-bottom: 30px;
+      margin-bottom: 65px;
       position: relative;
     }
-    
-    .form-group label {
+
+    .header h2 {
+      font-size: 42px;
+      font-weight: 300;
+      letter-spacing: -1px;
+      margin-bottom: 15px;
+      color: #fff;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: rgba(0, 255, 255, 0.7);
+      font-size: 12px;
+      letter-spacing: 4px;
+      font-weight: 300;
+      text-transform: uppercase;
+    }
+
+    /* FORM */
+    .input-group {
+      margin-bottom: 45px;
+      position: relative;
+    }
+
+    .input-group label {
       display: block;
       font-size: 10px;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-      color: #00ffff;
-      opacity: 0.7;
+      letter-spacing: 3px;
+      color: rgba(0, 255, 255, 0.8);
+      margin-bottom: 18px;
+      font-weight: 400;
+      text-transform: uppercase;
     }
-    
-    .form-group input {
+
+    .input-group input {
       width: 100%;
-      padding: 15px;
-      background: rgba(0, 255, 255, 0.03);
+      padding: 20px 0;
+      background: transparent;
       border: none;
-      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      border-bottom: 2px solid rgba(0, 255, 255, 0.3);
       color: #fff;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
+      font-size: 16px;
+      transition: all 0.3s ease;
       outline: none;
-      transition: all 0.3s;
+      font-weight: 300;
     }
-    
-    .form-group input::placeholder {
-      color: rgba(255, 255, 255, 0.3);
+
+    .input-group input:focus {
+      border-color: rgba(0, 255, 255, 0.8);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
-    
-    .form-group input:focus {
-      background: rgba(0, 255, 255, 0.05);
-      border-bottom-color: #00ffff;
-      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+
+    .input-group input::placeholder {
+      color: rgba(255, 255, 255, 0.25);
     }
-    
-    /* STATUS ICON */
-    .status-icon {
-      position: absolute;
-      right: 15px;
-      top: 38px;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #00ffff;
-      border-radius: 50%;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    
-    .form-group input:focus ~ .status-icon {
-      opacity: 0.5;
-    }
-    
+
     /* BUTTON */
     .btn-login {
       width: 100%;
-      padding: 18px;
-      background: rgba(0, 255, 255, 0.1);
-      border: 1px solid #00ffff;
-      color: #00ffff;
+      padding: 22px;
+      background: rgba(0, 255, 255, 0.2);
+      border: 2px solid rgba(0, 255, 255, 0.5);
+      border-radius: 35px;
+      color: #fff;
       font-size: 12px;
-      letter-spacing: 2px;
+      font-weight: 400;
       cursor: none;
-      transition: all 0.3s;
-      font-family: 'Courier New', Courier, monospace;
-      margin-top: 20px;
-      position: relative;
-      overflow: hidden;
+      transition: all 0.4s ease;
+      margin-top: 25px;
+      letter-spacing: 3px;
+      backdrop-filter: blur(15px);
+      text-transform: uppercase;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
     }
-    
-    .btn-login::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: #00ffff;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.5s ease, height 0.5s ease;
-    }
-    
-    .btn-login:hover::before {
-      width: 500px;
-      height: 500px;
-    }
-    
+
     .btn-login:hover {
-      color: #000;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+      background: rgba(0, 255, 255, 0.3);
+      border-color: rgba(0, 255, 255, 0.9);
+      box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+      transform: translateY(-3px);
     }
-    
-    .btn-login span {
-      position: relative;
-      z-index: 1;
-    }
-    
+
     /* LINKS */
     .links {
       text-align: center;
       margin-top: 30px;
       font-size: 12px;
-    }
-    
-    .links a {
-      color: #00ffff;
-      text-decoration: none;
-      opacity: 0.7;
-      transition: all 0.3s;
+      font-weight: 300;
       letter-spacing: 1px;
     }
-    
-    .links a:hover {
-      opacity: 1;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+
+    .links a {
+      color: rgba(0, 255, 255, 0.9);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     }
-    
+
+    .links a:hover {
+      color: #fff;
+      text-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+    }
+
     .divider {
       text-align: center;
-      color: rgba(255, 255, 255, 0.3);
-      margin: 40px 0;
+      color: rgba(255, 255, 255, 0.35);
+      margin: 45px 0;
       font-size: 11px;
       position: relative;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
+      font-weight: 300;
+      text-transform: uppercase;
     }
-    
+
     .divider::before,
     .divider::after {
       content: '';
       position: absolute;
       top: 50%;
-      width: 40%;
+      width: 35%;
       height: 1px;
-      background: rgba(0, 255, 255, 0.2);
+      background: rgba(0, 255, 255, 0.15);
     }
-    
+
     .divider::before { left: 0; }
     .divider::after { right: 0; }
-    
+
     /* MODAL */
     .modal {
       display: none;
@@ -263,238 +270,274 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(10px);
+      background: rgba(10, 14, 26, 0.95);
+      backdrop-filter: blur(15px);
       align-items: center;
       justify-content: center;
+      animation: fadeIn 0.3s ease;
     }
-    
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     .modal-content {
-      background: rgba(0, 30, 40, 0.5);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      padding: 50px;
-      max-width: 450px;
+      background: rgba(15, 25, 45, 0.7);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      border-radius: 30px;
+      padding: 65px;
+      max-width: 480px;
       width: 90%;
-      box-shadow: 0 0 60px rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(25px);
+      animation: modalSlide 0.3s ease;
+      box-shadow: 0 15px 60px rgba(0, 0, 0, 0.6);
     }
-    
+
+    @keyframes modalSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .modal-content h3 {
-      font-size: 24px;
-      font-weight: 400;
-      margin-bottom: 10px;
-      color: #00ffff;
-      text-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      font-size: 32px;
+      font-weight: 300;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+      color: #fff;
+      text-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
     }
-    
+
     .modal-content p {
       color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 30px;
+      margin-bottom: 45px;
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.9;
+      font-weight: 300;
     }
-    
+
     .modal-buttons {
       display: flex;
-      gap: 15px;
-      margin-top: 30px;
+      gap: 18px;
+      margin-top: 45px;
     }
-    
+
     .btn-secondary {
       flex: 1;
-      padding: 15px;
+      padding: 20px;
       background: transparent;
-      color: #00ffff;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      font-weight: 600;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 35px;
+      font-weight: 300;
       cursor: none;
-      transition: all 0.3s;
-      font-family: 'Courier New', Courier, monospace;
+      transition: all 0.3s ease;
+      letter-spacing: 3px;
       font-size: 11px;
-      letter-spacing: 1px;
+      text-transform: uppercase;
     }
-    
+
     .btn-secondary:hover {
-      background: rgba(0, 255, 255, 0.1);
-      border-color: #00ffff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.5);
     }
-    
+
     /* TOAST */
     .toast {
       visibility: hidden;
-      min-width: 300px;
-      background: rgba(0, 255, 255, 0.1);
-      border: 1px solid #00ffff;
-      color: #00ffff;
+      min-width: 320px;
+      background: rgba(0, 255, 255, 0.25);
+      color: #fff;
       text-align: center;
-      padding: 20px;
+      padding: 22px 35px;
       position: fixed;
       z-index: 3000;
       left: 50%;
       bottom: 30px;
       transform: translateX(-50%);
       font-size: 12px;
-      letter-spacing: 1px;
+      font-weight: 300;
       opacity: 0;
       transition: all 0.3s ease;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      letter-spacing: 3px;
+      border: 2px solid rgba(0, 255, 255, 0.5);
+      border-radius: 35px;
+      backdrop-filter: blur(25px);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
     }
-    
+
     .toast.show {
       visibility: visible;
       opacity: 1;
       bottom: 50px;
     }
-    
+
     .toast.error {
-      background: rgba(255, 0, 100, 0.1);
-      border-color: #ff0064;
-      color: #ff0064;
-      box-shadow: 0 0 30px rgba(255, 0, 100, 0.3);
+      background: rgba(255, 0, 100, 0.25);
+      border-color: rgba(255, 0, 100, 0.5);
+      box-shadow: 0 0 40px rgba(255, 0, 100, 0.3);
     }
-    
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
+      .login-container { padding: 65px 45px; }
       body { cursor: auto; }
-      .cursor { display: none; }
-      .login-container { padding: 40px 30px; margin: 20px; }
+      .cursor, .cursor-ring { display: none; }
       .back-link { left: 20px; top: 20px; }
     }
   </style>
 </head>
 <body>
-  <!-- Custom Cursor -->
-  <div class="cursor" id="cursor"></div>
+  <div class="cursor"></div>
+  <div class="cursor-ring"></div>
+  <canvas id="canvas3d"></canvas>
   
-  <!-- 3D Scene -->
-  <canvas id="scene"></canvas>
-  
-  <!-- Back Link -->
   <a href="index.html" class="back-link">← BACK</a>
-  
-  <!-- Login Container -->
+
   <div class="login-container">
     <div class="header">
-      <h1>WELCOME BACK</h1>
-      <p>SIGN IN TO CONTINUE</p>
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to continue</p>
     </div>
-    
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label>EMAIL ADDRESS</label>
-        <input id="loginEmail" type="email" placeholder="your@email.com" required>
-        <div class="status-icon"></div>
-      </div>
-      
-      <div class="form-group">
-        <label>PASSWORD</label>
-        <input id="loginPassword" type="password" placeholder="••••••••" required>
-        <div class="status-icon"></div>
-      </div>
-      
-      <button type="submit" class="btn-login">
-        <span>SIGN IN</span>
-      </button>
-    </form>
-    
-    <div class="links">
-      <a href="#" id="forgotLink">FORGOT PASSWORD?</a>
+
+    <div class="input-group">
+      <label>Email Address</label>
+      <input id="loginEmail" type="email" placeholder="your@email.com" required>
     </div>
-    
-    <div class="divider">OR</div>
-    
+
+    <div class="input-group">
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="••••••••" required>
+    </div>
+
+    <button class="btn-login" onclick="handleLogin()">Sign In</button>
+
     <div class="links">
-      <a href="register.html">CREATE ACCOUNT →</a>
+      <a href="#" id="forgotLink">Forgot Password?</a>
+    </div>
+
+    <div class="divider">Or</div>
+
+    <div class="links">
+      <a href="register.html">Create Account →</a>
     </div>
   </div>
-  
-  <!-- Modal -->
+
   <div id="forgotModal" class="modal">
     <div class="modal-content">
-      <h3>RESET PASSWORD</h3>
+      <h3>Reset Password</h3>
       <p>Enter your email and we'll send you a link to reset your password.</p>
-      <div class="form-group">
+      <div class="input-group">
         <input type="email" id="resetEmail" placeholder="your@email.com" required>
       </div>
       <div class="modal-buttons">
-        <button class="btn-secondary" onclick="closeModal()">CANCEL</button>
-        <button class="btn-login" onclick="sendResetLink()">
-          <span>SEND LINK</span>
-        </button>
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-login" onclick="sendResetLink()" style="margin-top: 0;">Send Link</button>
       </div>
     </div>
   </div>
-  
-  <!-- Toast -->
+
   <div id="toast" class="toast"></div>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Custom Cursor
-    const cursor = document.getElementById('cursor');
+    // Cursor
+    const cursor = document.querySelector('.cursor');
+    const cursorRing = document.querySelector('.cursor-ring');
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX, ringY = mouseY;
+    
     document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
     });
     
-    // Three.js Scene
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // Three.js
+    const canvas = document.getElementById('canvas3d');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
     
-    camera.position.z = 5;
+    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.04);
+    camera.position.set(0, 5, 15);
     
     // Particles
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2000;
+    const particlesCount = 2500;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
     
     for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 15;
-      posArray[i + 1] = (Math.random() - 0.5) * 15;
-      posArray[i + 2] = (Math.random() - 0.5) * 15;
+      posArray[i] = (Math.random() - 0.5) * 60;
+      posArray[i + 1] = (Math.random() - 0.5) * 60;
+      posArray[i + 2] = (Math.random() - 0.5) * 60;
       
-      colorArray[i] = 0;
-      colorArray[i + 1] = Math.random() * 0.5 + 0.5;
-      colorArray[i + 2] = Math.random() * 0.5 + 0.5;
+      const colorChoice = Math.random();
+      if (colorChoice < 0.5) {
+        colorArray[i] = 0;
+        colorArray[i + 1] = 1;
+        colorArray[i + 2] = 1;
+      } else {
+        colorArray[i] = 0.3;
+        colorArray[i + 1] = 0;
+        colorArray[i + 2] = 1;
+      }
     }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
     
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.015,
+    const particlesMesh = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({
+      size: 0.06,
       vertexColors: true,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending
-    });
-    
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    }));
     scene.add(particlesMesh);
     
-    let mouseX = 0, mouseY = 0;
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.6);
+    scene.add(ambientLight);
+    
+    const pointLight = new THREE.PointLight(0x00ffff, 1.2, 100);
+    pointLight.position.set(12, 12, 12);
+    scene.add(pointLight);
+    
+    // Animation
+    let targetX = 0, targetY = 0;
     document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
     
     function animate() {
       requestAnimationFrame(animate);
-      
+      particlesMesh.rotation.y += 0.0006;
       particlesMesh.rotation.x += 0.0003;
-      particlesMesh.rotation.y += 0.0005;
-      
-      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
-      camera.lookAt(scene.position);
-      
+      camera.position.x += (targetX * 2.5 - camera.position.x) * 0.05;
+      camera.position.y += (targetY * 2.5 - camera.position.y + 5) * 0.05;
       renderer.render(scene, camera);
     }
-    
     animate();
     
     window.addEventListener('resize', () => {
@@ -502,38 +545,32 @@
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
-    
+
     // Modal
-    const forgotLink = document.getElementById('forgotLink');
     const modal = document.getElementById('forgotModal');
-    const toast = document.getElementById('toast');
-    
-    forgotLink.addEventListener('click', (e) => {
+    document.getElementById('forgotLink').addEventListener('click', (e) => {
       e.preventDefault();
       modal.style.display = 'flex';
     });
-    
+
     function closeModal() {
       modal.style.display = 'none';
     }
-    
+
     window.onclick = (event) => {
-      if (event.target === modal) {
-        closeModal();
-      }
+      if (event.target === modal) closeModal();
     };
-    
+
     // Login
-    async function handleLogin(e) {
-      e.preventDefault();
+    async function handleLogin() {
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-      
+
       if (!email || !password) {
-        showToast('PLEASE FILL IN ALL FIELDS', true);
+        showToast('Please fill in all fields', true);
         return;
       }
-      
+
       try {
         const res = await fetch('https://lifedot.onrender.com/login', {
           method: 'POST',
@@ -541,31 +578,28 @@
           body: JSON.stringify({ email, password })
         });
         const data = await res.json();
-        
+
         if (data.success && data.user) {
           localStorage.setItem("lifedot_user", data.user.name);
           localStorage.setItem("lifedot_user_id", data.user.id);
           localStorage.setItem("lifedot_user_email", data.user.email);
-          showToast('LOGIN SUCCESSFUL');
-          setTimeout(() => {
-            window.location.href = "welcome.html";
-          }, 1000);
+          showToast('Login successful');
+          setTimeout(() => window.location.href = "welcome.html", 1000);
         } else {
-          showToast('INVALID CREDENTIALS', true);
+          showToast('Invalid credentials', true);
         }
       } catch (error) {
-        showToast('UNABLE TO CONNECT', true);
+        showToast('Unable to connect', true);
       }
     }
-    
+
     async function sendResetLink() {
       const email = document.getElementById('resetEmail').value;
-      
       if (!email) {
-        showToast('ENTER EMAIL ADDRESS', true);
+        showToast('Enter email address', true);
         return;
       }
-      
+
       try {
         const res = await fetch('https://lifedot.onrender.com/forgot-password', {
           method: 'POST',
@@ -573,33 +607,31 @@
           body: JSON.stringify({ email })
         });
         const data = await res.json();
-        
+
         if (data.success) {
-          showToast('RESET LINK SENT');
+          showToast('Reset link sent');
           closeModal();
           document.getElementById('resetEmail').value = '';
         } else {
-          showToast('EMAIL NOT FOUND', true);
+          showToast('Email not found', true);
         }
       } catch (error) {
-        showToast('UNABLE TO SEND LINK', true);
+        showToast('Unable to send link', true);
       }
     }
-    
+
     function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.className = 'toast show' + (isError ? ' error' : '');
-      setTimeout(() => {
-        toast.className = 'toast';
-      }, 3000);
+      setTimeout(() => toast.className = 'toast', 3000);
     }
-    
+
     document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleLogin(e);
+      if (e.key === 'Enter') handleLogin();
     });
-    
     document.getElementById('loginEmail').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+      if (e.key === 'Enter') handleLogin();
     });
   </script>
 </body>
