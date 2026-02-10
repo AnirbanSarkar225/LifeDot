@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0a;
+      background: #0a0e1a;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -26,57 +26,76 @@
     /* CUSTOM CURSOR */
     .cursor {
       position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.4);
+      width: 10px;
+      height: 10px;
+      background: rgba(0, 255, 255, 0.8);
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
       transform: translate(-50%, -50%);
-      transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      mix-blend-mode: difference;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+      mix-blend-mode: screen;
     }
     
-    .cursor-follower {
+    .cursor-ring {
       position: fixed;
-      width: 8px;
-      height: 8px;
-      background: rgba(255,255,255,0.6);
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(0, 255, 255, 0.4);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 10001;
+      z-index: 9999;
       transform: translate(-50%, -50%);
-      mix-blend-mode: difference;
-    }
-    
-    .cursor.hover {
-      width: 60px;
-      height: 60px;
-      background: rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+      mix-blend-mode: screen;
     }
 
-    /* GRID BACKGROUND */
-    #gridCanvas {
+    #canvas3d {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.1;
+    }
+
+    /* BACK BUTTON */
+    .back-link {
+      position: fixed;
+      top: 40px;
+      left: 50px;
+      padding: 12px 35px;
+      background: rgba(20, 30, 50, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 30px;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      font-weight: 300;
+      z-index: 100;
+    }
+
+    .back-link:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-color: rgba(0, 255, 255, 0.6);
+      color: #fff;
     }
 
     /* CONTAINER */
     .login-container {
-      background: rgba(255,255,255,0.01);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(20, 30, 50, 0.4);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 30px;
       max-width: 500px;
       width: 100%;
       padding: 80px 60px;
       position: relative;
       z-index: 10;
+      backdrop-filter: blur(20px);
       animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
     }
 
     @keyframes slideUp {
@@ -96,25 +115,10 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
-    }
-
-    /* BACK LINK */
-    .back-link {
-      position: absolute;
-      top: 30px;
-      left: 30px;
-      color: rgba(255,255,255,0.4);
-      text-decoration: none;
-      font-size: 10px;
-      transition: color 0.3s ease;
-      letter-spacing: 2px;
-      font-weight: 300;
-    }
-
-    .back-link:hover {
-      color: rgba(255,255,255,0.8);
+      height: 100%;
+      background: radial-gradient(circle at top, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 30px;
+      pointer-events: none;
     }
 
     /* HEADER */
@@ -124,30 +128,31 @@
     }
 
     .header h2 {
-      font-size: 32px;
+      font-size: 36px;
       font-weight: 200;
       letter-spacing: -1px;
       margin-bottom: 10px;
     }
 
     .subtitle {
-      color: rgba(255,255,255,0.4);
+      color: rgba(255, 255, 255, 0.4);
       font-size: 11px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       font-weight: 300;
     }
 
     /* FORM */
     .input-group {
-      margin-bottom: 35px;
+      margin-bottom: 40px;
+      position: relative;
     }
 
     .input-group label {
       display: block;
       font-size: 9px;
       letter-spacing: 3px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 12px;
+      color: rgba(0, 255, 255, 0.6);
+      margin-bottom: 15px;
       font-weight: 300;
     }
 
@@ -156,7 +161,7 @@
       padding: 18px 0;
       background: transparent;
       border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
       color: #fff;
       font-size: 15px;
       transition: all 0.3s ease;
@@ -165,32 +170,35 @@
     }
 
     .input-group input:focus {
-      border-color: rgba(255,255,255,0.3);
+      border-color: rgba(0, 255, 255, 0.6);
     }
 
     .input-group input::placeholder {
-      color: rgba(255,255,255,0.2);
+      color: rgba(255, 255, 255, 0.2);
     }
 
     /* BUTTON */
     .btn-login {
       width: 100%;
       padding: 20px;
-      background: #fff;
-      color: #000;
-      border: none;
+      background: rgba(0, 255, 255, 0.15);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      border-radius: 30px;
+      color: #fff;
       font-size: 11px;
       font-weight: 300;
       cursor: none;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
       margin-top: 20px;
-      letter-spacing: 2px;
-      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+      letter-spacing: 3px;
+      backdrop-filter: blur(10px);
     }
 
     .btn-login:hover {
-      background: rgba(255,255,255,0.9);
-      transform: translateY(-3px);
+      background: rgba(0, 255, 255, 0.25);
+      border-color: rgba(0, 255, 255, 0.8);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+      transform: translateY(-2px);
     }
 
     /* LINKS */
@@ -203,7 +211,7 @@
     }
 
     .links a {
-      color: rgba(255,255,255,0.6);
+      color: rgba(0, 255, 255, 0.8);
       text-decoration: none;
       transition: color 0.3s ease;
     }
@@ -214,11 +222,11 @@
 
     .divider {
       text-align: center;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255, 255, 255, 0.3);
       margin: 40px 0;
       font-size: 10px;
       position: relative;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       font-weight: 300;
     }
 
@@ -229,7 +237,7 @@
       top: 50%;
       width: 35%;
       height: 1px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(0, 255, 255, 0.1);
     }
 
     .divider::before { left: 0; }
@@ -244,7 +252,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(10, 14, 26, 0.95);
       backdrop-filter: blur(10px);
       align-items: center;
       justify-content: center;
@@ -257,13 +265,14 @@
     }
 
     .modal-content {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(20, 30, 50, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 30px;
       padding: 60px;
       max-width: 450px;
       width: 90%;
+      backdrop-filter: blur(20px);
       animation: modalSlide 0.3s ease;
-      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
     }
 
     @keyframes modalSlide {
@@ -277,25 +286,15 @@
       }
     }
 
-    .modal-content::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
-    }
-
     .modal-content h3 {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 200;
       margin-bottom: 15px;
       letter-spacing: -0.5px;
     }
 
     .modal-content p {
-      color: rgba(255,255,255,0.4);
+      color: rgba(255, 255, 255, 0.4);
       margin-bottom: 40px;
       font-size: 12px;
       line-height: 1.8;
@@ -313,26 +312,26 @@
       padding: 18px;
       background: transparent;
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
       font-weight: 300;
       cursor: none;
       transition: all 0.3s ease;
       letter-spacing: 2px;
       font-size: 11px;
-      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.03);
-      border-color: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.4);
     }
 
     /* TOAST */
     .toast {
       visibility: hidden;
       min-width: 300px;
-      background: #fff;
-      color: #000;
+      background: rgba(0, 255, 255, 0.2);
+      color: #fff;
       text-align: center;
       padding: 20px 30px;
       position: fixed;
@@ -345,7 +344,9 @@
       opacity: 0;
       transition: all 0.3s ease;
       letter-spacing: 2px;
-      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
     }
 
     .toast.show {
@@ -355,27 +356,27 @@
     }
 
     .toast.error {
-      background: rgba(255,0,0,0.1);
-      color: #ff0000;
-      border: 1px solid rgba(255,0,0,0.3);
+      background: rgba(255, 0, 100, 0.2);
+      border-color: rgba(255, 0, 100, 0.4);
     }
 
     /* RESPONSIVE */
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .login-container { padding: 60px 40px; }
       body { cursor: auto; }
-      .cursor, .cursor-follower { display: none; }
+      .cursor, .cursor-ring { display: none; }
+      .back-link { left: 20px; top: 20px; }
     }
   </style>
 </head>
 <body>
   <div class="cursor"></div>
-  <div class="cursor-follower"></div>
-  <canvas id="gridCanvas"></canvas>
+  <div class="cursor-ring"></div>
+  <canvas id="canvas3d"></canvas>
+  
+  <a href="index.html" class="back-link">← BACK</a>
 
   <div class="login-container">
-    <a href="index.html" class="back-link">← BACK</a>
-    
     <div class="header">
       <h2>Welcome Back</h2>
       <p class="subtitle">SIGN IN TO CONTINUE</p>
@@ -422,14 +423,12 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Custom Cursor
+    // Cursor
     const cursor = document.querySelector('.cursor');
-    const cursorFollower = document.querySelector('.cursor-follower');
-    
+    const cursorRing = document.querySelector('.cursor-ring');
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
-    let followerX = mouseX;
-    let followerY = mouseY;
+    let ringX = mouseX, ringY = mouseY;
     
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
@@ -438,42 +437,83 @@
       cursor.style.top = mouseY + 'px';
     });
     
-    function animateFollower() {
-      followerX += (mouseX - followerX) * 0.1;
-      followerY += (mouseY - followerY) * 0.1;
-      
-      cursorFollower.style.left = followerX + 'px';
-      cursorFollower.style.top = followerY + 'px';
-      
-      requestAnimationFrame(animateFollower);
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
     }
-    animateFollower();
-    
-    // Hover effect
-    document.querySelectorAll('a, button, input').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
+    animateRing();
 
-    // Three.js Grid
-    const canvas = document.getElementById('gridCanvas');
+    // Three.js
+    const canvas = document.getElementById('canvas3d');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     
-    camera.position.z = 5;
-    camera.position.y = 2;
-    camera.rotation.x = -0.3;
+    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.05);
+    camera.position.set(0, 5, 15);
     
-    const gridHelper = new THREE.GridHelper(20, 20, 0xffffff, 0xffffff);
-    gridHelper.material.opacity = 0.05;
-    gridHelper.material.transparent = true;
-    scene.add(gridHelper);
+    // Particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 2000;
+    const posArray = new Float32Array(particlesCount * 3);
+    const colorArray = new Float32Array(particlesCount * 3);
+    
+    for(let i = 0; i < particlesCount * 3; i += 3) {
+      posArray[i] = (Math.random() - 0.5) * 50;
+      posArray[i + 1] = (Math.random() - 0.5) * 50;
+      posArray[i + 2] = (Math.random() - 0.5) * 50;
+      
+      const colorChoice = Math.random();
+      if (colorChoice < 0.5) {
+        colorArray[i] = 0;
+        colorArray[i + 1] = 1;
+        colorArray[i + 2] = 1;
+      } else {
+        colorArray[i] = 0.3;
+        colorArray[i + 1] = 0;
+        colorArray[i + 2] = 1;
+      }
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.05,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
+    });
+    
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.5);
+    scene.add(ambientLight);
+    
+    const pointLight = new THREE.PointLight(0x00ffff, 1, 100);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
+    
+    // Animation
+    let targetX = 0, targetY = 0;
+    document.addEventListener('mousemove', (e) => {
+      targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
     
     function animate() {
       requestAnimationFrame(animate);
-      gridHelper.rotation.y += 0.001;
+      particlesMesh.rotation.y += 0.0005;
+      particlesMesh.rotation.x += 0.0002;
+      camera.position.x += (targetX * 2 - camera.position.x) * 0.05;
+      camera.position.y += (targetY * 2 - camera.position.y + 5) * 0.05;
       renderer.render(scene, camera);
     }
     animate();
