@@ -12,8 +12,8 @@
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0e1a;
+      font-family: 'Courier New', Courier, monospace;
+      background: #000;
       color: #fff;
       overflow-x: hidden;
       cursor: none;
@@ -22,38 +22,51 @@
     /* CUSTOM CURSOR */
     .cursor {
       position: fixed;
-      width: 10px;
-      height: 10px;
-      background: rgba(0, 255, 255, 0.8);
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(255,255,255,0.5);
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-      mix-blend-mode: screen;
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
     }
     
-    .cursor-ring {
+    /* LOADING SCREEN */
+    .loading {
       position: fixed;
-      width: 30px;
-      height: 30px;
-      border: 2px solid rgba(0, 255, 255, 0.4);
-      border-radius: 50%;
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: all 0.3s ease;
-      mix-blend-mode: screen;
+      transition: opacity 0.8s ease;
     }
     
-    .cursor-ring.hover {
-      width: 60px;
-      height: 60px;
-      border-color: rgba(0, 255, 255, 0.8);
+    .loading.hide {
+      opacity: 0;
+      pointer-events: none;
     }
     
-    /* 3D CANVAS */
-    #canvas3d {
+    .loading-text {
+      font-size: 14px;
+      letter-spacing: 4px;
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      animation: pulse 2s ease infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    /* 3D SCENE */
+    #scene {
       position: fixed;
       top: 0;
       left: 0;
@@ -62,53 +75,111 @@
       z-index: 0;
     }
     
+    /* SCROLL SPINE ANIMATION */
+    .scroll-spine {
+      position: fixed;
+      left: 50%;
+      top: 0;
+      height: 100%;
+      width: 2px;
+      transform: translateX(-50%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .spine-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to bottom, #00ffff, #00aaff, #0066ff);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      transition: height 0.1s ease-out;
+    }
+    
+    .spine-node {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: #00ffff;
+      border: 2px solid #000;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .spine-node.active {
+      opacity: 1;
+    }
+    
     /* NAVIGATION */
     nav {
       position: fixed;
-      top: 30px;
-      right: 50px;
+      top: 0;
+      left: 0;
+      width: 100%;
       z-index: 100;
+      padding: 40px 50px;
       display: flex;
-      gap: 20px;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+    }
+    
+    .logo {
+      font-size: 14px;
+      letter-spacing: 2px;
+      font-weight: 400;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    
+    .nav-menu {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+    
+    .nav-link {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: #fff;
+      opacity: 0.7;
+      transition: all 0.3s;
+    }
+    
+    .nav-link:hover {
+      opacity: 1;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
     }
     
     .nav-pill {
-      padding: 12px 35px;
-      background: rgba(20, 30, 50, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.2);
+      padding: 10px 30px;
+      border: 1px solid #00ffff;
       border-radius: 30px;
-      font-size: 11px;
-      letter-spacing: 3px;
+      font-size: 12px;
+      letter-spacing: 1px;
       text-decoration: none;
-      color: rgba(255, 255, 255, 0.8);
-      transition: all 0.4s ease;
-      backdrop-filter: blur(10px);
-      font-weight: 300;
-      text-transform: uppercase;
+      color: #00ffff;
+      transition: all 0.3s;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
     
     .nav-pill:hover {
       background: rgba(0, 255, 255, 0.1);
-      border-color: rgba(0, 255, 255, 0.6);
-      color: #fff;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-    }
-    
-    .logo {
-      position: fixed;
-      top: 40px;
-      left: 50px;
-      z-index: 100;
-      font-size: 13px;
-      letter-spacing: 5px;
-      font-weight: 300;
-      opacity: 0.9;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
     }
     
     /* CONTENT */
     .content {
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
     
     .hero {
@@ -122,76 +193,108 @@
     .hero-text {
       max-width: 900px;
       padding: 0 50px;
-      animation: fadeIn 1.5s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1.2s ease 0.5s forwards;
     }
     
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .hero h1 {
-      font-size: clamp(60px, 12vw, 140px);
-      font-weight: 200;
-      line-height: 0.9;
-      letter-spacing: -3px;
-      margin-bottom: 40px;
-      text-shadow: 0 0 60px rgba(0, 255, 255, 0.3);
+      font-size: clamp(40px, 8vw, 100px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 30px;
+    }
+    
+    .hero h1 .highlight {
+      color: #00ffff;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.6),
+                   0 0 60px rgba(0, 255, 255, 0.4);
     }
     
     .hero p {
-      font-size: 12px;
-      line-height: 2;
-      letter-spacing: 3px;
-      opacity: 0.5;
-      max-width: 700px;
-      margin: 0 auto 60px;
-      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.8;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      max-width: 600px;
+      margin: 0 auto 50px;
     }
     
-    .cta-buttons {
+    .hero-cta {
       display: flex;
       gap: 20px;
       justify-content: center;
     }
     
     .btn {
-      padding: 18px 50px;
-      font-size: 10px;
-      letter-spacing: 3px;
+      padding: 15px 40px;
+      font-size: 12px;
+      letter-spacing: 1px;
       border: none;
       background: none;
       color: #fff;
       text-decoration: none;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
       cursor: none;
-      font-weight: 300;
-      transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
     }
     
     .btn-primary {
-      background: rgba(0, 255, 255, 0.15);
-      border: 1px solid rgba(0, 255, 255, 0.4);
-      border-radius: 30px;
-      backdrop-filter: blur(10px);
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
     }
     
     .btn-primary:hover {
-      background: rgba(0, 255, 255, 0.25);
-      border-color: rgba(0, 255, 255, 0.8);
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+      transform: translateY(-2px);
     }
     
     .btn-secondary {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 30px;
-      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      color: #00ffff;
     }
     
     .btn-secondary:hover {
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.05);
+      border-color: #00ffff;
+      background: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    
+    /* SCROLL INDICATOR */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 2px;
+      opacity: 0.5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      color: #00ffff;
+    }
+    
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(0, 255, 255, 0.5), transparent);
+      animation: scrollAnim 2s ease infinite;
+    }
+    
+    @keyframes scrollAnim {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+      50% { opacity: 1; transform: scaleY(1); }
     }
     
     /* SECTION */
@@ -202,348 +305,418 @@
     }
     
     .section-nav {
-      position: fixed;
-      top: 50%;
+      position: absolute;
+      top: 50px;
       right: 50px;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      z-index: 100;
-    }
-    
-    .section-nav-pill {
-      padding: 15px 25px;
-      background: rgba(20, 30, 50, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 30px;
-      backdrop-filter: blur(10px);
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: rgba(255, 255, 255, 0.6);
       display: flex;
       align-items: center;
       gap: 20px;
-      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 2px;
+      opacity: 0.5;
+      mix-blend-mode: difference;
     }
     
     .section-nav button {
       background: none;
       border: none;
-      color: rgba(0, 255, 255, 0.6);
-      font-size: 12px;
+      color: #00ffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
       cursor: none;
+      opacity: 0.5;
       transition: all 0.3s;
-      font-weight: 300;
     }
     
     .section-nav button:hover {
-      color: rgba(0, 255, 255, 1);
+      opacity: 1;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      opacity: 0.5;
+      margin-bottom: 30px;
+      color: #00ffff;
     }
     
     .section-title {
-      font-size: clamp(50px, 8vw, 100px);
-      font-weight: 200;
-      line-height: 1;
-      letter-spacing: -2px;
-      margin-bottom: 60px;
-      max-width: 1000px;
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 30px;
+      max-width: 800px;
     }
     
-    .section-subtitle {
+    .section-title .highlight {
+      color: #00ffff;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    }
+    
+    .section-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      letter-spacing: 0.5px;
+      opacity: 0.6;
+      max-width: 600px;
+      margin-bottom: 80px;
+    }
+    
+    /* FEATURES GRID */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(0, 255, 255, 0.1);
+      max-width: 1200px;
+    }
+    
+    .feature {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 50px 40px;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+    
+    .feature:hover {
+      background: rgba(0, 255, 255, 0.05);
+      border-color: rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    
+    .feature-num {
       font-size: 11px;
-      letter-spacing: 4px;
+      letter-spacing: 2px;
       opacity: 0.4;
       margin-bottom: 30px;
-      font-weight: 300;
+      color: #00ffff;
     }
     
-    /* CARD GRID */
-    .card-grid {
+    .feature h3 {
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    
+    .feature p {
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: 0.5;
+      letter-spacing: 0.3px;
+    }
+    
+    /* CONTACT */
+    .contact-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 30px;
-      max-width: 1400px;
-      margin-top: 80px;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      max-width: 1200px;
     }
     
-    .card {
-      background: rgba(20, 30, 50, 0.3);
-      border: 1px solid rgba(0, 255, 255, 0.1);
-      padding: 50px;
-      border-radius: 20px;
-      transition: all 0.5s ease;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 13px;
+      opacity: 0.6;
+      margin-bottom: 20px;
     }
     
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.5s;
-    }
-    
-    .card:hover {
-      border-color: rgba(0, 255, 255, 0.4);
-      transform: translateY(-10px);
-      box-shadow: 0 20px 60px rgba(0, 255, 255, 0.2);
-    }
-    
-    .card:hover::before {
-      opacity: 1;
-    }
-    
-    .card-icon {
-      width: 60px;
-      height: 60px;
+    .contact-icon {
+      width: 40px;
+      height: 40px;
       background: rgba(0, 255, 255, 0.1);
       border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #00ffff;
+    }
+    
+    .form-group {
       margin-bottom: 30px;
-      font-size: 24px;
     }
     
-    .card h3 {
-      font-size: 20px;
-      font-weight: 300;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    
-    .card p {
-      font-size: 13px;
-      line-height: 1.8;
-      opacity: 0.5;
-      font-weight: 300;
-    }
-    
-    .card-num {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+    .form-group label {
+      display: block;
       font-size: 10px;
       letter-spacing: 2px;
-      opacity: 0.3;
-      font-weight: 300;
+      opacity: 0.5;
+      margin-bottom: 10px;
+      color: #00ffff;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.03);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(0, 255, 255, 0.5);
+      background: rgba(0, 255, 255, 0.05);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+    
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
     }
     
     /* FOOTER */
     footer {
-      padding: 100px 50px 50px;
-      text-align: center;
-      border-top: 1px solid rgba(0, 255, 255, 0.05);
+      padding: 80px 50px 50px;
+      border-top: 1px solid rgba(0, 255, 255, 0.1);
     }
     
     .footer-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto 50px;
     }
     
     .footer-links {
       display: flex;
-      gap: 40px;
+      gap: 30px;
     }
     
     .footer-links a {
-      font-size: 10px;
+      font-size: 12px;
       color: #fff;
       text-decoration: none;
       opacity: 0.4;
-      transition: opacity 0.3s;
-      letter-spacing: 2px;
-      font-weight: 300;
+      transition: all 0.3s;
     }
     
     .footer-links a:hover {
       opacity: 1;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
     }
     
     .footer-bottom {
-      font-size: 9px;
-      opacity: 0.2;
-      letter-spacing: 2px;
-      font-weight: 300;
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.3;
+      letter-spacing: 1px;
     }
     
     /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      .card-grid { grid-template-columns: 1fr; }
-      nav { right: 30px; }
-      .section-nav { display: none; }
-    }
-    
     @media (max-width: 768px) {
       body { cursor: auto; }
-      .cursor, .cursor-ring { display: none; }
-      nav { flex-direction: column; top: 20px; right: 20px; }
-      .logo { left: 20px; top: 30px; }
-      .section { padding: 100px 30px; }
+      .cursor { display: none; }
+      nav { padding: 30px 20px; }
+      .nav-menu { display: none; }
+      .section { padding: 100px 20px; }
+      .features { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 60px; }
     }
   </style>
 </head>
 <body>
-  <!-- Cursor -->
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="loading-text">/// LOADING...</div>
+  </div>
+  
+  <!-- Custom Cursor -->
   <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
   
-  <!-- 3D Canvas -->
-  <canvas id="canvas3d"></canvas>
+  <!-- Scroll Spine -->
+  <div class="scroll-spine">
+    <div class="spine-progress" id="spineProgress"></div>
+    <div class="spine-node" style="top: 0%" id="node1"></div>
+    <div class="spine-node" style="top: 33%" id="node2"></div>
+    <div class="spine-node" style="top: 66%" id="node3"></div>
+    <div class="spine-node" style="top: 100%" id="node4"></div>
+  </div>
   
-  <!-- Logo -->
-  <div class="logo">LIFEDOT</div>
+  <!-- 3D Scene -->
+  <canvas id="scene"></canvas>
   
   <!-- Navigation -->
   <nav>
-    <a href="login.html" class="nav-pill">LOGIN</a>
-    <a href="register.html" class="nav-pill">START</a>
+    <div class="logo">LIFEDOT</div>
+    <div class="nav-menu">
+      <a href="#features" class="nav-link">FEATURES</a>
+      <a href="#contact" class="nav-link">CONTACT</a>
+      <a href="login.html" class="nav-link">LOGIN</a>
+      <a href="register.html" class="nav-pill">GET STARTED</a>
+    </div>
   </nav>
   
   <!-- Content -->
   <div class="content">
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" data-section="0">
       <div class="hero-text">
-        <h1>YOUR HEALTH<br>MONITORED</h1>
-        <p>REAL-TIME MONITORING · EMERGENCY ALERTS · SECURE RECORDS</p>
-        <div class="cta-buttons">
-          <a href="register.html" class="btn btn-primary">GET STARTED</a>
-          <a href="#features" class="btn btn-secondary">LEARN MORE</a>
+        <h1>YOUR <span class="highlight">HEALTH</span>,<br>ALWAYS <span class="highlight">MONITORED</span></h1>
+        <p>REAL-TIME HEART MONITORING · INSTANT EMERGENCY ALERTS · COMPREHENSIVE HEALTH TRACKING</p>
+        <div class="hero-cta">
+          <a href="register.html" class="btn btn-primary">START FREE TRIAL</a>
+          <a href="flowchart.html" class="btn btn-secondary">VIEW WORKFLOW</a>
         </div>
+      </div>
+      <div class="scroll-indicator">
+        <span>SCROLL</span>
+        <div class="scroll-line"></div>
       </div>
     </section>
     
     <!-- Features -->
-    <section class="section" id="features">
+    <section class="section" id="features" data-section="1">
       <div class="section-nav">
-        <div class="section-nav-pill">
-          <button><<</button>
-          <span>01 — 03</span>
-          <button>>></button>
-        </div>
+        <button>&lt;&lt;</button>
+        <span>FEATURES</span>
+        <button>&gt;&gt;</button>
       </div>
       
-      <div class="section-subtitle">FEATURES</div>
-      <h2 class="section-title">Advanced Health<br>Monitoring</h2>
+      <div class="section-label">/// OUR CAPABILITIES</div>
+      <h2 class="section-title"><span class="highlight">ADVANCED</span> HEALTH<br>MONITORING</h2>
+      <p class="section-desc">CUTTING-EDGE TECHNOLOGY DESIGNED FOR YOUR PEACE OF MIND</p>
       
-      <div class="card-grid">
-        <div class="card">
-          <div class="card-num">01</div>
-          <div class="card-icon">💓</div>
-          <h3>Real-Time Monitoring</h3>
-          <p>Track your heart rate 24/7 with instant updates and intelligent anomaly detection powered by advanced sensors.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-num">01</div>
+          <h3>REAL-TIME MONITORING</h3>
+          <p>Track your heart rate 24/7 with instant updates and intelligent anomaly detection</p>
+        </div>
+        <div class="feature">
+          <div class="feature-num">02</div>
+          <h3>EMERGENCY ALERTS</h3>
+          <p>Automatic notifications to your emergency contacts when critical conditions are detected</p>
+        </div>
+        <div class="feature">
+          <div class="feature-num">03</div>
+          <h3>MEDICAL RECORDS</h3>
+          <p>Securely store and manage all medical reports in one encrypted location</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Contact -->
+    <section class="section" id="contact" data-section="2">
+      <div class="section-nav">
+        <button>&lt;&lt;</button>
+        <span>CONTACT</span>
+        <button>&gt;&gt;</button>
+      </div>
+      
+      <div class="section-label">/// GET IN TOUCH</div>
+      <h2 class="section-title">HAVE <span class="highlight">QUESTIONS</span>?</h2>
+      <p class="section-desc">SEND US A MESSAGE AND WE'LL RESPOND AS SOON AS POSSIBLE</p>
+      
+      <div class="contact-grid">
+        <div>
+          <div class="contact-item">
+            <div class="contact-icon">@</div>
+            <span>SUPPORT@LIFEDOT.HEALTH</span>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">↗</div>
+            <span>AVAILABLE WORLDWIDE</span>
+          </div>
         </div>
         
-        <div class="card">
-          <div class="card-num">02</div>
-          <div class="card-icon">🚨</div>
-          <h3>Emergency Alerts</h3>
-          <p>Automatic notifications to emergency contacts when critical conditions are detected, ensuring rapid response.</p>
-        </div>
-        
-        <div class="card">
-          <div class="card-num">03</div>
-          <div class="card-icon">📊</div>
-          <h3>Medical Records</h3>
-          <p>Securely store and manage all medical reports in one encrypted location with easy access anytime.</p>
-        </div>
-        
-        <div class="card">
-          <div class="card-num">04</div>
-          <div class="card-icon">🧠</div>
-          <h3>AI Analysis</h3>
-          <p>Machine learning algorithms analyze your health patterns to provide predictive insights and recommendations.</p>
-        </div>
-        
-        <div class="card">
-          <div class="card-num">05</div>
-          <div class="card-icon">📱</div>
-          <h3>Multi-Platform</h3>
-          <p>Access your health data anywhere, on any device, with seamless synchronization across all platforms.</p>
-        </div>
-        
-        <div class="card">
-          <div class="card-num">06</div>
-          <div class="card-icon">🔒</div>
-          <h3>Privacy First</h3>
-          <p>End-to-end encryption ensures your sensitive health data remains completely private and secure.</p>
-        </div>
+        <form onsubmit="handleContact(event)">
+          <div class="form-group">
+            <label>NAME</label>
+            <input type="text" id="contactName" required>
+          </div>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input type="email" id="contactEmail" required>
+          </div>
+          <div class="form-group">
+            <label>PHONE</label>
+            <input type="tel" id="contactPhone" required>
+          </div>
+          <div class="form-group">
+            <label>MESSAGE</label>
+            <textarea id="contactMessage" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">SEND MESSAGE</button>
+        </form>
       </div>
     </section>
   </div>
   
   <!-- Footer -->
-  <footer>
+  <footer data-section="3">
     <div class="footer-content">
       <div class="logo">LIFEDOT</div>
       <div class="footer-links">
         <a href="#features">FEATURES</a>
+        <a href="#contact">CONTACT</a>
         <a href="login.html">LOGIN</a>
         <a href="register.html">REGISTER</a>
       </div>
     </div>
     <div class="footer-bottom">
-      © 2026 LIFEDOT · ALL RIGHTS RESERVED
+      © <span id="year"></span> LIFEDOT · ALL RIGHTS RESERVED
     </div>
   </footer>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Cursor
+    // Custom Cursor
     const cursor = document.getElementById('cursor');
-    const cursorRing = document.getElementById('cursorRing');
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
-    
     document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
     });
     
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
+    // Scroll Spine Animation
+    const spineProgress = document.getElementById('spineProgress');
+    const nodes = [
+      document.getElementById('node1'),
+      document.getElementById('node2'),
+      document.getElementById('node3'),
+      document.getElementById('node4')
+    ];
+    
+    function updateSpine() {
+      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      spineProgress.style.height = scrollPercent + '%';
+      
+      // Activate nodes based on scroll
+      nodes.forEach((node, index) => {
+        const nodePercent = (index / (nodes.length - 1)) * 100;
+        if (scrollPercent >= nodePercent) {
+          node.classList.add('active');
+        } else {
+          node.classList.remove('active');
+        }
+      });
     }
-    animateRing();
     
-    // Hover effects
-    document.querySelectorAll('a, button, .card').forEach(el => {
-      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
-    });
+    window.addEventListener('scroll', updateSpine);
+    updateSpine();
     
     // Three.js Scene
-    const canvas = document.getElementById('canvas3d');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.devicePixelRatio);
     
-    // Fog
-    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.05);
-    
-    // Camera
-    camera.position.set(0, 5, 15);
-    camera.lookAt(0, 0, 0);
+    camera.position.z = 5;
     
     // Particles
     const particlesGeometry = new THREE.BufferGeometry();
@@ -552,32 +725,21 @@
     const colorArray = new Float32Array(particlesCount * 3);
     
     for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 50;
-      posArray[i + 1] = (Math.random() - 0.5) * 50;
-      posArray[i + 2] = (Math.random() - 0.5) * 50;
+      posArray[i] = (Math.random() - 0.5) * 15;
+      posArray[i + 1] = (Math.random() - 0.5) * 15;
+      posArray[i + 2] = (Math.random() - 0.5) * 15;
       
-      // Colors: cyan, purple, blue
-      const colorChoice = Math.random();
-      if (colorChoice < 0.33) {
-        colorArray[i] = 0;
-        colorArray[i + 1] = 1;
-        colorArray[i + 2] = 1; // Cyan
-      } else if (colorChoice < 0.66) {
-        colorArray[i] = 0.5;
-        colorArray[i + 1] = 0;
-        colorArray[i + 2] = 1; // Purple
-      } else {
-        colorArray[i] = 0;
-        colorArray[i + 1] = 0.5;
-        colorArray[i + 2] = 1; // Blue
-      }
+      // Cyan color with variation
+      colorArray[i] = 0;
+      colorArray[i + 1] = Math.random() * 0.5 + 0.5;
+      colorArray[i + 2] = Math.random() * 0.5 + 0.5;
     }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
     
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.05,
+      size: 0.015,
       vertexColors: true,
       transparent: true,
       opacity: 0.6,
@@ -587,66 +749,27 @@
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
     
-    // Floating Torus
-    const torusGeometry = new THREE.TorusGeometry(2, 0.3, 16, 100);
-    const torusMaterial = new THREE.MeshPhongMaterial({
-      color: 0x00ffff,
-      emissive: 0x00ffff,
-      emissiveIntensity: 0.2,
-      transparent: true,
-      opacity: 0.4,
-      wireframe: true
-    });
-    const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-    torus.position.set(0, 0, -5);
-    scene.add(torus);
-    
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.5);
-    scene.add(ambientLight);
-    
-    const pointLight1 = new THREE.PointLight(0x00ffff, 1, 100);
-    pointLight1.position.set(10, 10, 10);
-    scene.add(pointLight1);
-    
-    const pointLight2 = new THREE.PointLight(0x0066ff, 1, 100);
-    pointLight2.position.set(-10, -10, -10);
-    scene.add(pointLight2);
-    
     // Mouse movement
-    let targetX = 0, targetY = 0;
+    let mouseX = 0, mouseY = 0;
     document.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX / window.innerWidth) * 2 - 1;
-      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
     
-    // Scroll
-    let scrollY = 0;
-    window.addEventListener('scroll', () => {
-      scrollY = window.scrollY;
-    });
-    
-    // Animation
+    // Animate
     function animate() {
       requestAnimationFrame(animate);
       
-      // Rotate particles
+      particlesMesh.rotation.x += 0.0003;
       particlesMesh.rotation.y += 0.0005;
-      particlesMesh.rotation.x += 0.0002;
       
-      // Rotate torus
-      torus.rotation.x += 0.01;
-      torus.rotation.y += 0.005;
-      
-      // Camera parallax
-      camera.position.x += (targetX * 2 - camera.position.x) * 0.05;
-      camera.position.y += (targetY * 2 - camera.position.y + 5) * 0.05;
-      
-      // Scroll effect
-      camera.position.z = 15 - scrollY * 0.005;
+      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+      camera.lookAt(scene.position);
       
       renderer.render(scene, camera);
     }
+    
     animate();
     
     // Resize
@@ -656,40 +779,31 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // Smooth scroll
+    // Loading
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hide');
+      }, 1500);
+    });
+    
+    // Contact Form
+    function handleContact(e) {
+      e.preventDefault();
+      alert('MESSAGE SENT SUCCESSFULLY');
+      e.target.reset();
+    }
+    
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Smooth Scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
       });
-    });
-    
-    // Card animations on scroll
-    const cards = document.querySelectorAll('.card');
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-          }, index * 100);
-        }
-      });
-    }, observerOptions);
-    
-    cards.forEach(card => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(50px)';
-      card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-      observer.observe(card);
     });
   </script>
 </body>
