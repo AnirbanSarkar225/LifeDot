@@ -1,53 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LifeDot — Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DASHBOARD — LIFEDOT</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0e1a;
+      font-family: 'Courier New', Courier, monospace;
+      background: #000;
       color: #fff;
-      min-height: 100vh;
-      cursor: none;
       overflow-x: hidden;
+      cursor: none;
+      min-height: 100vh;
     }
-
+    
     /* CUSTOM CURSOR */
     .cursor {
       position: fixed;
-      width: 12px;
-      height: 12px;
-      background: rgba(0, 255, 255, 0.9);
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(0, 255, 255, 0.8);
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
-      mix-blend-mode: screen;
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
     }
     
-    .cursor-ring {
-      position: fixed;
-      width: 35px;
-      height: 35px;
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: all 0.3s ease;
-      mix-blend-mode: screen;
-    }
-
-    #canvas3d {
+    /* 3D SCENE */
+    #scene {
       position: fixed;
       top: 0;
       left: 0;
@@ -55,814 +43,841 @@
       height: 100%;
       z-index: 0;
     }
-
+    
     /* NAVIGATION */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
+      position: relative;
       z-index: 100;
-      padding: 30px 60px;
+      padding: 40px 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(10, 14, 26, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    }
-
-    .logo {
-      font-size: 14px;
-      letter-spacing: 6px;
-      font-weight: 400;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-      cursor: none;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 25px;
-    }
-
-    .nav-btn {
-      padding: 12px 35px;
-      background: rgba(15, 25, 45, 0.7);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 30px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 11px;
-      font-weight: 400;
-      cursor: none;
-      transition: all 0.4s ease;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(10px);
     }
-
-    .nav-btn:hover {
-      background: rgba(0, 255, 255, 0.15);
-      border-color: rgba(0, 255, 255, 0.6);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    
+    .logo {
+      font-size: 16px;
+      letter-spacing: 3px;
+      font-weight: 600;
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 1),
+                   0 0 40px rgba(0, 255, 255, 0.8);
     }
-
+    
+    .nav-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    
+    .greeting {
+      font-size: 13px;
+      color: #00ffff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 1;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+    }
+    
     .profile-btn {
       width: 50px;
       height: 50px;
-      background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(0, 150, 255, 0.3));
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      color: #fff;
-      font-weight: 700;
+      background: rgba(0, 255, 255, 0.2);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      font-weight: 900;
       font-size: 18px;
       cursor: none;
       transition: all 0.3s ease;
-      border-radius: 50%;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+      font-family: 'Courier New', Courier, monospace;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
     }
-
+    
     .profile-btn:hover {
       transform: scale(1.1);
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+      background: rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
     }
-
-    /* CONTAINER */
-    .container {
+    
+    /* DASHBOARD CONTAINER */
+    .dashboard {
       position: relative;
       z-index: 1;
+      padding: 60px 50px;
       max-width: 1600px;
       margin: 0 auto;
-      padding: 140px 60px 80px;
     }
-
-    /* WELCOME */
-    .welcome {
-      margin-bottom: 80px;
-      animation: fadeIn 0.8s ease;
+    
+    .page-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 400;
+      letter-spacing: -1px;
+      margin-bottom: 60px;
+      text-align: center;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    
+    .page-title .highlight {
+      color: #00ffff;
+      text-shadow: 0 0 50px rgba(0, 255, 255, 1),
+                   0 0 100px rgba(0, 255, 255, 0.8);
     }
-
-    .welcome h1 {
-      font-size: clamp(48px, 8vw, 72px);
-      font-weight: 300;
-      letter-spacing: -2px;
-      margin-bottom: 15px;
-      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.8) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .welcome p {
-      color: rgba(0, 255, 255, 0.7);
-      font-size: 14px;
-      font-weight: 300;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
+    
     /* DASHBOARD GRID */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-      gap: 35px;
+      grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
     }
-
-    /* CARD */
-    .card {
-      background: rgba(15, 25, 45, 0.5);
-      border: 2px solid rgba(0, 255, 255, 0.25);
-      padding: 50px;
-      border-radius: 25px;
-      transition: all 0.5s ease;
+    
+    /* DASHBOARD CARDS */
+    .dashboard-card {
+      background: rgba(0, 30, 40, 0.4);
       backdrop-filter: blur(20px);
-      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      padding: 40px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.2),
+                  inset 0 0 30px rgba(0, 255, 255, 0.05);
       position: relative;
       overflow: hidden;
     }
-
-    .card::before {
+    
+    .dashboard-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(0, 255, 255, 0.5), transparent);
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00ffff, transparent);
+      animation: shimmer 3s infinite;
     }
-
-    .card:hover {
-      border-color: rgba(0, 255, 255, 0.5);
-      box-shadow: 0 15px 60px rgba(0, 255, 255, 0.2);
+    
+    @keyframes shimmer {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+    }
+    
+    .dashboard-card:hover {
+      border-color: rgba(0, 255, 255, 0.8);
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.4),
+                  inset 0 0 40px rgba(0, 255, 255, 0.1);
       transform: translateY(-5px);
     }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 40px;
-      padding-bottom: 25px;
-      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    }
-
+    
     .card-title {
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: rgba(0, 255, 255, 0.9);
-      text-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 25px;
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+      letter-spacing: 1px;
     }
-
-    .edit-btn {
-      padding: 10px 25px;
-      background: transparent;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 25px;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 10px;
-      font-weight: 400;
-      cursor: none;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+    
+    /* FORM ELEMENTS */
+    .form-grid {
+      display: grid;
+      gap: 20px;
     }
-
-    .edit-btn:hover {
-      border-color: rgba(0, 255, 255, 0.6);
-      background: rgba(0, 255, 255, 0.1);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    
+    .form-group {
+      margin-bottom: 20px;
     }
-
-    /* INPUT */
-    .input-group {
-      margin-bottom: 30px;
-    }
-
-    .input-group label {
+    
+    .form-group label {
       display: block;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: rgba(0, 255, 255, 0.7);
-      margin-bottom: 12px;
-      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      color: #00ffff;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
     }
-
-    .input-field {
+    
+    .form-group input,
+    .form-group textarea {
       width: 100%;
-      padding: 16px 0;
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+      padding: 14px;
+      background: rgba(0, 255, 255, 0.08);
+      border: 2px solid rgba(0, 255, 255, 0.4);
       color: #fff;
-      font-size: 15px;
-      transition: all 0.3s ease;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
       outline: none;
-      font-weight: 300;
+      transition: all 0.3s;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2),
+                  inset 0 0 15px rgba(0, 255, 255, 0.1);
     }
-
-    .input-field:disabled {
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(0, 255, 255, 0.8);
+      background: rgba(0, 255, 255, 0.12);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.4),
+                  inset 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+    
+    .form-group input:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-
-    .input-field:focus:not(:disabled) {
-      border-color: rgba(0, 255, 255, 0.6);
-    }
-
-    textarea.input-field {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .save-btn {
-      width: 100%;
-      padding: 18px;
-      background: rgba(0, 255, 255, 0.2);
-      color: #fff;
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 30px;
-      font-weight: 400;
-      font-size: 11px;
-      cursor: none;
-      transition: all 0.4s ease;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      display: none;
+    
+    /* BUTTONS */
+    .btn-grid {
+      display: flex;
+      gap: 15px;
       margin-top: 25px;
     }
-
-    .save-btn:hover {
-      background: rgba(0, 255, 255, 0.3);
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
-    }
-
-    /* HEART CARD */
-    .heart-card {
-      grid-column: span 2;
-      background: linear-gradient(135deg, rgba(0, 255, 255, 0.08), rgba(0, 150, 255, 0.08));
-      border-color: rgba(0, 255, 255, 0.3);
-      text-align: center;
-      padding: 80px 50px;
-    }
-
-    .heart-icon {
-      font-size: 90px;
-      margin-bottom: 35px;
-      animation: heartbeat 2s ease infinite;
-      filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.5));
-    }
-
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
-
-    .heart-card h3 {
-      font-size: 32px;
-      font-weight: 300;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
-      text-transform: uppercase;
-      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.8) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .heart-card p {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 45px;
-      font-size: 14px;
-      font-weight: 300;
-    }
-
-    .heart-btn {
-      padding: 20px 60px;
-      background: rgba(0, 255, 255, 0.2);
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 35px;
-      color: #fff;
-      font-weight: 400;
-      font-size: 12px;
-      cursor: none;
-      transition: all 0.4s ease;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-    }
-
-    .heart-btn:hover {
-      background: rgba(0, 255, 255, 0.3);
-      box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
-      transform: translateY(-3px);
-    }
-
-    /* UPLOAD SECTION */
-    .upload-section {
-      margin-top: 40px;
-      padding: 35px;
-      background: rgba(0, 255, 255, 0.03);
-      border: 1px dashed rgba(0, 255, 255, 0.2);
-      border-radius: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .upload-section:hover {
-      border-color: rgba(0, 255, 255, 0.4);
-      background: rgba(0, 255, 255, 0.05);
-    }
-
-    .file-input {
-      width: 100%;
-      padding: 18px;
-      margin: 15px 0;
-      background: rgba(15, 25, 45, 0.5);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 15px;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      outline: none;
-    }
-
-    .file-input:hover {
-      border-color: rgba(0, 255, 255, 0.5);
-    }
-
-    .upload-btn {
-      width: 100%;
-      padding: 18px;
-      background: rgba(0, 255, 255, 0.2);
-      color: #fff;
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 30px;
-      font-weight: 400;
-      font-size: 11px;
-      cursor: none;
-      transition: all 0.4s ease;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      margin-top: 20px;
-    }
-
-    .upload-btn:hover {
-      background: rgba(0, 255, 255, 0.3);
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
-    }
-
-    .report-list {
-      list-style: none;
-      margin-top: 30px;
-    }
-
-    .report-item {
-      padding: 20px;
-      background: rgba(15, 25, 45, 0.5);
-      border: 1px solid rgba(0, 255, 255, 0.15);
-      border-left: 3px solid rgba(0, 255, 255, 0.5);
-      border-radius: 12px;
-      margin-bottom: 15px;
-      transition: all 0.3s ease;
-    }
-
-    .report-item:hover {
-      background: rgba(15, 25, 45, 0.7);
-      border-color: rgba(0, 255, 255, 0.4);
-      transform: translateX(8px);
-    }
-
-    .report-item strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 15px;
-      letter-spacing: 0.5px;
-      color: #fff;
-    }
-
-    .report-item em {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 13px;
-      font-style: normal;
-    }
-
-    /* EMERGENCY SECTION */
-    .emergency-section {
-      margin-top: 60px;
-      padding: 70px 60px;
-      background: linear-gradient(135deg, rgba(255, 0, 100, 0.08), rgba(255, 50, 0, 0.08));
-      border: 2px solid rgba(255, 0, 100, 0.2);
-      border-radius: 25px;
-      text-align: center;
-      backdrop-filter: blur(20px);
-    }
-
-    .emergency-section h3 {
-      font-size: 36px;
-      font-weight: 300;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
-      text-transform: uppercase;
-      background: linear-gradient(180deg, #fff 0%, rgba(255, 0, 100, 0.8) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .emergency-section p {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 40px;
-      font-size: 14px;
-      font-weight: 300;
-    }
-
-    .emergency-btn {
-      padding: 20px 60px;
-      background: rgba(255, 0, 100, 0.2);
-      border: 2px solid rgba(255, 0, 100, 0.5);
-      border-radius: 35px;
-      color: #fff;
-      font-weight: 400;
-      font-size: 12px;
-      cursor: none;
-      transition: all 0.4s ease;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      box-shadow: 0 0 30px rgba(255, 0, 100, 0.2);
-    }
-
-    .emergency-btn:hover {
-      background: rgba(255, 0, 100, 0.3);
-      box-shadow: 0 0 50px rgba(255, 0, 100, 0.5);
-      transform: translateY(-3px);
-    }
-
-    .status-message {
-      margin-top: 30px;
-      padding: 18px;
-      font-weight: 300;
+    
+    .btn {
+      padding: 14px 35px;
       font-size: 12px;
       letter-spacing: 2px;
-      text-transform: uppercase;
-      display: none;
-      border-radius: 25px;
-    }
-
-    .status-message.success {
-      background: rgba(0, 255, 255, 0.2);
-      border: 2px solid rgba(0, 255, 255, 0.5);
+      border: none;
+      background: none;
       color: #fff;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
+      cursor: none;
+      font-weight: 600;
     }
-
-    .status-message.error {
-      background: rgba(255, 0, 100, 0.2);
-      border: 2px solid rgba(255, 0, 100, 0.5);
+    
+    .btn-primary {
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6),
+                  inset 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    
+    .btn-primary:hover {
+      box-shadow: 0 0 50px rgba(0, 255, 255, 1),
+                  inset 0 0 30px rgba(0, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      border: 2px solid rgba(0, 255, 255, 0.8);
+      color: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(0, 255, 255, 0.15);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.6);
+    }
+    
+    /* HEART MONITOR CARD - SPECIAL */
+    .heart-monitor-card {
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(0, 30, 40, 0.5), rgba(0, 50, 70, 0.3));
+      border: 2px solid rgba(0, 255, 255, 0.4);
+      min-height: 350px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .pulse-animation {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      margin: 30px 0;
+    }
+    
+    .pulse-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border: 3px solid #00ffff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: pulseRing 2s infinite;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    }
+    
+    .pulse-ring:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    
+    .pulse-ring:nth-child(3) {
+      animation-delay: 1s;
+    }
+    
+    @keyframes pulseRing {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+      }
+    }
+    
+    .monitor-btn {
+      padding: 20px 50px;
+      font-size: 14px;
+      letter-spacing: 3px;
+      background: rgba(0, 255, 255, 0.2);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      cursor: none;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.5),
+                  inset 0 0 30px rgba(0, 255, 255, 0.2);
+      text-shadow: 0 0 15px rgba(0, 255, 255, 1);
+    }
+    
+    .monitor-btn:hover {
+      background: rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.8),
+                  inset 0 0 40px rgba(0, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+    
+    /* FILE UPLOAD */
+    .file-upload {
+      border: 2px dashed rgba(0, 255, 255, 0.4);
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s;
+      background: rgba(0, 255, 255, 0.03);
+      margin: 20px 0;
+    }
+    
+    .file-upload:hover {
+      border-color: rgba(0, 255, 255, 0.8);
+      background: rgba(0, 255, 255, 0.08);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    
+    .file-upload input[type="file"] {
+      display: none;
+    }
+    
+    .file-upload-label {
+      display: inline-block;
+      padding: 12px 30px;
+      background: rgba(0, 255, 255, 0.15);
+      border: 2px solid rgba(0, 255, 255, 0.6);
+      color: #00ffff;
+      cursor: none;
+      font-size: 12px;
+      letter-spacing: 2px;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    }
+    
+    .file-upload-label:hover {
+      background: rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
+    }
+    
+    /* EMERGENCY SECTION */
+    .emergency-section {
+      background: linear-gradient(135deg, rgba(80, 0, 0, 0.3), rgba(120, 0, 0, 0.2));
+      border: 2px solid rgba(255, 0, 100, 0.4);
+      padding: 40px;
+      text-align: center;
+      margin-top: 30px;
+      box-shadow: 0 0 40px rgba(255, 0, 100, 0.2);
+    }
+    
+    .emergency-title {
+      font-size: 24px;
       color: #ff0064;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 0, 100, 0.8);
+      letter-spacing: 2px;
     }
-
+    
+    .emergency-btn {
+      padding: 18px 45px;
+      background: rgba(255, 0, 100, 0.2);
+      border: 2px solid #ff0064;
+      color: #ff0064;
+      font-size: 13px;
+      letter-spacing: 3px;
+      cursor: none;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      box-shadow: 0 0 30px rgba(255, 0, 100, 0.4);
+      text-shadow: 0 0 15px rgba(255, 0, 100, 0.8);
+    }
+    
+    .emergency-btn:hover {
+      background: rgba(255, 0, 100, 0.3);
+      box-shadow: 0 0 50px rgba(255, 0, 100, 0.8);
+      transform: scale(1.05);
+    }
+    
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: rgba(0, 30, 40, 0.6);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(0, 255, 255, 0.4);
+      padding: 50px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.3);
+    }
+    
+    .modal-content h3 {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 15px;
+      color: #00ffff;
+      text-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+    }
+    
+    .modal-content p {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 30px;
+      font-size: 14px;
+      line-height: 1.7;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
     /* RESPONSIVE */
     @media (max-width: 1200px) {
-      .dashboard-grid { grid-template-columns: 1fr; }
-      .heart-card { grid-column: span 1; }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .heart-monitor-card {
+        grid-column: span 1;
+      }
     }
-
+    
     @media (max-width: 768px) {
       body { cursor: auto; }
-      .cursor, .cursor-ring { display: none; }
-      .container { padding: 110px 30px 60px; }
-      nav { padding: 20px 30px; }
-      .card { padding: 35px; }
+      .cursor { display: none; }
+      nav { padding: 30px 20px; }
+      .dashboard { padding: 40px 20px; }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="cursor"></div>
-  <div class="cursor-ring"></div>
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
   
-  <canvas id="canvas3d"></canvas>
-
+  <!-- 3D Scene -->
+  <canvas id="scene"></canvas>
+  
+  <!-- Navigation -->
   <nav>
-    <div class="logo" onclick="window.location.href='welcome.html'">LIFEDOT</div>
-    <div class="nav-right">
-      <button class="nav-btn" onclick="window.location.href='flowchart.html'">Workflow</button>
+    <div class="logo">LIFEDOT</div>
+    <div class="nav-actions">
+      <span class="greeting" id="greeting">WELCOME</span>
       <button class="profile-btn" id="profileIcon" onclick="showLogoutMenu()">U</button>
     </div>
   </nav>
-
-  <div class="container">
-    <div class="welcome">
-      <h1 id="welcomeText">WELCOME</h1>
-      <p>Complete your profile to unlock all features</p>
-    </div>
-
+  
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <h1 class="page-title"><span class="highlight">HEALTH</span> DASHBOARD</h1>
+    
     <div class="dashboard-grid">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Personal Information</div>
-          <button class="edit-btn" onclick="toggleEdit('user')">Edit</button>
+      <!-- Personal Info Card -->
+      <div class="dashboard-card">
+        <h2 class="card-title">/// PERSONAL INFORMATION</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>NAME</label>
+            <input type="text" id="userName" disabled>
+          </div>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input type="email" id="userEmail" disabled>
+          </div>
+          <div class="form-group">
+            <label>PHONE</label>
+            <input type="tel" id="userPhone">
+          </div>
+          <div class="form-group">
+            <label>ADDRESS</label>
+            <input type="text" id="userAddress">
+          </div>
+          <div class="btn-grid">
+            <button class="btn btn-secondary" onclick="enableEdit('user')">EDIT</button>
+            <button class="btn btn-primary" onclick="saveUserInfo()" id="saveUserBtn" style="display:none;">SAVE</button>
+          </div>
         </div>
-        
-        <div class="input-group">
-          <label>Full Name</label>
-          <input class="input-field" id="userName" type="text" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Date of Birth</label>
-          <input class="input-field" id="userDob" type="date" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Age</label>
-          <input class="input-field" id="userAge" type="number" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Email Address</label>
-          <input class="input-field" id="userEmail" type="email" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Phone Number</label>
-          <input class="input-field" id="userPhone" type="tel" disabled>
-        </div>
-        
-        <button class="save-btn" id="saveUser" onclick="saveUserDetails()">Save Changes</button>
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Emergency Contact</div>
-          <button class="edit-btn" onclick="toggleEdit('family')">Edit</button>
+      
+      <!-- Emergency Contact Card -->
+      <div class="dashboard-card">
+        <h2 class="card-title">/// EMERGENCY CONTACT</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>NAME</label>
+            <input type="text" id="familyName">
+          </div>
+          <div class="form-group">
+            <label>PHONE</label>
+            <input type="tel" id="familyPhone">
+          </div>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input type="email" id="familyEmail">
+          </div>
+          <div class="form-group">
+            <label>RELATION</label>
+            <input type="text" id="familyRelation">
+          </div>
+          <div class="btn-grid">
+            <button class="btn btn-secondary" onclick="enableEdit('family')">EDIT</button>
+            <button class="btn btn-primary" onclick="saveFamilyInfo()" id="saveFamilyBtn" style="display:none;">SAVE</button>
+          </div>
         </div>
-        
-        <div class="input-group">
-          <label>Contact Name</label>
-          <input class="input-field" id="familyName" type="text" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Phone Number</label>
-          <input class="input-field" id="familyPhone" type="tel" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Alternate Phone</label>
-          <input class="input-field" id="familyAltPhone" type="tel" disabled>
-        </div>
-        
-        <div class="input-group">
-          <label>Email Address</label>
-          <input class="input-field" id="familyEmail" type="email" disabled>
-        </div>
-        
-        <button class="save-btn" id="saveFamily" onclick="saveFamilyDetails()">Save Changes</button>
       </div>
-
-      <div class="card heart-card">
-        <div class="heart-icon">💓</div>
-        <h3>Heart Health Monitor</h3>
-        <p>Monitor your heart rate in real-time with instant alerts</p>
-        <button class="heart-btn" onclick="window.location.href='heartbpm.html'">View Dashboard →</button>
+      
+      <!-- Heart Monitor Card -->
+      <div class="dashboard-card heart-monitor-card">
+        <h2 class="card-title">/// HEART RATE MONITOR</h2>
+        <div class="pulse-animation">
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring"></div>
+        </div>
+        <button class="monitor-btn" onclick="window.location.href='heartbpm.html'">
+          START MONITORING
+        </button>
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Medical Reports</div>
+      
+      <!-- Medical Reports Card -->
+      <div class="dashboard-card">
+        <h2 class="card-title">/// MEDICAL REPORTS</h2>
+        <div class="file-upload">
+          <input type="file" id="reportFile" accept=".pdf,.jpg,.png">
+          <label for="reportFile" class="file-upload-label">CHOOSE FILE</label>
+          <p style="margin-top: 15px; opacity: 0.7; font-size: 12px; text-shadow: 0 0 10px rgba(255,255,255,0.3);" id="fileName">NO FILE SELECTED</p>
         </div>
-        <p style="color: rgba(255,255,255,0.6); margin-bottom: 30px; font-weight: 300;">Upload and manage your medical documents</p>
-        
-        <div class="upload-section">
-          <label style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(0,255,255,0.7); display: block; margin-bottom: 12px;">Select File</label>
-          <input type="file" class="file-input" id="reportFile" accept=".pdf,.jpg,.jpeg,.png">
-          
-          <label style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(0,255,255,0.7); display: block; margin: 20px 0 12px;">Describe Condition</label>
-          <textarea class="input-field" id="description" rows="3" placeholder="e.g., Routine checkup..."></textarea>
-          
-          <button class="upload-btn" onclick="uploadReport()">Upload Report</button>
+        <div class="form-group">
+          <label>DESCRIPTION</label>
+          <textarea id="reportDesc" rows="3" placeholder="Enter report details..."></textarea>
         </div>
-
-        <ul class="report-list" id="reportList">
-          <li class="report-item">
-            <strong>No reports uploaded yet</strong>
-            <em>Upload your first medical report above</em>
-          </li>
-        </ul>
+        <button class="btn btn-primary" onclick="uploadReport()" style="width: 100%;">UPLOAD REPORT</button>
+      </div>
+      
+      <!-- Quick Actions Card -->
+      <div class="dashboard-card">
+        <h2 class="card-title">/// QUICK ACTIONS</h2>
+        <div class="btn-grid" style="flex-direction: column;">
+          <button class="btn btn-secondary" onclick="window.location.href='flowchart.html'">VIEW WORKFLOW</button>
+          <button class="btn btn-secondary" onclick="window.location.href='heartbpm.html'">HEART MONITOR</button>
+          <button class="btn btn-secondary" onclick="window.location.href='index.html'">HOME</button>
+        </div>
       </div>
     </div>
-
+    
+    <!-- Emergency Alert Section -->
     <div class="emergency-section">
-      <h3>🚨 Emergency Alert</h3>
-      <p>Send instant notifications to all emergency contacts</p>
-      <button class="emergency-btn" onclick="sendEmergency()">Send Emergency Alert</button>
-      <div class="status-message" id="statusMsg"></div>
+      <h3 class="emergency-title">🚨 EMERGENCY ALERT</h3>
+      <p style="opacity: 0.8; margin-bottom: 25px; text-shadow: 0 0 10px rgba(255,255,255,0.4);">
+        TRIGGER IMMEDIATE NOTIFICATION TO YOUR EMERGENCY CONTACTS
+      </p>
+      <button class="emergency-btn" onclick="showEmergencyModal()">SEND EMERGENCY ALERT</button>
     </div>
   </div>
-
+  
+  <!-- Emergency Modal -->
+  <div id="emergencyModal" class="modal">
+    <div class="modal-content">
+      <h3>CONFIRM EMERGENCY</h3>
+      <p>Are you sure you want to send an emergency alert to your contacts?</p>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal()">CANCEL</button>
+        <button class="btn btn-primary" onclick="sendEmergency()">CONFIRM</button>
+      </div>
+    </div>
+  </div>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Cursor
-    const cursor = document.querySelector('.cursor');
-    const cursorRing = document.querySelector('.cursor-ring');
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-    
+    // Custom Cursor
+    const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
     });
     
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
-
-    // Three.js
-    const canvas = document.getElementById('canvas3d');
+    // Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.position.set(0, 5, 15);
-    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.04);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    camera.position.z = 5;
     
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2000;
+    const particlesCount = 2500;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
     
     for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 60;
-      posArray[i + 1] = (Math.random() - 0.5) * 60;
-      posArray[i + 2] = (Math.random() - 0.5) * 60;
+      posArray[i] = (Math.random() - 0.5) * 15;
+      posArray[i + 1] = (Math.random() - 0.5) * 15;
+      posArray[i + 2] = (Math.random() - 0.5) * 15;
+      
       colorArray[i] = 0;
-      colorArray[i + 1] = Math.random() < 0.5 ? 1 : 0.5;
-      colorArray[i + 2] = 1;
+      colorArray[i + 1] = Math.random() * 0.5 + 0.5;
+      colorArray[i + 2] = Math.random() * 0.5 + 0.5;
     }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
     
-    const particlesMesh = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({
-      size: 0.06,
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.015,
       vertexColors: true,
       transparent: true,
       opacity: 0.7,
       blending: THREE.AdditiveBlending
-    }));
+    });
+    
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
     
-    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.6);
-    scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x00ffff, 1.2, 100);
-    pointLight.position.set(12, 12, 12);
-    scene.add(pointLight);
-    
-    let targetX = 0, targetY = 0, scrollY = 0;
+    let mouseX = 0, mouseY = 0;
     document.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX / window.innerWidth) * 2 - 1;
-      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
-    window.addEventListener('scroll', () => scrollY = window.scrollY);
     
     function animate() {
       requestAnimationFrame(animate);
-      particlesMesh.rotation.y += 0.0006;
-      camera.position.x += (targetX * 2.5 - camera.position.x) * 0.05;
-      camera.position.y += (targetY * 2.5 - camera.position.y + 5) * 0.05;
-      camera.position.z = 15 - scrollY * 0.003;
+      
+      particlesMesh.rotation.x += 0.0003;
+      particlesMesh.rotation.y += 0.0005;
+      
+      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+      camera.lookAt(scene.position);
+      
       renderer.render(scene, camera);
     }
+    
     animate();
-
+    
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
     // User Data
     const username = localStorage.getItem("lifedot_user") || "User";
     const userId = localStorage.getItem("lifedot_user_id");
+    const userEmail = localStorage.getItem("lifedot_user_email") || "";
     
     if (!username || !userId) {
       window.location.href = 'login.html';
     }
     
-    document.getElementById("welcomeText").textContent = `WELCOME, ${username.toUpperCase()}`;
+    document.getElementById("greeting").textContent = `WELCOME, ${username.toUpperCase()}`;
     document.getElementById("profileIcon").textContent = username.charAt(0).toUpperCase();
-
+    document.getElementById("userName").value = username;
+    document.getElementById("userEmail").value = userEmail;
+    
+    // Load user data
+    async function loadUserData() {
+      try {
+        const res = await fetch(`https://lifedot.onrender.com/user/${userId}`);
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("userPhone").value = data.user.phone_number || '';
+          document.getElementById("userAddress").value = data.user.address || '';
+        }
+      } catch (error) {
+        console.error('Failed to load user data');
+      }
+      
+      try {
+        const res = await fetch(`https://lifedot.onrender.com/family/${userId}`);
+        const data = await res.json();
+        if (data.success && data.family) {
+          document.getElementById("familyName").value = data.family.name || '';
+          document.getElementById("familyPhone").value = data.family.phone || '';
+          document.getElementById("familyEmail").value = data.family.email || '';
+          document.getElementById("familyRelation").value = data.family.relation || '';
+        }
+      } catch (error) {
+        console.error('Failed to load family data');
+      }
+    }
+    
+    loadUserData();
+    
+    // Edit functions
+    function enableEdit(type) {
+      if (type === 'user') {
+        document.getElementById('userPhone').disabled = false;
+        document.getElementById('userAddress').disabled = false;
+        document.getElementById('saveUserBtn').style.display = 'block';
+      } else {
+        document.getElementById('familyName').disabled = false;
+        document.getElementById('familyPhone').disabled = false;
+        document.getElementById('familyEmail').disabled = false;
+        document.getElementById('familyRelation').disabled = false;
+        document.getElementById('saveFamilyBtn').style.display = 'block';
+      }
+    }
+    
+    async function saveUserInfo() {
+      const phone = document.getElementById('userPhone').value;
+      const address = document.getElementById('userAddress').value;
+      
+      try {
+        const res = await fetch(`https://lifedot.onrender.com/user/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone_number: phone, address })
+        });
+        
+        if (res.ok) {
+          alert('USER INFO UPDATED');
+          document.getElementById('saveUserBtn').style.display = 'none';
+          document.getElementById('userPhone').disabled = true;
+          document.getElementById('userAddress').disabled = true;
+        }
+      } catch (error) {
+        alert('UPDATE FAILED');
+      }
+    }
+    
+    async function saveFamilyInfo() {
+      const name = document.getElementById('familyName').value;
+      const phone = document.getElementById('familyPhone').value;
+      const email = document.getElementById('familyEmail').value;
+      const relation = document.getElementById('familyRelation').value;
+      
+      try {
+        const res = await fetch(`https://lifedot.onrender.com/family/${userId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, email, relation })
+        });
+        
+        if (res.ok) {
+          alert('EMERGENCY CONTACT UPDATED');
+          document.getElementById('saveFamilyBtn').style.display = 'none';
+        }
+      } catch (error) {
+        alert('UPDATE FAILED');
+      }
+    }
+    
+    // File upload
+    document.getElementById('reportFile').addEventListener('change', (e) => {
+      const fileName = e.target.files[0]?.name || 'NO FILE SELECTED';
+      document.getElementById('fileName').textContent = fileName;
+    });
+    
+    async function uploadReport() {
+      const file = document.getElementById('reportFile').files[0];
+      const desc = document.getElementById('reportDesc').value;
+      
+      if (!file) {
+        alert('SELECT A FILE');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('description', desc);
+      
+      try {
+        const res = await fetch(`https://lifedot.onrender.com/upload-report/${userId}`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (res.ok) {
+          alert('REPORT UPLOADED');
+          document.getElementById('reportFile').value = '';
+          document.getElementById('reportDesc').value = '';
+          document.getElementById('fileName').textContent = 'NO FILE SELECTED';
+        }
+      } catch (error) {
+        alert('UPLOAD FAILED');
+      }
+    }
+    
+    // Emergency modal
+    function showEmergencyModal() {
+      document.getElementById('emergencyModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+      document.getElementById('emergencyModal').style.display = 'none';
+    }
+    
+    async function sendEmergency() {
+      try {
+        const res = await fetch('https://lifedot.onrender.com/emergency', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId })
+        });
+        
+        if (res.ok) {
+          alert('EMERGENCY ALERT SENT');
+          closeModal();
+        } else {
+          alert('FAILED TO SEND ALERT');
+        }
+      } catch (error) {
+        alert('CONNECTION ERROR');
+      }
+    }
+    
     function showLogoutMenu() {
-      if (confirm('Do you want to logout?')) {
+      if (confirm('DO YOU WANT TO LOGOUT?')) {
         localStorage.removeItem("lifedot_user");
         localStorage.removeItem("lifedot_user_id");
         localStorage.removeItem("lifedot_user_email");
         window.location.href = 'login.html';
       }
-    }
-
-    function toggleEdit(type) {
-      const prefix = type === 'user' ? 'user' : 'family';
-      const saveBtn = document.getElementById(`save${type.charAt(0).toUpperCase() + type.slice(1)}`);
-      const inputs = document.querySelectorAll(`#${prefix}Name, #${prefix}Email, #${prefix}Phone, #${prefix}AltPhone, #${prefix}Dob, #${prefix}Age`);
-      
-      const isDisabled = inputs[0].disabled;
-      inputs.forEach(input => {
-        if (input) input.disabled = !isDisabled;
-      });
-      
-      saveBtn.style.display = isDisabled ? 'block' : 'none';
-    }
-
-    function saveUserDetails() {
-      alert('✅ Personal information updated!');
-      toggleEdit('user');
-    }
-
-    function saveFamilyDetails() {
-      alert('✅ Emergency contact updated!');
-      toggleEdit('family');
-    }
-
-    async function uploadReport() {
-      const fileInput = document.getElementById("reportFile");
-      const description = document.getElementById("description").value;
-
-      if (!fileInput.files.length) {
-        alert("Please select a file!");
-        return;
-      }
-
-      if (!description) {
-        alert("Please describe your condition!");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("report", fileInput.files[0]);
-      formData.append("description", description);
-
-      try {
-        const res = await fetch(`https://lifedot.onrender.com/upload-report/${userId}`, {
-          method: "POST",
-          body: formData
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          alert("✅ Report uploaded successfully!");
-          
-          const reportList = document.getElementById("reportList");
-          if (reportList.children[0].querySelector('strong').textContent === "No reports uploaded yet") {
-            reportList.innerHTML = '';
-          }
-          
-          const li = document.createElement("li");
-          li.className = "report-item";
-          li.innerHTML = `<strong>${data.filename}</strong><em>${description}</em>`;
-          reportList.insertBefore(li, reportList.firstChild);
-
-          fileInput.value = '';
-          document.getElementById("description").value = '';
-        } else {
-          alert("❌ Upload failed.");
-        }
-      } catch (error) {
-        alert("⚠️ Unable to connect.");
-      }
-    }
-
-    async function sendEmergency() {
-      if (!confirm("Send emergency alert?")) return;
-
-      const statusMsg = document.getElementById("statusMsg");
-      statusMsg.style.display = "block";
-      statusMsg.className = "status-message";
-      statusMsg.textContent = "Sending emergency email...";
-
-      try {
-        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
-        const data = await res.json();
-
-        if (data.success) {
-          statusMsg.textContent = "✅ Emergency email sent!";
-          statusMsg.classList.add("success");
-        } else {
-          statusMsg.textContent = "❌ Failed to send.";
-          statusMsg.classList.add("error");
-        }
-      } catch (error) {
-        statusMsg.textContent = "⚠️ Server not reachable.";
-        statusMsg.classList.add("error");
-      }
-
-      setTimeout(() => statusMsg.style.display = "none", 5000);
     }
   </script>
 </body>

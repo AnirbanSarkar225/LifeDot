@@ -1,57 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Heart Monitor — LifeDot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HEART MONITOR — LIFEDOT</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0e1a;
+      font-family: 'Courier New', Courier, monospace;
+      background: #000;
       color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      cursor: none;
       overflow: hidden;
+      cursor: none;
+      height: 100vh;
     }
-
-    /* CURSOR */
+    
+    /* CUSTOM CURSOR */
     .cursor {
       position: fixed;
-      width: 12px;
-      height: 12px;
-      background: rgba(0, 255, 255, 0.9);
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(0, 255, 255, 0.8);
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
-      mix-blend-mode: screen;
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
     }
     
-    .cursor-ring {
-      position: fixed;
-      width: 35px;
-      height: 35px;
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: all 0.3s ease;
-      mix-blend-mode: screen;
-    }
-
-    #canvas3d {
+    /* 3D SCENE */
+    #scene {
       position: fixed;
       top: 0;
       left: 0;
@@ -59,642 +43,510 @@
       height: 100%;
       z-index: 0;
     }
-
+    
     /* BACK BUTTON */
     .back-btn {
       position: fixed;
       top: 40px;
-      left: 60px;
-      padding: 14px 40px;
-      background: rgba(15, 25, 45, 0.7);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 35px;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-decoration: none;
-      color: rgba(255, 255, 255, 0.9);
-      transition: all 0.4s ease;
-      backdrop-filter: blur(15px);
-      font-weight: 400;
-      z-index: 100;
-      text-transform: uppercase;
-    }
-
-    .back-btn:hover {
+      left: 50px;
+      padding: 12px 30px;
       background: rgba(0, 255, 255, 0.15);
-      border-color: rgba(0, 255, 255, 0.8);
-      box-shadow: 0 0 35px rgba(0, 255, 255, 0.4);
+      border: 2px solid rgba(0, 255, 255, 0.6);
+      color: #00ffff;
+      font-size: 12px;
+      letter-spacing: 2px;
+      cursor: none;
+      z-index: 100;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+      text-decoration: none;
+      display: inline-block;
     }
-
-    /* CONTAINER */
-    .container {
+    
+    .back-btn:hover {
+      background: rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.6);
+      transform: translateX(-5px);
+    }
+    
+    /* MONITOR CONTAINER */
+    .monitor-container {
       position: relative;
       z-index: 1;
-      max-width: 850px;
-      width: 100%;
-      background: rgba(15, 25, 45, 0.5);
-      border: 2px solid rgba(0, 255, 255, 0.3);
-      padding: 80px 70px;
-      text-align: center;
-      border-radius: 30px;
-      backdrop-filter: blur(25px);
-      animation: slideIn 0.8s ease;
-      box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 255, 255, 0.1);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(50px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    /* HEADER */
-    .header {
-      margin-bottom: 60px;
-    }
-
-    .header h1 {
-      font-size: clamp(38px, 6vw, 52px);
-      font-weight: 300;
-      letter-spacing: -1px;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.8) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .header p {
-      color: rgba(0, 255, 255, 0.7);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      font-weight: 300;
-    }
-
-    /* BPM DISPLAY */
-    .bpm-display {
-      margin: 60px 0;
-      padding: 60px 50px;
-      background: linear-gradient(135deg, rgba(0, 255, 255, 0.08), rgba(0, 150, 255, 0.08));
-      border: 2px solid rgba(0, 255, 255, 0.3);
-      border-radius: 25px;
+    
+    /* PULSE RINGS */
+    .pulse-container {
       position: relative;
-      overflow: hidden;
+      width: 400px;
+      height: 400px;
+      margin-bottom: 50px;
     }
-
-    .bpm-display::before {
-      content: '';
+    
+    .pulse-ring {
       position: absolute;
-      top: 0;
-      left: -100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-      animation: shimmer 4s infinite;
+      border: 4px solid #00ffff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: pulseExpand 4s infinite;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.8),
+                  inset 0 0 40px rgba(0, 255, 255, 0.3);
     }
-
-    @keyframes shimmer {
-      0% { left: -100%; }
-      100% { left: 100%; }
+    
+    .pulse-ring:nth-child(2) {
+      animation-delay: 1.3s;
     }
-
-    .bpm-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      color: rgba(0, 255, 255, 0.7);
-      margin-bottom: 30px;
-      font-weight: 300;
+    
+    .pulse-ring:nth-child(3) {
+      animation-delay: 2.6s;
     }
-
+    
+    @keyframes pulseExpand {
+      0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+      }
+    }
+    
+    /* BPM DISPLAY */
+    .bpm-display {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
     .bpm-value {
-      font-size: clamp(80px, 15vw, 120px);
-      font-weight: 200;
-      color: rgba(0, 255, 255, 1);
-      line-height: 1;
-      letter-spacing: -5px;
-      margin: 30px 0;
-      text-shadow: 0 0 60px rgba(0, 255, 255, 0.6), 0 0 100px rgba(0, 255, 255, 0.3);
-      position: relative;
-      z-index: 1;
-      transition: all 0.3s ease;
+      font-size: clamp(80px, 15vw, 140px);
+      font-weight: 700;
+      color: #00ffff;
+      text-shadow: 0 0 60px rgba(0, 255, 255, 1),
+                   0 0 120px rgba(0, 255, 255, 0.8),
+                   0 0 180px rgba(0, 255, 255, 0.6);
+      letter-spacing: -3px;
+      margin-bottom: 15px;
+      animation: glow 2s infinite;
     }
-
+    
+    @keyframes glow {
+      0%, 100% {
+        text-shadow: 0 0 60px rgba(0, 255, 255, 1),
+                     0 0 120px rgba(0, 255, 255, 0.8),
+                     0 0 180px rgba(0, 255, 255, 0.6);
+      }
+      50% {
+        text-shadow: 0 0 80px rgba(0, 255, 255, 1),
+                     0 0 160px rgba(0, 255, 255, 1),
+                     0 0 240px rgba(0, 255, 255, 0.8);
+      }
+    }
+    
     .bpm-value.danger {
       color: #ff0064;
-      text-shadow: 0 0 60px rgba(255, 0, 100, 0.7);
-      animation: dangerPulse 1s ease infinite;
+      text-shadow: 0 0 60px rgba(255, 0, 100, 1),
+                   0 0 120px rgba(255, 0, 100, 0.8),
+                   0 0 180px rgba(255, 0, 100, 0.6);
+      animation: dangerPulse 1s infinite;
     }
-
+    
     @keyframes dangerPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-
-    .bpm-average {
-      margin-top: 35px;
-      padding-top: 30px;
-      border-top: 1px solid rgba(0, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      font-weight: 300;
-      position: relative;
-      z-index: 1;
+    
+    .bpm-label {
+      font-size: 18px;
+      letter-spacing: 5px;
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
     }
-
-    .bpm-average span {
-      display: block;
-      color: #fff;
-      font-size: 28px;
-      font-weight: 300;
-      margin-top: 12px;
-      letter-spacing: -0.5px;
-    }
-
-    /* STATUS INDICATOR */
-    .status-indicator {
+    
+    /* STATUS */
+    .status-container {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 15px;
-      padding: 18px 35px;
-      background: rgba(0, 255, 255, 0.08);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      margin-bottom: 50px;
-      font-weight: 400;
-      color: rgba(0, 255, 255, 0.9);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      border-radius: 30px;
+      margin-bottom: 40px;
     }
-
+    
     .status-dot {
-      width: 14px;
-      height: 14px;
-      background: rgba(0, 255, 255, 1);
+      width: 20px;
+      height: 20px;
+      background: #00ffff;
       border-radius: 50%;
-      animation: blink 2s infinite;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 1);
+      animation: blink 1.5s infinite;
     }
-
+    
     @keyframes blink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.9); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
-
-    .status-indicator.danger {
-      background: rgba(255, 0, 100, 0.08);
-      border-color: rgba(255, 0, 100, 0.4);
-      color: #ff0064;
-    }
-
-    .status-indicator.danger .status-dot {
-      background: #ff0064;
-      box-shadow: 0 0 25px rgba(255, 0, 100, 0.7);
-    }
-
-    /* BUTTONS */
-    .button-group {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .btn {
-      padding: 22px 40px;
-      border: none;
-      font-size: 12px;
-      font-weight: 400;
-      cursor: none;
-      transition: all 0.4s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      text-transform: uppercase;
+    
+    .status-text {
+      font-size: 16px;
       letter-spacing: 3px;
-      border-radius: 35px;
+      color: #00ffff;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
     }
-
-    .btn-emergency {
+    
+    /* EMERGENCY BUTTON */
+    .emergency-btn {
+      padding: 20px 60px;
       background: rgba(255, 0, 100, 0.2);
-      color: #fff;
-      border: 2px solid rgba(255, 0, 100, 0.5);
-      box-shadow: 0 0 30px rgba(255, 0, 100, 0.2);
+      border: 3px solid #ff0064;
+      color: #ff0064;
+      font-size: 14px;
+      letter-spacing: 4px;
+      cursor: none;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      box-shadow: 0 0 40px rgba(255, 0, 100, 0.5),
+                  inset 0 0 30px rgba(255, 0, 100, 0.2);
+      text-shadow: 0 0 20px rgba(255, 0, 100, 0.8);
     }
-
-    .btn-emergency:hover {
+    
+    .emergency-btn:hover {
       background: rgba(255, 0, 100, 0.3);
-      box-shadow: 0 0 50px rgba(255, 0, 100, 0.5);
-      transform: translateY(-3px);
+      box-shadow: 0 0 60px rgba(255, 0, 100, 0.8),
+                  inset 0 0 40px rgba(255, 0, 100, 0.3);
+      transform: scale(1.05);
     }
-
-    .btn-back-dash {
-      background: transparent;
-      color: rgba(255, 255, 255, 0.8);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-back-dash:hover {
-      border-color: rgba(0, 255, 255, 0.5);
-      background: rgba(0, 255, 255, 0.05);
-      transform: translateY(-3px);
-    }
-
+    
     /* MODAL */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 2000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(10, 14, 26, 0.95);
+      background: rgba(0, 0, 0, 0.95);
       backdrop-filter: blur(15px);
       align-items: center;
       justify-content: center;
-      animation: fadeIn 0.3s ease;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
+    
     .modal-content {
-      background: rgba(15, 25, 45, 0.7);
-      padding: 65px 55px;
-      border: 2px solid rgba(255, 0, 100, 0.3);
-      text-align: center;
-      max-width: 500px;
+      background: rgba(80, 0, 0, 0.4);
+      backdrop-filter: blur(20px);
+      border: 3px solid rgba(255, 0, 100, 0.6);
+      padding: 60px;
+      max-width: 550px;
       width: 90%;
-      animation: modalSlide 0.4s ease;
-      border-radius: 30px;
-      backdrop-filter: blur(25px);
+      box-shadow: 0 0 80px rgba(255, 0, 100, 0.5);
+      text-align: center;
     }
-
-    @keyframes modalSlide {
-      from {
-        opacity: 0;
-        transform: scale(0.9) translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    .modal-icon {
-      font-size: 60px;
-      margin-bottom: 25px;
-      filter: drop-shadow(0 0 30px rgba(255, 0, 100, 0.5));
-    }
-
+    
     .modal-content h3 {
       font-size: 32px;
-      font-weight: 300;
-      margin-bottom: 18px;
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: -0.5px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      color: #ff0064;
+      text-shadow: 0 0 30px rgba(255, 0, 100, 1);
+      letter-spacing: 2px;
     }
-
+    
     .modal-content p {
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 45px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 40px;
+      font-size: 15px;
       line-height: 1.8;
-      font-size: 14px;
-      font-weight: 300;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     }
-
+    
     .modal-buttons {
       display: flex;
-      gap: 18px;
+      gap: 20px;
+      justify-content: center;
     }
-
-    .btn-modal {
-      flex: 1;
-      padding: 20px;
+    
+    .btn {
+      padding: 16px 40px;
+      font-size: 13px;
+      letter-spacing: 2px;
       border: none;
-      font-weight: 400;
       cursor: none;
-      transition: all 0.3s ease;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      border-radius: 30px;
+      transition: all 0.3s;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 600;
     }
-
+    
     .btn-cancel {
       background: transparent;
-      color: #fff;
-      border: 2px solid rgba(255, 255, 255, 0.25);
+      border: 2px solid rgba(0, 255, 255, 0.6);
+      color: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
     }
-
+    
     .btn-cancel:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(0, 255, 255, 0.15);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.6);
     }
-
+    
     .btn-confirm {
-      background: rgba(255, 0, 100, 0.2);
+      background: #ff0064;
       color: #fff;
-      border: 2px solid rgba(255, 0, 100, 0.5);
+      box-shadow: 0 0 40px rgba(255, 0, 100, 0.6);
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
-
+    
     .btn-confirm:hover {
-      background: rgba(255, 0, 100, 0.3);
+      box-shadow: 0 0 60px rgba(255, 0, 100, 1);
+      transform: scale(1.05);
     }
-
-    /* STATUS MESSAGE */
-    .status-message {
-      margin-top: 30px;
-      padding: 20px;
-      font-weight: 300;
-      font-size: 12px;
-      text-align: center;
-      display: none;
-      animation: slideDown 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      border-radius: 25px;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .status-message.success {
-      background: rgba(0, 255, 255, 0.2);
-      color: #fff;
-      border: 2px solid rgba(0, 255, 255, 0.5);
-    }
-
-    .status-message.error {
-      background: rgba(255, 0, 100, 0.2);
-      color: #ff0064;
-      border: 2px solid rgba(255, 0, 100, 0.5);
-    }
-
+    
     /* RESPONSIVE */
     @media (max-width: 768px) {
       body { cursor: auto; }
-      .cursor, .cursor-ring { display: none; }
-      .container { padding: 60px 45px; }
-      .bpm-display { padding: 50px 35px; }
-      .back-btn { top: 20px; left: 20px; }
-      .button-group { gap: 15px; }
-      .modal-buttons { flex-direction: column; }
+      .cursor { display: none; }
+      .back-btn { left: 20px; top: 20px; }
+      .pulse-container { width: 300px; height: 300px; }
     }
   </style>
 </head>
 <body>
-  <div class="cursor"></div>
-  <div class="cursor-ring"></div>
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
   
-  <canvas id="canvas3d"></canvas>
-
-  <a href="home.html" class="back-btn">← Back</a>
-
-  <div class="container">
-    <div class="header">
-      <h1>Heart Monitor</h1>
-      <p>Real-time cardiac tracking</p>
+  <!-- 3D Scene -->
+  <canvas id="scene"></canvas>
+  
+  <!-- Back Button -->
+  <a href="home.html" class="back-btn">← BACK TO DASHBOARD</a>
+  
+  <!-- Monitor Container -->
+  <div class="monitor-container">
+    <div class="pulse-container">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
     </div>
-
+    
     <div class="bpm-display">
-      <div class="bpm-label">Current Heart Rate</div>
-      <div id="bpmValue" class="bpm-value">--</div>
-      <div class="bpm-average">
-        Average Today
-        <span id="avgBpm">-- BPM</span>
-      </div>
+      <div class="bpm-value" id="bpmValue">--</div>
+      <div class="bpm-label">BEATS PER MINUTE</div>
     </div>
-
-    <div class="status-indicator" id="statusIndicator">
-      <span class="status-dot"></span>
-      <span>Heart rate normal</span>
+    
+    <div class="status-container">
+      <div class="status-dot"></div>
+      <div class="status-text" id="statusText">MONITORING ACTIVE</div>
     </div>
-
-    <div class="button-group">
-      <button class="btn btn-emergency" onclick="openModal()">
-        🚨 Send Emergency Alert
-      </button>
-      <button class="btn btn-back-dash" onclick="window.location.href='home.html'">
-        ← Back to Dashboard
-      </button>
-    </div>
-
-    <div id="statusMsg" class="status-message"></div>
+    
+    <button class="emergency-btn" onclick="showEmergencyModal()">
+      🚨 EMERGENCY ALERT
+    </button>
   </div>
-
-  <div id="alertModal" class="modal">
+  
+  <!-- Emergency Modal -->
+  <div id="emergencyModal" class="modal">
     <div class="modal-content">
-      <div class="modal-icon">🚨</div>
-      <h3>Send Alert?</h3>
-      <p>This will notify all your emergency contacts immediately.</p>
+      <h3>⚠️ EMERGENCY ALERT</h3>
+      <p>THIS WILL IMMEDIATELY NOTIFY YOUR EMERGENCY CONTACTS. DO YOU WANT TO PROCEED?</p>
       <div class="modal-buttons">
-        <button class="btn-modal btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-modal btn-confirm" onclick="sendEmergency()">Send Alert</button>
+        <button class="btn btn-cancel" onclick="closeModal()">CANCEL</button>
+        <button class="btn btn-confirm" onclick="sendEmergency()">CONFIRM ALERT</button>
       </div>
     </div>
   </div>
-
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Cursor
-    const cursor = document.querySelector('.cursor');
-    const cursorRing = document.querySelector('.cursor-ring');
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-    
+    // Custom Cursor
+    const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
     });
     
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
-
-    // Three.js
-    const canvas = document.getElementById('canvas3d');
+    // Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.position.set(0, 5, 15);
-    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.04);
+    renderer.setPixelRatio(window.devicePixelRatio);
     
+    camera.position.z = 5;
+    
+    // Particles
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2500;
+    const particlesCount = 2000;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
     
     for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 60;
-      posArray[i + 1] = (Math.random() - 0.5) * 60;
-      posArray[i + 2] = (Math.random() - 0.5) * 60;
+      posArray[i] = (Math.random() - 0.5) * 15;
+      posArray[i + 1] = (Math.random() - 0.5) * 15;
+      posArray[i + 2] = (Math.random() - 0.5) * 15;
+      
       colorArray[i] = 0;
-      colorArray[i + 1] = Math.random() < 0.5 ? 1 : 0.5;
-      colorArray[i + 2] = 1;
+      colorArray[i + 1] = Math.random() * 0.5 + 0.5;
+      colorArray[i + 2] = Math.random() * 0.5 + 0.5;
     }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
     
-    const particlesMesh = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({
-      size: 0.06,
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.015,
       vertexColors: true,
       transparent: true,
       opacity: 0.7,
       blending: THREE.AdditiveBlending
-    }));
+    });
+    
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
     
-    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.6);
-    scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x00ffff, 1.2, 100);
-    pointLight.position.set(12, 12, 12);
-    scene.add(pointLight);
-    
-    let targetX = 0, targetY = 0;
+    let mouseX = 0, mouseY = 0;
     document.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX / window.innerWidth) * 2 - 1;
-      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
     
     function animate() {
       requestAnimationFrame(animate);
-      particlesMesh.rotation.y += 0.0006;
-      camera.position.x += (targetX * 2.5 - camera.position.x) * 0.05;
-      camera.position.y += (targetY * 2.5 - camera.position.y + 5) * 0.05;
+      
+      particlesMesh.rotation.x += 0.0003;
+      particlesMesh.rotation.y += 0.0005;
+      
+      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+      camera.lookAt(scene.position);
+      
       renderer.render(scene, camera);
     }
+    
     animate();
-
+    
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
     // BPM Monitoring
-    const bpmValue = document.getElementById("bpmValue");
-    const avgBpm = document.getElementById("avgBpm");
-    const statusMsg = document.getElementById("statusMsg");
-    const statusIndicator = document.getElementById("statusIndicator");
-    const modal = document.getElementById("alertModal");
-    let autoAlertSent = false;
-
-    async function fetchBpm() {
+    const userId = localStorage.getItem("lifedot_user_id");
+    const bpmValueEl = document.getElementById('bpmValue');
+    const statusTextEl = document.getElementById('statusText');
+    
+    if (!userId) {
+      window.location.href = 'login.html';
+    }
+    
+    let lastEmergencyTime = 0;
+    
+    async function fetchBPM() {
       try {
-        const res = await fetch("https://lifedot.onrender.com/bpm");
+        const res = await fetch('https://lifedot.onrender.com/bpm');
         const data = await res.json();
         
-        bpmValue.textContent = data.bpm;
-        avgBpm.textContent = `${data.avg_bpm} BPM`;
-
-        if (data.bpm <= 40 || data.bpm >= 150) {
-          bpmValue.classList.add("danger");
-          statusIndicator.classList.add("danger");
-          statusIndicator.innerHTML = '<span class="status-dot"></span><span>⚠️ Critical heart rate!</span>';
+        if (data.bpm !== undefined) {
+          const bpm = data.bpm;
+          bpmValueEl.textContent = bpm;
           
-          if (!autoAlertSent) {
-            autoEmergency();
+          // Check for danger levels
+          if (bpm <= 40 || bpm >= 150) {
+            bpmValueEl.classList.add('danger');
+            statusTextEl.textContent = 'CRITICAL - DANGER ZONE';
+            statusTextEl.style.color = '#ff0064';
+            
+            // Auto emergency after 5 seconds
+            const now = Date.now();
+            if (now - lastEmergencyTime > 10000) {
+              lastEmergencyTime = now;
+              setTimeout(() => {
+                if (bpmValueEl.classList.contains('danger')) {
+                  autoEmergency(bpm);
+                }
+              }, 5000);
+            }
+          } else if (bpm < 60 || bpm > 100) {
+            bpmValueEl.classList.remove('danger');
+            statusTextEl.textContent = 'WARNING - ABNORMAL';
+            statusTextEl.style.color = '#ffaa00';
+          } else {
+            bpmValueEl.classList.remove('danger');
+            statusTextEl.textContent = 'NORMAL - HEALTHY';
+            statusTextEl.style.color = '#00ffff';
           }
-        } else {
-          bpmValue.classList.remove("danger");
-          statusIndicator.classList.remove("danger");
-          statusIndicator.innerHTML = '<span class="status-dot"></span><span>Heart rate normal</span>';
-          autoAlertSent = false;
         }
       } catch (error) {
-        bpmValue.textContent = "--";
-        avgBpm.textContent = "-- BPM";
+        bpmValueEl.textContent = 'ERR';
+        statusTextEl.textContent = 'CONNECTION ERROR';
       }
     }
-
-    function openModal() {
-      modal.style.display = "flex";
+    
+    async function autoEmergency(bpm) {
+      try {
+        await fetch('https://lifedot.onrender.com/emergency', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            user_id: userId,
+            bpm: bpm,
+            auto: true 
+          })
+        });
+        alert(`AUTO EMERGENCY ALERT SENT - BPM: ${bpm}`);
+      } catch (error) {
+        console.error('Auto emergency failed');
+      }
     }
-
+    
+    // Start monitoring
+    fetchBPM();
+    setInterval(fetchBPM, 3000);
+    
+    // Modal functions
+    function showEmergencyModal() {
+      document.getElementById('emergencyModal').style.display = 'flex';
+    }
+    
     function closeModal() {
-      modal.style.display = "none";
+      document.getElementById('emergencyModal').style.display = 'none';
     }
-
-    window.onclick = (event) => {
-      if (event.target === modal) closeModal();
-    };
-
+    
     async function sendEmergency() {
-      closeModal();
-      showStatus("Sending emergency alert...", "");
-      
       try {
-        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
-        const data = await res.json();
-
-        if (data.success) {
-          showStatus("✅ Emergency alert sent!", "success");
+        const currentBPM = bpmValueEl.textContent;
+        const res = await fetch('https://lifedot.onrender.com/emergency', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            user_id: userId,
+            bpm: currentBPM,
+            manual: true 
+          })
+        });
+        
+        if (res.ok) {
+          alert('EMERGENCY ALERT SENT SUCCESSFULLY');
+          closeModal();
         } else {
-          showStatus("❌ Failed to send alert.", "error");
+          alert('FAILED TO SEND ALERT');
         }
       } catch (error) {
-        showStatus("⚠️ Unable to connect.", "error");
+        alert('CONNECTION ERROR');
       }
     }
-
-    async function autoEmergency() {
-      if (autoAlertSent) return;
-      autoAlertSent = true;
-
-      showStatus("⚠️ Critical BPM! Sending automatic alert...", "");
-
-      try {
-        const res = await fetch("https://lifedot.onrender.com/emergency", { method: "POST" });
-        const data = await res.json();
-
-        if (data.success) {
-          showStatus("✅ Automatic alert sent!", "success");
-        } else {
-          showStatus("❌ Failed to send automatic alert.", "error");
-        }
-      } catch (error) {
-        showStatus("⚠️ Unable to connect.", "error");
-      }
-    }
-
-    function showStatus(message, type) {
-      statusMsg.textContent = message;
-      statusMsg.className = `status-message ${type}`;
-      statusMsg.style.display = "block";
-
-      if (type) {
-        setTimeout(() => statusMsg.style.display = "none", 5000);
-      }
-    }
-
-    setInterval(fetchBpm, 3000);
-    fetchBpm();
   </script>
 </body>
 </html>
