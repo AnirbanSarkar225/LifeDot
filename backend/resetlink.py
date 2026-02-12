@@ -1,62 +1,88 @@
-import psycopg2
+import smtplib
 import secrets
-import bcrypt
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from database import set_reset_token, get_email_by_token, update_password_by_token
 import os
-from email_al import send_email
-
-DB_CONFIG = dict(
-    dbname="registration_data",
-    user="postgres",
-    password="Anirban@42",
-    host="127.0.0.1",
-    port="5432"
-)
 
 SENDER_EMAIL = os.environ.get("HEART_SENDER")
 SENDER_PASS = os.environ.get("HEART_PASS")
 
-
 def send_reset_link(email):
-    conn = cur = None
+    """Generate token, store it, send reset email."""
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
-        cur = conn.cursor()
-
-        cur.execute("SELECT id FROM userinfo WHERE email = %s", (email,))
-        if not cur.fetchone():
-            return False
-
+        # Generate secure random token
         token = secrets.token_urlsafe(32)
-        cur.execute("ALTER TABLE userinfo ADD COLUMN IF NOT EXISTS reset_token VARCHAR(200)")
-        cur.execute("UPDATE userinfo SET reset_token = %s WHERE email = %s", (token, email))
-        conn.commit()
-        reset_url = f"https://lifedot.onrender.com/resetpassword.html?token={token}"
         
-        subject = "LifeDot Password Reset"
-        body = f"Click the link below to reset your password:\n{reset_url}"
+        # Store token in database
+        if not set_reset_token(email, token):
+            return False
+        
+        # Create reset link
+        reset_link = f"https://lifedot-topaz.vercel.app/resetpassword.html?token={token}"
+        
+        # Email content
+        subject = "🔐 LifeDot Password Reset"
+        body = f"""
+Hello,
 
-        success, _ = send_email(SENDER_EMAIL, SENDER_PASS, [email], subject, body)
-        return success
+You requested a password reset for your LifeDot account.
 
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
+Click the link below to reset your password:
+{reset_link}
 
+This link will expire in 24 hours.
+
+If you did not request this reset, please ignore this email.
+
+Best regards,
+LifeDot Team
+"""
+        
+        # Send email
+        msg = MIMEMultipart()
+        msg["From"] = SENDER_EMAIL
+        msg["To"] = email
+        msg["Subject"] = subject
+        msg.attach(MIMEText(body, "plain"))
+        
+        if not SENDER_EMAIL or not SENDER_PASS:
+            print("❌ Email credentials not configured")
+            return False
+        
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(SENDER_EMAIL, SENDER_PASS)
+            server.send_message(msg)
+        
+        print(f"✅ Reset link sent to {email}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ send_reset_link error: {e}")
+        return False
 
 def reset_password(token, new_password):
+    """Update password using reset token."""
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
-        cur = conn.cursor()
-
-        hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
-        cur.execute("""
-            UPDATE userinfo
-            SET password_hash = %s, reset_token = NULL
-            WHERE reset_token = %s
-        """, (hashed, token))
-        conn.commit()
-        return cur.rowcount == 1
-
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
+        # Verify token exists
+        email = get_email_by_token(token)
+        if not email:
+            print("❌ Invalid or expired token")
+            return False
+        
+        # Update password
+        success = update_password_by_token(token, new_password)
+        
+        if success:
+            print(f"✅ Password reset successful for {email}")
+        else:
+            print(f"❌ Password update failed for {email}")
+        
+        return success
+        
+    except Exception as e:
+        print(f"❌ reset_password error: {e}")
+        return False
