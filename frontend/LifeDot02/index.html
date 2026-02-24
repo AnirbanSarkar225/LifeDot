@@ -1,829 +1,816 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LIFEDOT</title>
-  <link rel="stylesheet" href="assets/css/immersive.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeDot - Your Health Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --primary-cyan: #00d9ff;
+    --primary-pink: #ff3d9a;
+    --bg-dark: #0a0e27;
+    --bg-darker: #050714;
+    --card-bg: rgba(20, 30, 60, 0.4);
+    --card-border: rgba(0, 217, 255, 0.15);
+  }
+
+  html, body {
+    width:100%; height:100%;
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 50%, #0d1535 100%);
+    color:#fff;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(2px 2px at 20% 30%, white, transparent),
+      radial-gradient(2px 2px at 60% 70%, white, transparent),
+      radial-gradient(1px 1px at 50% 50%, white, transparent),
+      radial-gradient(1px 1px at 80% 10%, white, transparent),
+      radial-gradient(2px 2px at 90% 60%, white, transparent),
+      radial-gradient(1px 1px at 33% 80%, white, transparent),
+      radial-gradient(1px 1px at 15% 15%, white, transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    animation: stars 120s linear infinite;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  @keyframes stars {
+    to { background-position: 200% 200%; }
+  }
+
+  /* Custom cursor */
+  #cursor {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--primary-cyan);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+    mix-blend-mode: screen;
+  }
+
+  #cursor.expand {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--primary-cyan);
+  }
+
+  #cursor-ring {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(5, 7, 20, 0.6);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+  }
+
+  .logo-icon::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 16px;
+  }
+
+  .btn {
+    padding: 12px 32px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    font-family: inherit;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--primary-cyan);
+    color: var(--primary-cyan);
+    background: rgba(0, 217, 255, 0.05);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-pink));
+    color: white;
+    box-shadow: 0 4px 24px rgba(0, 217, 255, 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 217, 255, 0.4);
+  }
+
+  /* Main container */
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* Left side - Canvas area */
+  .canvas-section {
+    position: sticky;
+    top: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 600px;
+  }
+
+  #canvas-container {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    border-radius: 24px;
+    background: rgba(10, 15, 35, 0.4);
+    border: 1px solid rgba(0, 217, 255, 0.1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  #three-canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Dotted connection line overlay */
+  .connection-line {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    width: 2px;
+    height: 80%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .connection-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+      transparent 0%, 
+      var(--primary-cyan) 20%,
+      var(--primary-cyan) 80%,
+      transparent 100%
+    );
+    opacity: 0.3;
+    background-size: 2px 8px;
+    background-repeat: repeat-y;
+    animation: lineFlow 3s linear infinite;
+  }
+
+  @keyframes lineFlow {
+    to { background-position: 0 100px; }
+  }
+
+  .dot-marker {
+    position: absolute;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-cyan);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 24px var(--primary-cyan);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    50% { transform: translateX(-50%) scale(1.2); opacity: 0.8; }
+  }
+
+  /* Right side - Feature cards */
+  .features-section {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .section-header {
+    margin-bottom: 24px;
+  }
+
+  .section-subtitle {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary-cyan);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 500px;
+  }
+
+  /* Feature cards */
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 32px;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+      rgba(0, 217, 255, 0.05) 0%,
+      transparent 50%,
+      rgba(255, 61, 154, 0.05) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .feature-card:hover {
+    transform: translateX(8px);
+    border-color: var(--primary-cyan);
+    box-shadow: 0 8px 40px rgba(0, 217, 255, 0.15);
+  }
+
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .feature-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(0, 217, 255, 0.6);
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.15), rgba(255, 61, 154, 0.15));
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .card-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .card-description {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: fixed;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .scroll-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .scroll-dot.active {
+    height: 32px;
+    background: var(--primary-cyan);
+    border-radius: 3px;
+    box-shadow: 0 0 12px var(--primary-cyan);
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .container {
+      grid-template-columns: 1fr;
+      padding: 100px 24px;
     }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      color: #fff;
-      overflow-x: hidden;
-      background: transparent;
-    }
-    
-    /* 3D CANVAS */
-    #canvas3d {
-      position: fixed;
+
+    .canvas-section {
+      position: relative;
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
+      min-height: 400px;
     }
-    
-    /* NAVIGATION */
+
+    #canvas-container {
+      height: 400px;
+    }
+
     nav {
-      position: fixed;
-      top: 35px;
-      right: 60px;
-      z-index: 100;
-      display: flex;
-      gap: 25px;
-    }
-    
-    .nav-pill {
-      padding: 14px 40px;
-      background: rgba(15, 25, 45, 0.7);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 35px;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-decoration: none;
-      color: rgba(255, 255, 255, 0.9);
-      transition: all 0.4s ease;
-      backdrop-filter: blur(15px);
-      font-weight: 400;
-      text-transform: uppercase;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    .nav-pill:hover {
-      background: rgba(0, 255, 255, 0.15);
-      border-color: rgba(0, 255, 255, 0.8);
-      color: #fff;
-      box-shadow: 0 0 35px rgba(0, 255, 255, 0.4);
-      transform: translateY(-2px);
-    }
-    
-    .logo {
-      position: fixed;
-      top: 45px;
-      left: 60px;
-      z-index: 100;
-      font-size: 14px;
-      letter-spacing: 6px;
-      font-weight: 400;
-      opacity: 1;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    }
-    
-    /* CONTENT */
-    .content {
-      position: relative;
-      z-index: 1;
-    }
-    
-    .hero {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    
-    .hero-text {
-      max-width: 1000px;
-      padding: 0 50px;
-      animation: fadeIn 1.5s ease;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .hero h1 {
-      font-size: clamp(70px, 13vw, 160px);
-      font-weight: 300;
-      line-height: 0.88;
-      letter-spacing: -4px;
-      margin-bottom: 50px;
-      text-shadow: 0 0 80px rgba(0, 255, 255, 0.4);
-      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.6) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .hero p {
-      font-size: 13px;
-      line-height: 2.2;
-      letter-spacing: 4px;
-      opacity: 0.7;
-      max-width: 750px;
-      margin: 0 auto 70px;
-      font-weight: 300;
-      color: rgba(0, 255, 255, 0.8);
-    }
-    
-    .cta-buttons {
-      display: flex;
-      gap: 25px;
-      justify-content: center;
-    }
-    
-    .btn {
-      padding: 20px 55px;
-      font-size: 11px;
-      letter-spacing: 3px;
-      border: none;
-      background: none;
-      color: #fff;
-      text-decoration: none;
-      cursor: none;
-      font-weight: 300;
-      transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
-      text-transform: uppercase;
-    }
-    
-    .btn-primary {
-      background: rgba(0, 255, 255, 0.2);
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 35px;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-    }
-    
-    .btn-primary:hover {
-      background: rgba(0, 255, 255, 0.3);
-      border-color: rgba(0, 255, 255, 0.9);
-      box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
-      transform: translateY(-3px);
-    }
-    
-    .btn-secondary {
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: 35px;
-      backdrop-filter: blur(15px);
-    }
-    
-    .btn-secondary:hover {
-      border-color: rgba(255, 255, 255, 0.6);
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-3px);
-    }
-    
-    /* SPINE SCROLL SECTION */
-    .spine-section {
-      min-height: 220vh;
-      position: relative;
-      padding: 150px 0;
-    }
-    
-    .spine-container {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: grid;
-      grid-template-columns: minmax(420px, 1fr) minmax(420px, 520px);
-      gap: 40px;
-      align-items: center;
-      justify-content: center;
-      padding: 0 60px;
-    }
-    
-    /* 3D SPINE */
-    .spine-3d {
-      position: relative;
-      width: 100%;
-      height: 78vh;
-      min-height: 520px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 30px;
-      background: rgba(15, 25, 45, 0.24);
-      border: 1px solid rgba(0, 255, 255, 0.12);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 18px 80px rgba(0,0,0,0.55), 0 0 70px rgba(0,255,255,0.06);
-    }
-    
-    #spineCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-    
-    /* FEATURE RAIL (readable, premium; replaces orbit) */
-    .feature-rail {
-      position: relative;
-      height: 78vh;
-      min-height: 520px;
-      overflow: auto;
-      padding: 6px;
-      border-radius: 30px;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(0,255,255,0.25) transparent;
+      padding: 24px;
     }
 
-    .feature-rail::-webkit-scrollbar { width: 8px; }
-    .feature-rail::-webkit-scrollbar-track { background: transparent; }
-    .feature-rail::-webkit-scrollbar-thumb {
-      background: rgba(0, 255, 255, 0.18);
-      border-radius: 999px;
+    .scroll-indicator {
+      display: none;
     }
+  }
 
-    .feature-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding: 8px;
-    }
+  /* Loading */
+  #loading {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-darker);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    transition: opacity 0.8s ease;
+  }
 
-    .feature-item {
-      position: relative;
-      border-radius: 24px;
-      padding: 22px 22px;
-      background: rgba(15, 25, 45, 0.46);
-      border: 1px solid rgba(0, 255, 255, 0.14);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 12px 55px rgba(0, 0, 0, 0.55);
-      transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), border-color 260ms ease, box-shadow 260ms ease, background 260ms ease;
-      will-change: transform;
-    }
+  #loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-    .feature-item:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.18);
-      box-shadow: 0 16px 70px rgba(0,0,0,0.62), 0 0 45px rgba(0,255,255,0.10);
-      background: rgba(15, 25, 45, 0.52);
-    }
+  .loader {
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(0, 217, 255, 0.2);
+    border-top-color: var(--primary-cyan);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
 
-    .feature-item.is-active {
-      border-color: rgba(0, 255, 255, 0.42);
-      box-shadow: 0 18px 80px rgba(0,0,0,0.62), 0 0 65px rgba(0,255,255,0.14);
-      background: rgba(0, 255, 255, 0.08);
-    }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 
-    .feature-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 10px;
-    }
-
-    .feature-kicker {
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      opacity: 0.72;
-      color: rgba(0, 255, 255, 0.85);
-    }
-
-    .feature-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: rgba(0, 255, 255, 0.10);
-      border: 1px solid rgba(0, 255, 255, 0.18);
-      box-shadow: 0 0 24px rgba(0, 255, 255, 0.08);
-      flex: 0 0 auto;
-      font-size: 18px;
-    }
-
-    .feature-title {
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: 0.2px;
-      margin-bottom: 8px;
-      color: rgba(255,255,255,0.92);
-      text-shadow: 0 0 18px rgba(0,255,255,0.12);
-    }
-
-    .feature-desc {
-      font-size: 13px;
-      line-height: 1.9;
-      opacity: 0.80;
-      color: rgba(190, 220, 255, 0.72);
-    }
-    
-    .card-num {
-      font-size: 11px;
-      letter-spacing: 3px;
-      opacity: 0.4;
-      margin-bottom: 25px;
-      font-weight: 300;
-      color: rgba(0, 255, 255, 0.8);
-    }
-    
-    .card-icon {
-      width: 70px;
-      height: 70px;
-      background: rgba(0, 255, 255, 0.12);
-      border: 1px solid rgba(0, 255, 255, 0.35);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 30px;
-      font-size: 28px;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
-    }
-    
-    .feature-card h3 {
-      font-size: 24px;
-      font-weight: 400;
-      margin-bottom: 20px;
-      letter-spacing: 0.5px;
-      color: #fff;
-      text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    }
-    
-    .feature-card p {
-      font-size: 14px;
-      line-height: 1.9;
-      opacity: 0.65;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.85);
-    }
-    
-    /* SECTION HEADER */
-    .section-header {
-      text-align: center;
-      margin-bottom: 100px;
-      position: relative;
-      z-index: 10;
-    }
-    
-    .section-subtitle {
-      font-size: 12px;
-      letter-spacing: 5px;
-      opacity: 0.5;
-      margin-bottom: 25px;
-      font-weight: 300;
-      text-transform: uppercase;
-      color: rgba(0, 255, 255, 0.9);
-    }
-    
-    .section-title {
-      font-size: clamp(55px, 9vw, 110px);
-      font-weight: 300;
-      line-height: 1;
-      letter-spacing: -3px;
-      max-width: 1000px;
-      margin: 0 auto;
-      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.6) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    /* FOOTER */
-    footer {
-      padding: 120px 60px 60px;
-      text-align: center;
-      border-top: 1px solid rgba(0, 255, 255, 0.08);
-      position: relative;
-      z-index: 10;
-    }
-    
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1400px;
-      margin: 0 auto 60px;
-    }
-    
-    .footer-links {
-      display: flex;
-      gap: 45px;
-    }
-    
-    .footer-links a {
-      font-size: 11px;
-      color: #fff;
-      text-decoration: none;
-      opacity: 0.5;
-      transition: opacity 0.3s;
-      letter-spacing: 3px;
-      font-weight: 300;
-    }
-    
-    .footer-links a:hover {
-      opacity: 1;
-    }
-    
-    .footer-bottom {
-      font-size: 10px;
-      opacity: 0.25;
-      letter-spacing: 3px;
-      font-weight: 300;
-    }
-    
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      nav { right: 30px; }
-      .logo { left: 30px; }
-      .feature-card { width: 320px; padding: 35px; }
-    }
-    
-    @media (max-width: 768px) {
-      body { cursor: auto; }
-      .cursor, .cursor-ring { display: none; }
-      nav { flex-direction: column; top: 20px; right: 20px; }
-      .logo { left: 20px; top: 30px; }
-      .cta-buttons { flex-direction: column; align-items: center; }
-      .spine-container {
-        grid-template-columns: 1fr;
-        padding: 0 20px;
-      }
-      .spine-3d, .feature-rail {
-        height: auto;
-        min-height: unset;
-      }
-      .feature-rail { max-height: 60vh; }
-    }
-  </style>
+  .load-text {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+  }
+</style>
 </head>
 <body>
-  <!-- Cursor -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-  
-  <!-- 3D Canvas -->
-  <canvas id="canvas3d"></canvas>
-  
-  <!-- Logo -->
-  <div class="logo">LIFEDOT</div>
-  
-  <!-- Navigation -->
-  <nav>
-    <a href="login.html" class="nav-pill">LOGIN</a>
-    <a href="register.html" class="nav-pill">START</a>
-  </nav>
-  
-  <!-- Content -->
-  <div class="content">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-text">
-        <h1>YOUR HEALTH<br>MONITORED</h1>
-        <p>REAL-TIME MONITORING · EMERGENCY ALERTS · SECURE RECORDS</p>
-        <div class="cta-buttons">
-          <a href="register.html" class="btn btn-primary">GET STARTED</a>
-          <a href="flowchart.html" class="btn btn-secondary">VIEW WORKFLOW</a>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Spine Scroll Section -->
-    <section class="spine-section">
-      <div class="section-header">
-        <div class="section-subtitle">FEATURES</div>
-        <h2 class="section-title">Advanced Health<br>Monitoring</h2>
-      </div>
-      
-      <div class="spine-container">
-        <div class="spine-3d">
-          <canvas id="spineCanvas"></canvas>
-        </div>
-        
-        <div class="feature-rail" id="featureRail">
-          <div class="feature-list" id="featureList"></div>
-        </div>
-      </div>
-    </section>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="loader"></div>
+  <div class="load-text">Initializing...</div>
+</div>
+
+<!-- Cursors -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <span>LIFEDOT</span>
   </div>
-  
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <div class="logo">LIFEDOT</div>
-      <div class="footer-links">
-        <a href="flowchart.html">WORKFLOW</a>
-        <a href="login.html">LOGIN</a>
-        <a href="register.html">REGISTER</a>
+  <div class="nav-buttons">
+    <a href="login.html" class="btn btn-outline">LOGIN</a>
+    <a href="register.html" class="btn btn-primary">START</a>
+  </div>
+</nav>
+
+<!-- Scroll indicator -->
+<div class="scroll-indicator">
+  <div class="scroll-dot active"></div>
+  <div class="scroll-dot"></div>
+  <div class="scroll-dot"></div>
+  <div class="scroll-dot"></div>
+  <div class="scroll-dot"></div>
+</div>
+
+<!-- Main content -->
+<div class="container">
+  <!-- Left: Canvas -->
+  <div class="canvas-section">
+    <div id="canvas-container">
+      <canvas id="three-canvas"></canvas>
+      <div class="connection-line">
+        <div class="dot-marker" style="top: 50%"></div>
       </div>
     </div>
-    <div class="footer-bottom">
-      © 2026 LIFEDOT · ALL RIGHTS RESERVED
+  </div>
+
+  <!-- Right: Features -->
+  <div class="features-section">
+    <div class="section-header">
+      <div class="section-subtitle">Emergency Response</div>
+      <div class="section-title">
+        Automatic notifications to emergency contacts when critical conditions are detected, ensuring rapid response.
+      </div>
     </div>
-  </footer>
+
+    <div class="feature-card" onclick="window.location.href='dashboard.html'">
+      <div class="card-header">
+        <div class="feature-label">Feature 03</div>
+        <div class="feature-icon">📋</div>
+      </div>
+      <div class="card-title">Medical Records</div>
+      <div class="card-description">
+        Securely store and manage all medical reports in one encrypted location with easy access anytime.
+      </div>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='dashboard.html'">
+      <div class="card-header">
+        <div class="feature-label">Feature 04</div>
+        <div class="feature-icon">🧠</div>
+      </div>
+      <div class="card-title">AI Analysis</div>
+      <div class="card-description">
+        Machine learning algorithms analyze your health patterns to provide predictive insights and recommendations.
+      </div>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='dashboard.html'">
+      <div class="card-header">
+        <div class="feature-label">Feature 05</div>
+        <div class="feature-icon">📱</div>
+      </div>
+      <div class="card-title">Multi-Platform</div>
+      <div class="card-description">
+        Access your health data anywhere, on any device, with seamless synchronization across all platforms.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── CURSOR ────────────────────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.1;
+  ry += (my - ry) * 0.1;
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, .feature-card, .scroll-dot').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+});
+
+// ─── THREE.JS SCENE ────────────────────────────────────────────────────────
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+camera.position.z = 8;
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+scene.add(ambientLight);
+
+const pointLight1 = new THREE.PointLight(0x00d9ff, 2, 20);
+pointLight1.position.set(5, 5, 5);
+scene.add(pointLight1);
+
+const pointLight2 = new THREE.PointLight(0xff3d9a, 2, 20);
+pointLight2.position.set(-5, -5, 0);
+scene.add(pointLight2);
+
+// Main central sphere (DNA/health core)
+const sphereGeo = new THREE.SphereGeometry(1.2, 32, 32);
+const sphereMat = new THREE.MeshStandardMaterial({
+  color: 0x00d9ff,
+  emissive: 0x002244,
+  metalness: 0.8,
+  roughness: 0.2,
+  transparent: true,
+  opacity: 0.9
+});
+const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+scene.add(sphere);
+
+// Orbiting rings (health data layers)
+const rings = [];
+for (let i = 0; i < 3; i++) {
+  const ringGeo = new THREE.TorusGeometry(1.8 + i * 0.5, 0.04, 8, 64);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: i === 0 ? 0x00d9ff : i === 1 ? 0x00ff99 : 0xff3d9a,
+    emissive: i === 0 ? 0x001122 : i === 1 ? 0x002211 : 0x220011,
+    transparent: true,
+    opacity: 0.6,
+    metalness: 0.9,
+    roughness: 0.1
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI / 2 + (i * Math.PI / 6);
+  ring.rotation.y = i * Math.PI / 4;
+  scene.add(ring);
+  rings.push(ring);
+}
+
+// Particles (health data points)
+const particlesGeo = new THREE.BufferGeometry();
+const particlesCount = 800;
+const posArray = new Float32Array(particlesCount * 3);
+const colArray = new Float32Array(particlesCount * 3);
+
+for (let i = 0; i < particlesCount * 3; i += 3) {
+  const r = 3 + Math.random() * 4;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.random() * Math.PI;
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="assets/js/immersive.js"></script>
-  <script>
-    // Three.js Background Scene
-    const canvas = document.getElementById('canvas3d');
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  posArray[i] = r * Math.sin(phi) * Math.cos(theta);
+  posArray[i + 1] = r * Math.cos(phi);
+  posArray[i + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+  // Cyan/pink gradient colors
+  const colorChoice = Math.random();
+  if (colorChoice < 0.6) {
+    colArray[i] = 0;
+    colArray[i + 1] = 0.85;
+    colArray[i + 2] = 1;
+  } else {
+    colArray[i] = 1;
+    colArray[i + 1] = 0.24;
+    colArray[i + 2] = 0.6;
+  }
+}
+
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+particlesGeo.setAttribute('color', new THREE.BufferAttribute(colArray, 3));
+
+const particlesMat = new THREE.PointsMaterial({
+  size: 0.05,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.8,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false
+});
+
+const particles = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particles);
+
+// DNA helix effect (health timeline)
+const helixGroup = new THREE.Group();
+const helixCount = 30;
+for (let i = 0; i < helixCount; i++) {
+  const t = (i / helixCount) * Math.PI * 4;
+  const radius = 0.5;
+  
+  const sphere1 = new THREE.Mesh(
+    new THREE.SphereGeometry(0.06, 8, 8),
+    new THREE.MeshStandardMaterial({
+      color: 0x00d9ff,
+      emissive: 0x002244,
+      transparent: true,
+      opacity: 0.8
+    })
+  );
+  sphere1.position.set(
+    Math.cos(t) * radius,
+    (i / helixCount - 0.5) * 4,
+    Math.sin(t) * radius
+  );
+  helixGroup.add(sphere1);
+
+  const sphere2 = new THREE.Mesh(
+    new THREE.SphereGeometry(0.06, 8, 8),
+    new THREE.MeshStandardMaterial({
+      color: 0xff3d9a,
+      emissive: 0x220011,
+      transparent: true,
+      opacity: 0.8
+    })
+  );
+  sphere2.position.set(
+    Math.cos(t + Math.PI) * radius,
+    (i / helixCount - 0.5) * 4,
+    Math.sin(t + Math.PI) * radius
+  );
+  helixGroup.add(sphere2);
+}
+scene.add(helixGroup);
+
+// Mouse interaction
+let mouseX = 0, mouseY = 0;
+let targetX = 0, targetY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+  mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+// Animation
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsed = clock.getElapsedTime();
+
+  // Sphere pulse
+  sphere.scale.setScalar(1 + Math.sin(elapsed * 2) * 0.05);
+  sphere.rotation.y = elapsed * 0.3;
+
+  // Rings rotation
+  rings.forEach((ring, i) => {
+    ring.rotation.z = elapsed * (0.2 + i * 0.1);
+    ring.rotation.x = Math.PI / 2 + (i * Math.PI / 6) + Math.sin(elapsed + i) * 0.1;
+  });
+
+  // Particles rotation
+  particles.rotation.y = elapsed * 0.05;
+  particles.rotation.x = elapsed * 0.02;
+
+  // Helix rotation
+  helixGroup.rotation.y = elapsed * 0.4;
+
+  // Camera smooth follow mouse
+  targetX = mouseX * 0.3;
+  targetY = mouseY * 0.3;
+  camera.position.x += (targetX - camera.position.x) * 0.05;
+  camera.position.y += (targetY - camera.position.y) * 0.05;
+  camera.lookAt(scene.position);
+
+  // Lights animation
+  pointLight1.position.x = Math.cos(elapsed) * 5;
+  pointLight1.position.z = Math.sin(elapsed) * 5;
+  pointLight2.position.x = Math.sin(elapsed * 0.7) * 4;
+  pointLight2.position.z = Math.cos(elapsed * 0.7) * 4;
+
+  renderer.render(scene, camera);
+}
+
+// Handle resize
+window.addEventListener('resize', () => {
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width, height);
+});
+
+// ─── SCROLL DOTS ───────────────────────────────────────────────────────────
+const scrollDots = document.querySelectorAll('.scroll-dot');
+const featureCards = document.querySelectorAll('.feature-card');
+
+window.addEventListener('scroll', () => {
+  const scrollPos = window.scrollY;
+  const windowHeight = window.innerHeight;
+  
+  featureCards.forEach((card, i) => {
+    const cardTop = card.offsetTop;
+    const cardHeight = card.offsetHeight;
     
-    scene.fog = new THREE.FogExp2(0x0a0e1a, 0.04);
-    camera.position.set(0, 5, 15);
-    
-    // Particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 3500;
-    const posArray = new Float32Array(particlesCount * 3);
-    const colorArray = new Float32Array(particlesCount * 3);
-    
-    for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 60;
-      posArray[i + 1] = (Math.random() - 0.5) * 60;
-      posArray[i + 2] = (Math.random() - 0.5) * 60;
-      
-      const colorChoice = Math.random();
-      if (colorChoice < 0.4) {
-        colorArray[i] = 0;
-        colorArray[i + 1] = 1;
-        colorArray[i + 2] = 1;
-      } else if (colorChoice < 0.7) {
-        colorArray[i] = 0.4;
-        colorArray[i + 1] = 0;
-        colorArray[i + 2] = 1;
-      } else {
-        colorArray[i] = 0;
-        colorArray[i + 1] = 0.5;
-        colorArray[i + 2] = 1;
+    if (scrollPos + windowHeight / 2 > cardTop && scrollPos < cardTop + cardHeight) {
+      scrollDots.forEach(dot => dot.classList.remove('active'));
+      if (scrollDots[i + 1]) scrollDots[i + 1].classList.add('active');
+    }
+  });
+});
+
+scrollDots.forEach((dot, i) => {
+  dot.addEventListener('click', () => {
+    if (i === 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const targetCard = featureCards[i - 1];
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
-    
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-    const basePosArray = posArray.slice(0);
-    
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.06,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending
-    });
-    
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-    
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0x0a2e4a, 0.6);
-    scene.add(ambientLight);
-    
-    const pointLight1 = new THREE.PointLight(0x00ffff, 1.2, 100);
-    pointLight1.position.set(12, 12, 12);
-    scene.add(pointLight1);
-    
-    const pointLight2 = new THREE.PointLight(0x0066ff, 1, 100);
-    pointLight2.position.set(-12, -12, -12);
-    scene.add(pointLight2);
-    
-    // Mouse movement
-    let targetX = 0, targetY = 0;
-    document.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX / window.innerWidth) * 2 - 1;
-      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
-    
-    // Scroll
-    let scrollY = 0;
-    window.addEventListener('scroll', () => {
-      scrollY = window.scrollY;
-    });
-    
-    // Background Animation
-    function animateBackground() {
-      requestAnimationFrame(animateBackground);
+  });
+});
 
-      const t = performance.now() * 0.001;
-      const scrollFactor = scrollY * 0.0012;
+// ─── LOADING ───────────────────────────────────────────────────────────────
+setTimeout(() => {
+  document.getElementById('loading').classList.add('hidden');
+  animate();
+}, 1500);
+</script>
 
-      // Gentle wave distortion across the field (keeps it feeling "alive" but calm)
-      for (let i = 0; i < particlesCount * 3; i += 3) {
-        const bx = basePosArray[i];
-        const by = basePosArray[i + 1];
-        const bz = basePosArray[i + 2];
-
-        posArray[i] = bx + Math.sin(t * 0.35 + bz * 0.08 + scrollFactor * 0.5) * 0.10;
-        posArray[i + 1] = by + Math.sin(t * 0.40 + bx * 0.06 + scrollFactor * 0.5) * 0.12;
-        posArray[i + 2] = bz + Math.cos(t * 0.32 + by * 0.06 + scrollFactor * 0.5) * 0.08;
-      }
-      particlesGeometry.attributes.position.needsUpdate = true;
-      
-      particlesMesh.rotation.y += 0.00025;
-      particlesMesh.rotation.x += 0.00012;
-      
-      camera.position.x += (targetX * 1.2 - camera.position.x) * 0.04;
-      camera.position.y += (targetY * 1.2 - camera.position.y + 4.5) * 0.04;
-      camera.position.z = 15 - scrollY * 0.0025;
-      
-      renderer.render(scene, camera);
-    }
-    animateBackground();
-    
-    // Spine Canvas Setup
-    const spineCanvas = document.getElementById('spineCanvas');
-    const spineScene = new THREE.Scene();
-    const spineCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const spineRenderer = new THREE.WebGLRenderer({ canvas: spineCanvas, alpha: true, antialias: true });
-    spineRenderer.setSize(window.innerWidth, window.innerHeight);
-    spineRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
-    spineCamera.position.set(0, 0, 8);
-    
-    // Create Spine Structure (clean health-style: glowing path + active orb)
-    const spineGroup = new THREE.Group();
-
-    // A gentle S-curve (organic, medical, readable)
-    const spinePts = [];
-    const spineCount = 10;
-    for (let i = 0; i < spineCount; i++) {
-      const t = i / (spineCount - 1);
-      const y = (t - 0.5) * 8.2;
-      const x = Math.sin(t * Math.PI * 2) * 0.22;
-      const z = Math.cos(t * Math.PI * 1.6) * 0.14;
-      spinePts.push(new THREE.Vector3(x, y, z));
-    }
-
-    const spineCurve = new THREE.CatmullRomCurve3(spinePts);
-    const spineLinePts = spineCurve.getPoints(180);
-    const spineLineGeo = new THREE.BufferGeometry().setFromPoints(spineLinePts);
-    const spineLineMat = new THREE.LineBasicMaterial({
-      color: 0x00ffff,
-      transparent: true,
-      opacity: 0.26
-    });
-    const spineLine = new THREE.Line(spineLineGeo, spineLineMat);
-    spineGroup.add(spineLine);
-
-    // Soft dotted nodes along the path
-    const nodeCount = 22;
-    const nodePositions = new Float32Array(nodeCount * 3);
-    for (let i = 0; i < nodeCount; i++) {
-      const tt = i / (nodeCount - 1);
-      const p = spineCurve.getPointAt(tt);
-      nodePositions[i * 3 + 0] = p.x;
-      nodePositions[i * 3 + 1] = p.y;
-      nodePositions[i * 3 + 2] = p.z;
-    }
-    const nodesGeo = new THREE.BufferGeometry();
-    nodesGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
-    const nodesMat = new THREE.PointsMaterial({
-      color: 0x00ffff,
-      size: 0.10,
-      transparent: true,
-      opacity: 0.45,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    const spineNodes = new THREE.Points(nodesGeo, nodesMat);
-    spineGroup.add(spineNodes);
-
-    // Active orb that moves along the curve (high-end, clear feedback)
-    const orbGeo = new THREE.SphereGeometry(0.22, 22, 22);
-    const orbMat = new THREE.MeshStandardMaterial({
-      color: 0x00ffff,
-      emissive: 0x00ffff,
-      emissiveIntensity: 0.40,
-      roughness: 0.2,
-      metalness: 0.05,
-      transparent: true,
-      opacity: 0.65
-    });
-    const activeOrb = new THREE.Mesh(orbGeo, orbMat);
-    spineGroup.add(activeOrb);
-    
-    spineScene.add(spineGroup);
-    
-    // Spine Lights (soft clinical glow; no harsh highlights)
-    const spineAmbient = new THREE.AmbientLight(0x0f2238, 1.0);
-    spineScene.add(spineAmbient);
-
-    const spineKey = new THREE.DirectionalLight(0x9adfff, 0.55);
-    spineKey.position.set(3, 6, 5);
-    spineScene.add(spineKey);
-
-    const spineLight = new THREE.PointLight(0x00ffff, 0.55, 18);
-    spineLight.position.set(2.6, 0.2, 3.4);
-    spineScene.add(spineLight);
-    
-    // Cards Data
-    const cardsData = [
-      { icon: '💓', title: 'Real-Time Monitoring', desc: 'Track your heart rate 24/7 with instant updates and intelligent anomaly detection powered by advanced sensors.' },
-      { icon: '🚨', title: 'Emergency Alerts', desc: 'Automatic notifications to emergency contacts when critical conditions are detected, ensuring rapid response.' },
-      { icon: '📊', title: 'Medical Records', desc: 'Securely store and manage all medical reports in one encrypted location with easy access anytime.' },
-      { icon: '🧠', title: 'AI Analysis', desc: 'Machine learning algorithms analyze your health patterns to provide predictive insights and recommendations.' },
-      { icon: '📱', title: 'Multi-Platform', desc: 'Access your health data anywhere, on any device, with seamless synchronization across all platforms.' },
-      { icon: '🔒', title: 'Privacy First', desc: 'End-to-end encryption ensures your sensitive health data remains completely private and secure.' }
-    ];
-    
-    // Create Feature Rail (replaces orbiting cards)
-    const featureList = document.getElementById('featureList');
-    const featureRail = document.getElementById('featureRail');
-    cardsData.forEach((card, i) => {
-      const item = document.createElement('div');
-      item.className = 'feature-item';
-      item.dataset.index = String(i);
-      item.setAttribute('data-cursor', '');
-      item.innerHTML = `
-        <div class="feature-top">
-          <div class="feature-kicker">FEATURE ${String(i + 1).padStart(2, '0')}</div>
-          <div class="feature-icon" aria-hidden="true">${card.icon}</div>
-        </div>
-        <div class="feature-title">${card.title}</div>
-        <div class="feature-desc">${card.desc}</div>
-      `;
-      item.addEventListener('click', () => {
-        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      });
-      featureList.appendChild(item);
-    });
-    const items = Array.from(document.querySelectorAll('.feature-item'));
-    
-    // Animate Spine + rail (pinned scroll narrative, calm + premium)
-    const damp = (current, target, lambda, dt) => {
-      // dt-aware exponential smoothing; stable across refresh rates
-      return current + (target - current) * (1 - Math.exp(-lambda * dt));
-    };
-
-    // active step tracking (intersection observer)
-    let targetIndex = 0;
-    const io = new IntersectionObserver((entries) => {
-      // pick the most visible intersecting element
-      let best = null;
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
-      }
-      if (best && best.target) {
-        const idx = Number(best.target.dataset.index);
-        if (!Number.isNaN(idx)) targetIndex = idx;
-      }
-    }, { root: featureRail, threshold: [0.55, 0.7, 0.85] });
-    items.forEach((el) => io.observe(el));
-
-    let smoothIndex = 0;
-    let lastSpineT = performance.now();
-
-    function animateSpine(now) {
-      requestAnimationFrame(animateSpine);
-
-      const dt = Math.min(0.05, Math.max(0.001, (now - lastSpineT) / 1000));
-      lastSpineT = now;
-      const t = now * 0.001;
-
-      const spineSection = document.querySelector('.spine-section');
-      const rect = spineSection.getBoundingClientRect();
-      const sectionHeight = spineSection.offsetHeight;
-      const progress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - window.innerHeight)));
-
-      // Smooth the active step (inertia)
-      smoothIndex = damp(smoothIndex, targetIndex, 10.0, dt);
-      const activeIndex = Math.round(smoothIndex);
-      const activeNorm = cardsData.length <= 1 ? 0 : smoothIndex / (cardsData.length - 1);
-
-      // Rail active styling
-      items.forEach((el, i) => el.classList.toggle('is-active', i === activeIndex));
-
-      // Spine motion: tiny rotation tied to scroll progress (editorial, calm)
-      spineGroup.rotation.y = (progress - 0.5) * 0.35;
-      spineGroup.rotation.x = Math.sin(t * 0.25) * 0.03;
-      spineGroup.rotation.z = Math.cos(t * 0.22) * 0.02;
-
-      // Active orb follows the curve
-      const p = spineCurve.getPointAt(Math.max(0, Math.min(1, activeNorm)));
-      activeOrb.position.copy(p);
-      activeOrb.material.emissiveIntensity = 0.32 + Math.sin(t * 1.1) * 0.06;
-      activeOrb.material.opacity = 0.55 + Math.sin(t * 1.1) * 0.05;
-
-      // Keep everything low-glare
-      spineLineMat.opacity = 0.20 + Math.sin(t * 0.6) * 0.02;
-      nodesMat.opacity = 0.34 + Math.sin(t * 0.65) * 0.03;
-      spineLight.intensity = 0.50 + Math.sin(t * 0.7) * 0.05;
-
-      spineRenderer.render(spineScene, spineCamera);
-    }
-    requestAnimationFrame(animateSpine);
-    
-    // Resize
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      
-      spineCamera.aspect = window.innerWidth / window.innerHeight;
-      spineCamera.updateProjectionMatrix();
-      spineRenderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
 </body>
 </html>
