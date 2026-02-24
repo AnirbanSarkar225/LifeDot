@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HEART MONITOR — LIFEDOT</title>
+  <link rel="stylesheet" href="assets/css/immersive.css">
   <style>
     * {
       margin: 0;
@@ -323,7 +324,7 @@
     /* RESPONSIVE */
     @media (max-width: 768px) {
       body { cursor: auto; }
-      .cursor { display: none; }
+      .cursor, .cursor-ring { display: none; }
       .back-btn { left: 20px; top: 20px; }
       .pulse-container { width: 300px; height: 300px; }
     }
@@ -332,6 +333,7 @@
 <body>
   <!-- Custom Cursor -->
   <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
   
   <!-- 3D Scene -->
   <canvas id="scene"></canvas>
@@ -375,14 +377,8 @@
   </div>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/js/immersive.js"></script>
   <script>
-    // Custom Cursor
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    });
-    
     // Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);

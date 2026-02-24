@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WORKFLOW — LIFEDOT</title>
+  <link rel="stylesheet" href="assets/css/immersive.css">
   <style>
     * {
       margin: 0;
@@ -12,25 +13,10 @@
     }
     
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background: #000;
-      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.92);
       overflow-x: hidden;
-      cursor: none;
-    }
-    
-    /* CUSTOM CURSOR */
-    .cursor {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 1px solid rgba(0, 255, 255, 0.8);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-      transition: transform 0.1s ease;
-      mix-blend-mode: difference;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
     }
     
     /* 3D SCENE */
@@ -51,38 +37,37 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid rgba(0, 255, 255, 0.2);
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 255, 255, 0.12);
+      background: rgba(10, 16, 30, 0.35);
+      backdrop-filter: blur(18px);
     }
     
     .logo {
       font-size: 16px;
       letter-spacing: 3px;
-      font-weight: 600;
-      color: #00ffff;
-      text-shadow: 0 0 20px rgba(0, 255, 255, 1),
-                   0 0 40px rgba(0, 255, 255, 0.8);
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+      text-shadow: 0 0 26px rgba(0, 255, 255, 0.45);
     }
     
     .back-btn {
       padding: 12px 30px;
-      background: rgba(0, 255, 255, 0.15);
-      border: 2px solid rgba(0, 255, 255, 0.6);
-      color: #00ffff;
+      background: rgba(0, 255, 255, 0.10);
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      color: rgba(255, 255, 255, 0.90);
       font-size: 12px;
       letter-spacing: 2px;
-      cursor: none;
-      transition: all 0.3s;
-      font-family: 'Courier New', Courier, monospace;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
       text-decoration: none;
+      border-radius: 999px;
     }
     
     .back-btn:hover {
-      background: rgba(0, 255, 255, 0.25);
-      box-shadow: 0 0 35px rgba(0, 255, 255, 0.6);
+      background: rgba(0, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 45px rgba(0, 255, 255, 0.22);
+      transform: translateY(-1px);
     }
     
     /* CONTAINER */
@@ -102,23 +87,25 @@
     
     .page-title {
       font-size: clamp(40px, 6vw, 72px);
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: -1px;
       margin-bottom: 20px;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      text-shadow: 0 0 60px rgba(0, 255, 255, 0.15);
+      background: linear-gradient(180deg, #fff 0%, rgba(0, 255, 255, 0.55) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .page-title .highlight {
-      color: #00ffff;
-      text-shadow: 0 0 50px rgba(0, 255, 255, 1),
-                   0 0 100px rgba(0, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 1);
     }
     
     .subtitle {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.8);
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      color: rgba(190, 220, 255, 0.72);
+      letter-spacing: 4px;
+      text-transform: uppercase;
     }
     
     /* FLOW TABS */
@@ -132,100 +119,301 @@
     
     .tab-btn {
       padding: 16px 40px;
-      background: rgba(0, 255, 255, 0.1);
-      border: 2px solid rgba(0, 255, 255, 0.4);
-      color: #00ffff;
-      font-size: 13px;
+      background: rgba(15, 25, 45, 0.50);
+      border: 1px solid rgba(0, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 11px;
       letter-spacing: 2px;
-      cursor: none;
-      transition: all 0.3s;
-      font-family: 'Courier New', Courier, monospace;
-      font-weight: 600;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      font-weight: 400;
+      text-transform: uppercase;
+      border-radius: 999px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     
     .tab-btn:hover {
-      background: rgba(0, 255, 255, 0.2);
-      box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
-      transform: translateY(-3px);
+      background: rgba(0, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 0 45px rgba(0, 255, 255, 0.22);
+      transform: translateY(-2px);
     }
     
     .tab-btn.active {
-      background: rgba(0, 255, 255, 0.3);
-      border-color: #00ffff;
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.7);
+      background: rgba(0, 255, 255, 0.16);
+      border-color: rgba(0, 255, 255, 0.45);
+      box-shadow: 0 0 65px rgba(0, 255, 255, 0.22);
     }
-    
-    /* FLOWCHART CARD */
-    .flowchart-card {
-      background: rgba(0, 30, 40, 0.4);
-      backdrop-filter: blur(20px);
-      border: 2px solid rgba(0, 255, 255, 0.3);
-      padding: 50px;
-      margin-bottom: 50px;
-      box-shadow: 0 0 60px rgba(0, 255, 255, 0.2),
-                  inset 0 0 40px rgba(0, 255, 255, 0.05);
+
+    /* WORKFLOW EXPLORER */
+    .workflow-shell {
+      padding: 28px;
+      border-radius: 28px;
+      background: rgba(15, 25, 45, 0.42);
+      border: 1px solid rgba(0, 255, 255, 0.16);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 18px 80px rgba(0, 0, 0, 0.62), 0 0 70px rgba(0, 255, 255, 0.08);
     }
-    
-    .flowchart-container {
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid rgba(0, 255, 255, 0.2);
-      padding: 40px;
-      min-height: 500px;
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: 96px 1fr 420px;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .track {
+      position: sticky;
+      top: 140px;
+      height: calc(100vh - 200px);
+      border-radius: 999px;
+      background: rgba(6, 10, 20, 0.35);
+      border: 1px solid rgba(0, 255, 255, 0.10);
+      overflow: hidden;
+    }
+
+    .track::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(0, 255, 255, 0.00), rgba(0, 255, 255, 0.40), rgba(122, 92, 255, 0.18), rgba(0, 255, 255, 0.00));
+      opacity: 0.9;
+    }
+
+    .track-progress {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      width: 6px;
+      transform: translateX(-50%);
+      height: calc((100% - 36px) * var(--p, 0));
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(0, 255, 255, 0.85), rgba(122, 92, 255, 0.55), rgba(255, 43, 214, 0.18));
+      box-shadow: 0 0 45px rgba(0, 255, 255, 0.25);
+    }
+
+    .track-nodes {
+      position: absolute;
+      inset: 0;
+      padding: 18px 0;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      box-shadow: inset 0 0 50px rgba(0, 255, 255, 0.1);
     }
-    
-    .mermaid {
-      width: 100%;
+
+    .node {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(10, 16, 30, 0.55);
+      border: 1px solid rgba(0, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.88);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      letter-spacing: 1px;
+      transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1), border-color 280ms ease, background 280ms ease, box-shadow 280ms ease;
+      user-select: none;
+      pointer-events: auto;
+    }
+
+    .node:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.18);
+      background: rgba(0, 255, 255, 0.10);
+    }
+
+    .node.is-active {
+      border-color: rgba(0, 255, 255, 0.65);
+      box-shadow: 0 0 55px rgba(0, 255, 255, 0.22);
+      background: rgba(0, 255, 255, 0.14);
+      transform: scale(1.06);
+    }
+
+    .steps {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
     }
-    
-    /* INFO SECTION */
-    .info-section {
-      background: rgba(0, 30, 40, 0.3);
-      border-left: 4px solid #00ffff;
-      padding: 35px;
-      margin-top: 40px;
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.15);
+
+    .step-card {
+      position: relative;
+      border-radius: 26px;
+      padding: 26px 28px;
+      background: rgba(10, 16, 30, 0.55);
+      border: 1px solid rgba(0, 255, 255, 0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.55);
+      transform: translateZ(0);
+      transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), border-color 320ms ease, box-shadow 320ms ease;
     }
-    
-    .info-section h3 {
+
+    .step-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(0, 255, 255, 0.40);
+      box-shadow: 0 16px 70px rgba(0, 0, 0, 0.62), 0 0 50px rgba(0, 255, 255, 0.12);
+    }
+
+    .step-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+
+    .step-kicker {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(0, 255, 255, 0.75);
+      opacity: 0.9;
+    }
+
+    .step-badge {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.06);
+      white-space: nowrap;
+    }
+
+    .step-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       font-size: 22px;
       font-weight: 500;
-      margin-bottom: 20px;
-      color: #00ffff;
-      text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-      letter-spacing: 1px;
+      letter-spacing: 0.2px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 18px rgba(0, 255, 255, 0.12);
     }
-    
-    .info-section p {
-      font-size: 15px;
+
+    .step-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 255, 255, 0.10);
+      border: 1px solid rgba(0, 255, 255, 0.18);
+      box-shadow: 0 0 28px rgba(0, 255, 255, 0.10);
+      flex: 0 0 auto;
+    }
+
+    .step-desc {
+      font-size: 14px;
       line-height: 1.9;
-      color: rgba(255, 255, 255, 0.85);
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      color: rgba(190, 220, 255, 0.75);
+      margin-bottom: 16px;
+    }
+
+    .step-logic {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.78);
+      background: rgba(6, 10, 20, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+      overflow: auto;
+    }
+
+    .detail {
+      position: sticky;
+      top: 140px;
+      border-radius: 28px;
+      padding: 26px 26px;
+      background: rgba(10, 16, 30, 0.62);
+      border: 1px solid rgba(0, 255, 255, 0.20);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 18px 80px rgba(0, 0, 0, 0.62), 0 0 65px rgba(122, 92, 255, 0.08);
+      min-height: 420px;
+    }
+
+    .detail-kicker {
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(0, 255, 255, 0.75);
+      margin-bottom: 14px;
+    }
+
+    .detail-title {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+      background: linear-gradient(180deg, #fff 0%, rgba(122, 92, 255, 0.55) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .detail-text {
+      font-size: 14px;
+      line-height: 1.9;
+      color: rgba(190, 220, 255, 0.78);
+      margin-bottom: 18px;
+    }
+
+    .detail-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      border-radius: 18px;
+      padding: 14px 14px;
+      background: rgba(6, 10, 20, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .metric-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.58);
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      color: rgba(255, 255, 255, 0.9);
     }
     
     /* RESPONSIVE */
     @media (max-width: 768px) {
-      body { cursor: auto; }
-      .cursor { display: none; }
       nav { padding: 30px 20px; }
       .container { padding: 50px 20px; }
-      .flowchart-card { padding: 30px 20px; }
-      .flowchart-container { padding: 20px; }
+      .workflow-shell { padding: 18px; }
+      .workflow-grid { grid-template-columns: 1fr; }
+      .track { display: none; }
+      .detail { position: relative; top: auto; }
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 </head>
 <body>
-  <!-- Custom Cursor -->
+  <!-- Cursor (shared theme animates it) -->
   <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
   
   <!-- 3D Scene -->
   <canvas id="scene"></canvas>
@@ -246,79 +434,51 @@
     
     <!-- Flow Tabs -->
     <div class="flow-tabs">
-      <button class="tab-btn active" onclick="showFlowchart('monitoring')">
+      <button class="tab-btn active" data-flow="monitoring">
         📊 MONITORING FLOW
       </button>
-      <button class="tab-btn" onclick="showFlowchart('emergency')">
+      <button class="tab-btn" data-flow="emergency">
         🚨 EMERGENCY FLOW
       </button>
     </div>
     
-    <!-- Flowchart Card -->
-    <div class="flowchart-card">
-      <div class="flowchart-container">
-        <div class="mermaid" id="flowchartDiagram">
-          graph TD
-            A[START MONITORING] --> B[READ HEART RATE]
-            B --> C{BPM NORMAL?}
-            C -->|YES 60-100| D[DISPLAY BPM]
-            C -->|NO| E{CRITICAL?}
-            E -->|BPM < 40 OR > 150| F[🚨 TRIGGER ALERT]
-            E -->|BPM 40-59 OR 101-149| G[⚠️ SHOW WARNING]
-            F --> H[SEND EMAIL TO EMERGENCY CONTACT]
-            F --> I[DISPLAY ALERT MESSAGE]
-            G --> D
-            H --> D
-            I --> D
-            D --> J[WAIT 3 SECONDS]
-            J --> B
-            
-            style A fill:#001a33,stroke:#00ffff,stroke-width:3px,color:#00ffff
-            style F fill:#330000,stroke:#ff0064,stroke-width:3px,color:#ff0064
-            style H fill:#330000,stroke:#ff0064,stroke-width:3px,color:#ff0064
-            style D fill:#003320,stroke:#00ff88,stroke-width:2px,color:#00ff88
+    <!-- Workflow Explorer -->
+    <div class="workflow-shell" id="workflowShell">
+      <div class="workflow-grid">
+        <div class="track" id="track" style="--p: 0;">
+          <div class="track-progress" id="trackProgress"></div>
+          <div class="track-nodes" id="trackNodes"></div>
         </div>
-      </div>
-      
-      <div class="info-section" id="infoSection">
-        <h3>💡 MONITORING FLOW INFORMATION</h3>
-        <p>
-          This workflow shows how LifeDot continuously monitors your heart rate in real-time. 
-          The system checks your BPM every 3 seconds and automatically triggers emergency alerts 
-          when critical values are detected (below 40 or above 150 BPM). Warning messages are shown 
-          for borderline values, helping you stay informed about your heart health at all times.
-        </p>
+
+        <div class="steps" id="workflowSteps"></div>
+
+        <aside class="detail" id="workflowDetail" aria-live="polite"></aside>
       </div>
     </div>
   </div>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/js/immersive.js"></script>
   <script>
-    // Custom Cursor
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    });
-    
     // Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
-    camera.position.z = 5;
+    scene.fog = new THREE.FogExp2(0x060a14, 0.18);
+    camera.position.z = 6.2;
     
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2000;
+    const particlesCount = 2400;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
     
     for(let i = 0; i < particlesCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 15;
-      posArray[i + 1] = (Math.random() - 0.5) * 15;
-      posArray[i + 2] = (Math.random() - 0.5) * 15;
+      posArray[i] = (Math.random() - 0.5) * 18;
+      posArray[i + 1] = (Math.random() - 0.5) * 18;
+      posArray[i + 2] = (Math.random() - 0.5) * 18;
       
       colorArray[i] = 0;
       colorArray[i + 1] = Math.random() * 0.5 + 0.5;
@@ -327,9 +487,10 @@
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    const basePos = posArray.slice(0);
     
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.015,
+      size: 0.016,
       vertexColors: true,
       transparent: true,
       opacity: 0.7,
@@ -348,6 +509,19 @@
     function animate() {
       requestAnimationFrame(animate);
       
+      const t = performance.now() * 0.001;
+
+      for (let i = 0; i < particlesCount * 3; i += 3) {
+        const bx = basePos[i];
+        const by = basePos[i + 1];
+        const bz = basePos[i + 2];
+
+        posArray[i] = bx + Math.sin(t * 0.55 + bz * 0.75) * 0.08;
+        posArray[i + 1] = by + Math.cos(t * 0.60 + bx * 0.70) * 0.09;
+        posArray[i + 2] = bz + Math.sin(t * 0.45 + by * 0.65) * 0.07;
+      }
+      particlesGeometry.attributes.position.needsUpdate = true;
+
       particlesMesh.rotation.x += 0.0003;
       particlesMesh.rotation.y += 0.0005;
       
@@ -366,110 +540,274 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // Mermaid Initialization
-    mermaid.initialize({ 
-      startOnLoad: true,
-      theme: 'base',
-      themeVariables: {
-        primaryColor: '#001a33',
-        primaryTextColor: '#00ffff',
-        primaryBorderColor: '#00ffff',
-        lineColor: '#00ffff',
-        secondaryColor: '#003320',
-        tertiaryColor: '#330000',
-        fontSize: '16px'
+    // Interactive Workflow Explorer (scroll + click)
+    const flows = {
+      monitoring: {
+        kicker: 'Monitoring Flow',
+        title: 'Continuous Health Monitoring',
+        subtitle: 'A scroll-driven story of how LifeDot watches your BPM and reacts in real time.',
+        steps: [
+          {
+            badge: 'INIT',
+            icon: '▶️',
+            title: 'Start monitoring session',
+            desc: 'The device enters a continuous loop. The UI switches into live mode and starts listening for heart-rate updates.',
+            detail: 'Monitoring is optimized for clarity: a predictable loop, stable UI states, and visible feedback with each sampling tick.',
+            logic: `loop every 3s:\n  bpm = readSensor()\n  route(bpm)`
+          },
+          {
+            badge: 'SENSE',
+            icon: '💓',
+            title: 'Read heart rate',
+            desc: 'A single BPM reading is captured and normalized (noise filtering / smoothing can happen here).',
+            detail: 'This is where signal quality and sampling cadence matter. The UI should feel “always on”, not jittery.',
+            logic: `bpm = readHeartRate()\nif bpm is null:\n  show("No signal")`
+          },
+          {
+            badge: 'CHECK',
+            icon: '🧭',
+            title: 'Evaluate range',
+            desc: 'The reading is classified into Normal, Warning, or Critical ranges so actions remain deterministic.',
+            detail: 'Range logic is intentionally simple and transparent. Users trust systems they can understand.',
+            logic: `if 60<=bpm<=100: state="normal"\nelse if bpm<40 or bpm>150: state="critical"\nelse: state="warning"`
+          },
+          {
+            badge: 'NORMAL',
+            icon: '✅',
+            title: 'Display live BPM',
+            desc: 'Normal values update the dashboard without noise: clean numbers, subtle motion, no drama.',
+            detail: 'Normal should feel calm. Micro-animations reinforce “healthy status” without demanding attention.',
+            logic: `renderBpm(bpm)\nsetAccent("cyan")`
+          },
+          {
+            badge: 'WARN',
+            icon: '⚠️',
+            title: 'Show warning',
+            desc: 'Borderline values show a warning state while still keeping the live stream readable.',
+            detail: 'Warnings are noticeable but not alarming. The UI surfaces context: “what this means” and “what to do next.”',
+            logic: `renderBpm(bpm)\nshowBanner("Borderline")\nsetAccent("violet")`
+          },
+          {
+            badge: 'CRITICAL',
+            icon: '🚨',
+            title: 'Trigger alert + notify contacts',
+            desc: 'Critical values trigger emergency actions: alert UI, email/SOS workflow, and logging.',
+            detail: 'Critical is designed for speed. The UI collapses choices, confirms actions, and shows delivery status clearly.',
+            logic: `triggerAlertUI()\nsendEmergencyEmail()\nlogEvent("critical", bpm)`
+          }
+        ]
+      },
+      emergency: {
+        kicker: 'Emergency Flow',
+        title: 'Emergency Alert Dispatch',
+        subtitle: 'From detection → confirmation → dispatch → feedback. Built for clarity under stress.',
+        steps: [
+          {
+            badge: 'DETECT',
+            icon: '📡',
+            title: 'Emergency detected',
+            desc: 'An alert can be triggered automatically (critical BPM) or manually (user action).',
+            detail: 'Multiple entry points map to real life: automatic detection and manual overrides.',
+            logic: `source = autoCritical() ? "auto" : "manual"\nopenConfirm(source)`
+          },
+          {
+            badge: 'CONFIRM',
+            icon: '🧾',
+            title: 'Confirm action',
+            desc: 'A single confirmation step prevents accidental triggers but keeps momentum fast.',
+            detail: 'Under stress, fewer choices are better. One confirm step, big buttons, immediate feedback.',
+            logic: `if userConfirms:\n  proceed()\nelse:\n  cancel()`
+          },
+          {
+            badge: 'PACKAGE',
+            icon: '📦',
+            title: 'Prepare alert payload',
+            desc: 'The system composes a compact payload: who, where, and what happened.',
+            detail: 'Payload quality affects outcomes. Keep it structured and predictable for the backend.',
+            logic: `payload={\n  userId,\n  bpm,\n  timestamp,\n  location?\n}`
+          },
+          {
+            badge: 'SEND',
+            icon: '📨',
+            title: 'Send request to server',
+            desc: 'Dispatch happens via a server request; the UI shows a “sending” state immediately.',
+            detail: 'Optimistic UI reduces panic. Even while waiting, the interface stays responsive.',
+            logic: `status="sending"\nres = POST /emergency\nstatus = res.ok ? "sent" : "failed"`
+          },
+          {
+            badge: 'FEEDBACK',
+            icon: '🧭',
+            title: 'Show success / retry',
+            desc: 'Success confirms delivery. Failure offers retry with clear error messaging.',
+            detail: 'Avoid ambiguity: “Sent” vs “Not sent yet”. Provide a single prominent retry path.',
+            logic: `if sent:\n  toast("Sent")\nelse:\n  showRetry()`
+          },
+          {
+            badge: 'RETURN',
+            icon: '↩️',
+            title: 'Return to dashboard',
+            desc: 'Once complete, the user returns to monitoring with a persistent record of what happened.',
+            detail: 'Closing the loop matters: log + visible trail builds trust and reduces confusion.',
+            logic: `logEvent("emergency")\nreturnToDashboard()`
+          }
+        ]
       }
-    });
-    
-    // Flowcharts
-    const flowcharts = {
-      monitoring: `
-        graph TD
-          A[START MONITORING] --> B[READ HEART RATE]
-          B --> C{BPM NORMAL?}
-          C -->|YES 60-100| D[DISPLAY BPM]
-          C -->|NO| E{CRITICAL?}
-          E -->|BPM < 40 OR > 150| F[🚨 TRIGGER ALERT]
-          E -->|BPM 40-59 OR 101-149| G[⚠️ SHOW WARNING]
-          F --> H[SEND EMAIL TO EMERGENCY CONTACT]
-          F --> I[DISPLAY ALERT MESSAGE]
-          G --> D
-          H --> D
-          I --> D
-          D --> J[WAIT 3 SECONDS]
-          J --> B
-          
-          style A fill:#001a33,stroke:#00ffff,stroke-width:3px,color:#00ffff
-          style F fill:#330000,stroke:#ff0064,stroke-width:3px,color:#ff0064
-          style H fill:#330000,stroke:#ff0064,stroke-width:3px,color:#ff0064
-          style D fill:#003320,stroke:#00ff88,stroke-width:2px,color:#00ff88
-      `,
-      emergency: `
-        graph TD
-          A[EMERGENCY DETECTED] --> B{AUTO OR MANUAL?}
-          B -->|AUTO TRIGGER| C[CRITICAL BPM DETECTED]
-          B -->|MANUAL| D[USER CLICKS ALERT BUTTON]
-          C --> E[SHOW CONFIRMATION MODAL]
-          D --> E
-          E --> F{USER CONFIRMS?}
-          F -->|YES| G[PREPARE EMAIL DATA]
-          F -->|NO| H[CANCEL ALERT]
-          G --> I[SEND POST REQUEST TO SERVER]
-          I --> J{EMAIL SENT?}
-          J -->|SUCCESS| K[✅ SHOW SUCCESS MESSAGE]
-          J -->|FAILED| L[❌ SHOW ERROR MESSAGE]
-          K --> M[LOG ALERT IN SYSTEM]
-          L --> N[RETRY OPTION]
-          H --> O[RETURN TO DASHBOARD]
-          M --> O
-          N --> G
-          
-          style A fill:#330000,stroke:#ff0064,stroke-width:3px,color:#ff0064
-          style K fill:#003320,stroke:#00ff88,stroke-width:2px,color:#00ff88
-          style L fill:#330000,stroke:#ff0064,stroke-width:2px,color:#ff0064
-      `
     };
-    
-    const infoTexts = {
-      monitoring: `
-        This workflow shows how LifeDot continuously monitors your heart rate in real-time. 
-        The system checks your BPM every 3 seconds and automatically triggers emergency alerts 
-        when critical values are detected (below 40 or above 150 BPM). Warning messages are shown 
-        for borderline values, helping you stay informed about your heart health at all times.
-      `,
-      emergency: `
-        This workflow illustrates the emergency alert process. Alerts can be triggered either 
-        automatically when critical BPM values are detected, or manually by clicking the emergency 
-        button. The system shows a confirmation modal, sends an email to your emergency contacts, 
-        and provides clear feedback on whether the alert was sent successfully. Failed attempts 
-        can be retried to ensure your emergency contacts are notified.
-      `
+
+    const els = {
+      track: document.getElementById('track'),
+      trackNodes: document.getElementById('trackNodes'),
+      steps: document.getElementById('workflowSteps'),
+      detail: document.getElementById('workflowDetail')
     };
-    
-    function showFlowchart(type) {
-      // Update active button
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      event.target.classList.add('active');
-      
-      // Update flowchart
-      const diagram = document.getElementById('flowchartDiagram');
-      diagram.textContent = flowcharts[type];
-      diagram.removeAttribute('data-processed');
-      mermaid.init(undefined, diagram);
-      
-      // Update info text
-      const infoSection = document.getElementById('infoSection');
-      const titles = {
-        monitoring: '💡 MONITORING FLOW INFORMATION',
-        emergency: '💡 EMERGENCY FLOW INFORMATION'
-      };
-      infoSection.innerHTML = `
-        <h3>${titles[type]}</h3>
-        <p>${infoTexts[type]}</p>
+
+    let activeFlow = 'monitoring';
+    let activeIndex = 0;
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;');
+    }
+
+    function renderDetail(flowKey, idx) {
+      const flow = flows[flowKey];
+      const step = flow.steps[idx];
+
+      els.detail.innerHTML = `
+        <div class="detail-kicker">${flow.kicker}</div>
+        <div class="detail-title">${step.title}</div>
+        <div class="detail-text">${step.detail}</div>
+        <div class="detail-metrics">
+          <div class="metric">
+            <div class="metric-label">STEP</div>
+            <div class="metric-value">${String(idx + 1).padStart(2, '0')} / ${String(flow.steps.length).padStart(2, '0')}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">MODE</div>
+            <div class="metric-value">${flowKey === 'monitoring' ? 'Continuous' : 'Event-based'}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FOCUS</div>
+            <div class="metric-value">${flowKey === 'monitoring' ? 'Stability + clarity' : 'Speed + feedback'}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">RISK LEVEL</div>
+            <div class="metric-value">${flowKey === 'monitoring' ? (idx < 4 ? 'Low' : idx === 4 ? 'Medium' : 'High') : (idx < 3 ? 'Medium' : idx === 3 ? 'High' : 'High')}</div>
+          </div>
+        </div>
       `;
     }
+
+    function setActive(idx) {
+      const flow = flows[activeFlow];
+      const max = Math.max(0, flow.steps.length - 1);
+      activeIndex = Math.max(0, Math.min(max, idx));
+
+      const p = max === 0 ? 0 : activeIndex / max;
+      els.track.style.setProperty('--p', String(p));
+
+      els.steps.querySelectorAll('.step-card').forEach((card, i) => {
+        card.style.borderColor = i === activeIndex ? 'rgba(0,255,255,0.45)' : 'rgba(0,255,255,0.16)';
+        card.style.boxShadow = i === activeIndex
+          ? '0 18px 80px rgba(0,0,0,0.62), 0 0 70px rgba(0,255,255,0.12)'
+          : '0 12px 50px rgba(0,0,0,0.55)';
+      });
+
+      els.trackNodes.querySelectorAll('.node').forEach((n, i) => {
+        n.classList.toggle('is-active', i === activeIndex);
+      });
+
+      renderDetail(activeFlow, activeIndex);
+    }
+
+    function renderFlow(flowKey) {
+      activeFlow = flowKey;
+      const flow = flows[flowKey];
+
+      // Tabs
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-flow') === flowKey);
+      });
+
+      // Nodes
+      els.trackNodes.innerHTML = '';
+      flow.steps.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'node';
+        b.textContent = String(i + 1).padStart(2, '0');
+        b.setAttribute('data-cursor', '');
+        b.addEventListener('click', () => {
+          const section = document.getElementById(`step-${flowKey}-${i}`);
+          if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        els.trackNodes.appendChild(b);
+      });
+
+      // Step cards
+      els.steps.innerHTML = '';
+      flow.steps.forEach((s, i) => {
+        const section = document.createElement('section');
+        section.className = 'step-card';
+        section.id = `step-${flowKey}-${i}`;
+        section.setAttribute('data-step-index', String(i));
+        section.setAttribute('data-cursor', '');
+        section.innerHTML = `
+          <div class="step-top">
+            <div class="step-kicker">STEP ${String(i + 1).padStart(2, '0')}</div>
+            <div class="step-badge">${s.badge}</div>
+          </div>
+          <div class="step-title">
+            <div class="step-icon">${s.icon}</div>
+            <div>${s.title}</div>
+          </div>
+          <div class="step-desc">${s.desc}</div>
+          <pre class="step-logic">${escapeHtml(s.logic)}</pre>
+        `;
+        els.steps.appendChild(section);
+      });
+
+      // Initial state
+      setActive(0);
+
+      // Pull attention into the explorer when switching flows
+      document.getElementById('workflowShell').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Active step from scroll position (cheap + robust)
+    let raf = 0;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const cards = Array.from(els.steps.querySelectorAll('.step-card'));
+        if (!cards.length) return;
+
+        const centerY = window.innerHeight * 0.5;
+        let best = 0;
+        let bestDist = Infinity;
+        for (let i = 0; i < cards.length; i++) {
+          const r = cards[i].getBoundingClientRect();
+          const y = r.top + r.height * 0.5;
+          const d = Math.abs(y - centerY);
+          if (d < bestDist) {
+            bestDist = d;
+            best = i;
+          }
+        }
+        if (best !== activeIndex) setActive(best);
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => renderFlow(btn.getAttribute('data-flow')));
+    });
+
+    renderFlow('monitoring');
   </script>
 </body>
 </html>

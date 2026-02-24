@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LIFEDOT</title>
+  <link rel="stylesheet" href="assets/css/immersive.css">
   <style>
     * {
       margin: 0;
@@ -13,43 +14,9 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0e1a;
       color: #fff;
       overflow-x: hidden;
-      cursor: none;
-    }
-    
-    /* CUSTOM CURSOR */
-    .cursor {
-      position: fixed;
-      width: 12px;
-      height: 12px;
-      background: rgba(0, 255, 255, 0.9);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 50px rgba(0, 255, 255, 0.4);
-      mix-blend-mode: screen;
-    }
-    
-    .cursor-ring {
-      position: fixed;
-      width: 35px;
-      height: 35px;
-      border: 2px solid rgba(0, 255, 255, 0.5);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: all 0.3s ease;
-      mix-blend-mode: screen;
-    }
-    
-    .cursor-ring.hover {
-      width: 65px;
-      height: 65px;
-      border-color: rgba(0, 255, 255, 0.9);
+      background: transparent;
     }
     
     /* 3D CANVAS */
@@ -209,7 +176,7 @@
     
     /* SPINE SCROLL SECTION */
     .spine-section {
-      min-height: 300vh;
+      min-height: 220vh;
       position: relative;
       padding: 150px 0;
     }
@@ -218,53 +185,134 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(420px, 1fr) minmax(420px, 520px);
+      gap: 40px;
       align-items: center;
       justify-content: center;
+      padding: 0 60px;
     }
     
     /* 3D SPINE */
     .spine-3d {
-      position: absolute;
+      position: relative;
       width: 100%;
-      height: 100%;
+      height: 78vh;
+      min-height: 520px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 30px;
+      background: rgba(15, 25, 45, 0.24);
+      border: 1px solid rgba(0, 255, 255, 0.12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 18px 80px rgba(0,0,0,0.55), 0 0 70px rgba(0,255,255,0.06);
     }
     
     #spineCanvas {
       position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
     }
     
-    /* CARDS */
-    .cards-wrapper {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
+    /* FEATURE RAIL (readable, premium; replaces orbit) */
+    .feature-rail {
+      position: relative;
+      height: 78vh;
+      min-height: 520px;
+      overflow: auto;
+      padding: 6px;
+      border-radius: 30px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,255,255,0.25) transparent;
     }
-    
-    .feature-card {
-      position: absolute;
-      width: 380px;
-      background: rgba(15, 25, 45, 0.6);
-      border: 1px solid rgba(0, 255, 255, 0.25);
-      border-radius: 25px;
-      padding: 45px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
-      transition: all 0.5s ease;
-      pointer-events: all;
+
+    .feature-rail::-webkit-scrollbar { width: 8px; }
+    .feature-rail::-webkit-scrollbar-track { background: transparent; }
+    .feature-rail::-webkit-scrollbar-thumb {
+      background: rgba(0, 255, 255, 0.18);
+      border-radius: 999px;
     }
-    
-    .feature-card:hover {
-      border-color: rgba(0, 255, 255, 0.6);
-      box-shadow: 0 15px 70px rgba(0, 255, 255, 0.3);
-      transform: scale(1.05);
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 8px;
+    }
+
+    .feature-item {
+      position: relative;
+      border-radius: 24px;
+      padding: 22px 22px;
+      background: rgba(15, 25, 45, 0.46);
+      border: 1px solid rgba(0, 255, 255, 0.14);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 12px 55px rgba(0, 0, 0, 0.55);
+      transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), border-color 260ms ease, box-shadow 260ms ease, background 260ms ease;
+      will-change: transform;
+    }
+
+    .feature-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 16px 70px rgba(0,0,0,0.62), 0 0 45px rgba(0,255,255,0.10);
+      background: rgba(15, 25, 45, 0.52);
+    }
+
+    .feature-item.is-active {
+      border-color: rgba(0, 255, 255, 0.42);
+      box-shadow: 0 18px 80px rgba(0,0,0,0.62), 0 0 65px rgba(0,255,255,0.14);
+      background: rgba(0, 255, 255, 0.08);
+    }
+
+    .feature-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .feature-kicker {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.72;
+      color: rgba(0, 255, 255, 0.85);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 255, 255, 0.10);
+      border: 1px solid rgba(0, 255, 255, 0.18);
+      box-shadow: 0 0 24px rgba(0, 255, 255, 0.08);
+      flex: 0 0 auto;
+      font-size: 18px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 0 18px rgba(0,255,255,0.12);
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      line-height: 1.9;
+      opacity: 0.80;
+      color: rgba(190, 220, 255, 0.72);
     }
     
     .card-num {
@@ -393,8 +441,16 @@
       .cursor, .cursor-ring { display: none; }
       nav { flex-direction: column; top: 20px; right: 20px; }
       .logo { left: 20px; top: 30px; }
-      .feature-card { width: 90%; max-width: 350px; }
       .cta-buttons { flex-direction: column; align-items: center; }
+      .spine-container {
+        grid-template-columns: 1fr;
+        padding: 0 20px;
+      }
+      .spine-3d, .feature-rail {
+        height: auto;
+        min-height: unset;
+      }
+      .feature-rail { max-height: 60vh; }
     }
   </style>
 </head>
@@ -441,8 +497,8 @@
           <canvas id="spineCanvas"></canvas>
         </div>
         
-        <div class="cards-wrapper" id="cardsWrapper">
-          <!-- Cards will be positioned by JS -->
+        <div class="feature-rail" id="featureRail">
+          <div class="feature-list" id="featureList"></div>
         </div>
       </div>
     </section>
@@ -464,35 +520,8 @@
   </footer>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/js/immersive.js"></script>
   <script>
-    // Cursor
-    const cursor = document.getElementById('cursor');
-    const cursorRing = document.getElementById('cursorRing');
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
-    });
-    
-    function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      cursorRing.style.left = ringX + 'px';
-      cursorRing.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
-    
-    // Hover effects
-    document.querySelectorAll('a, button, .feature-card').forEach(el => {
-      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
-    });
-    
     // Three.js Background Scene
     const canvas = document.getElementById('canvas3d');
     const scene = new THREE.Scene();
@@ -533,6 +562,7 @@
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    const basePosArray = posArray.slice(0);
     
     const particlesMaterial = new THREE.PointsMaterial({
       size: 0.06,
@@ -573,13 +603,28 @@
     // Background Animation
     function animateBackground() {
       requestAnimationFrame(animateBackground);
+
+      const t = performance.now() * 0.001;
+      const scrollFactor = scrollY * 0.0012;
+
+      // Gentle wave distortion across the field (keeps it feeling "alive" but calm)
+      for (let i = 0; i < particlesCount * 3; i += 3) {
+        const bx = basePosArray[i];
+        const by = basePosArray[i + 1];
+        const bz = basePosArray[i + 2];
+
+        posArray[i] = bx + Math.sin(t * 0.35 + bz * 0.08 + scrollFactor * 0.5) * 0.10;
+        posArray[i + 1] = by + Math.sin(t * 0.40 + bx * 0.06 + scrollFactor * 0.5) * 0.12;
+        posArray[i + 2] = bz + Math.cos(t * 0.32 + by * 0.06 + scrollFactor * 0.5) * 0.08;
+      }
+      particlesGeometry.attributes.position.needsUpdate = true;
       
-      particlesMesh.rotation.y += 0.0006;
-      particlesMesh.rotation.x += 0.0003;
+      particlesMesh.rotation.y += 0.00025;
+      particlesMesh.rotation.x += 0.00012;
       
-      camera.position.x += (targetX * 2.5 - camera.position.x) * 0.05;
-      camera.position.y += (targetY * 2.5 - camera.position.y + 5) * 0.05;
-      camera.position.z = 15 - scrollY * 0.004;
+      camera.position.x += (targetX * 1.2 - camera.position.x) * 0.04;
+      camera.position.y += (targetY * 1.2 - camera.position.y + 4.5) * 0.04;
+      camera.position.z = 15 - scrollY * 0.0025;
       
       renderer.render(scene, camera);
     }
@@ -595,49 +640,80 @@
     
     spineCamera.position.set(0, 0, 8);
     
-    // Create Spine Structure
+    // Create Spine Structure (clean health-style: glowing path + active orb)
     const spineGroup = new THREE.Group();
-    const vertebrae = 12;
-    
-    for (let i = 0; i < vertebrae; i++) {
-      const geometry = new THREE.TorusGeometry(0.3, 0.08, 16, 100);
-      const material = new THREE.MeshPhongMaterial({
-        color: 0x00ffff,
-        emissive: 0x00ffff,
-        emissiveIntensity: 0.3,
-        transparent: true,
-        opacity: 0.6,
-        wireframe: false
-      });
-      const torus = new THREE.Mesh(geometry, material);
-      torus.position.y = (i - vertebrae / 2) * 0.8;
-      torus.rotation.x = Math.PI / 2;
-      spineGroup.add(torus);
-      
-      // Connecting line
-      if (i < vertebrae - 1) {
-        const lineGeometry = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 8);
-        const lineMaterial = new THREE.MeshPhongMaterial({
-          color: 0x00ffff,
-          emissive: 0x00ffff,
-          emissiveIntensity: 0.2,
-          transparent: true,
-          opacity: 0.4
-        });
-        const line = new THREE.Mesh(lineGeometry, lineMaterial);
-        line.position.y = (i - vertebrae / 2) * 0.8 + 0.4;
-        spineGroup.add(line);
-      }
+
+    // A gentle S-curve (organic, medical, readable)
+    const spinePts = [];
+    const spineCount = 10;
+    for (let i = 0; i < spineCount; i++) {
+      const t = i / (spineCount - 1);
+      const y = (t - 0.5) * 8.2;
+      const x = Math.sin(t * Math.PI * 2) * 0.22;
+      const z = Math.cos(t * Math.PI * 1.6) * 0.14;
+      spinePts.push(new THREE.Vector3(x, y, z));
     }
+
+    const spineCurve = new THREE.CatmullRomCurve3(spinePts);
+    const spineLinePts = spineCurve.getPoints(180);
+    const spineLineGeo = new THREE.BufferGeometry().setFromPoints(spineLinePts);
+    const spineLineMat = new THREE.LineBasicMaterial({
+      color: 0x00ffff,
+      transparent: true,
+      opacity: 0.26
+    });
+    const spineLine = new THREE.Line(spineLineGeo, spineLineMat);
+    spineGroup.add(spineLine);
+
+    // Soft dotted nodes along the path
+    const nodeCount = 22;
+    const nodePositions = new Float32Array(nodeCount * 3);
+    for (let i = 0; i < nodeCount; i++) {
+      const tt = i / (nodeCount - 1);
+      const p = spineCurve.getPointAt(tt);
+      nodePositions[i * 3 + 0] = p.x;
+      nodePositions[i * 3 + 1] = p.y;
+      nodePositions[i * 3 + 2] = p.z;
+    }
+    const nodesGeo = new THREE.BufferGeometry();
+    nodesGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+    const nodesMat = new THREE.PointsMaterial({
+      color: 0x00ffff,
+      size: 0.10,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const spineNodes = new THREE.Points(nodesGeo, nodesMat);
+    spineGroup.add(spineNodes);
+
+    // Active orb that moves along the curve (high-end, clear feedback)
+    const orbGeo = new THREE.SphereGeometry(0.22, 22, 22);
+    const orbMat = new THREE.MeshStandardMaterial({
+      color: 0x00ffff,
+      emissive: 0x00ffff,
+      emissiveIntensity: 0.40,
+      roughness: 0.2,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0.65
+    });
+    const activeOrb = new THREE.Mesh(orbGeo, orbMat);
+    spineGroup.add(activeOrb);
     
     spineScene.add(spineGroup);
     
-    // Spine Lights
-    const spineAmbient = new THREE.AmbientLight(0x0a2e4a, 0.5);
+    // Spine Lights (soft clinical glow; no harsh highlights)
+    const spineAmbient = new THREE.AmbientLight(0x0f2238, 1.0);
     spineScene.add(spineAmbient);
-    
-    const spineLight = new THREE.PointLight(0x00ffff, 1.5, 50);
-    spineLight.position.set(5, 0, 5);
+
+    const spineKey = new THREE.DirectionalLight(0x9adfff, 0.55);
+    spineKey.position.set(3, 6, 5);
+    spineScene.add(spineKey);
+
+    const spineLight = new THREE.PointLight(0x00ffff, 0.55, 18);
+    spineLight.position.set(2.6, 0.2, 3.4);
     spineScene.add(spineLight);
     
     // Cards Data
@@ -650,50 +726,93 @@
       { icon: '🔒', title: 'Privacy First', desc: 'End-to-end encryption ensures your sensitive health data remains completely private and secure.' }
     ];
     
-    // Create Cards
-    const cardsWrapper = document.getElementById('cardsWrapper');
+    // Create Feature Rail (replaces orbiting cards)
+    const featureList = document.getElementById('featureList');
+    const featureRail = document.getElementById('featureRail');
     cardsData.forEach((card, i) => {
-      const cardEl = document.createElement('div');
-      cardEl.className = 'feature-card';
-      cardEl.innerHTML = `
-        <div class="card-num">${String(i + 1).padStart(2, '0')}</div>
-        <div class="card-icon">${card.icon}</div>
-        <h3>${card.title}</h3>
-        <p>${card.desc}</p>
+      const item = document.createElement('div');
+      item.className = 'feature-item';
+      item.dataset.index = String(i);
+      item.setAttribute('data-cursor', '');
+      item.innerHTML = `
+        <div class="feature-top">
+          <div class="feature-kicker">FEATURE ${String(i + 1).padStart(2, '0')}</div>
+          <div class="feature-icon" aria-hidden="true">${card.icon}</div>
+        </div>
+        <div class="feature-title">${card.title}</div>
+        <div class="feature-desc">${card.desc}</div>
       `;
-      cardsWrapper.appendChild(cardEl);
+      item.addEventListener('click', () => {
+        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      featureList.appendChild(item);
     });
+    const items = Array.from(document.querySelectorAll('.feature-item'));
     
-    const cards = document.querySelectorAll('.feature-card');
-    
-    // Animate Spine and Cards
-    function animateSpine() {
+    // Animate Spine + rail (pinned scroll narrative, calm + premium)
+    const damp = (current, target, lambda, dt) => {
+      // dt-aware exponential smoothing; stable across refresh rates
+      return current + (target - current) * (1 - Math.exp(-lambda * dt));
+    };
+
+    // active step tracking (intersection observer)
+    let targetIndex = 0;
+    const io = new IntersectionObserver((entries) => {
+      // pick the most visible intersecting element
+      let best = null;
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+      }
+      if (best && best.target) {
+        const idx = Number(best.target.dataset.index);
+        if (!Number.isNaN(idx)) targetIndex = idx;
+      }
+    }, { root: featureRail, threshold: [0.55, 0.7, 0.85] });
+    items.forEach((el) => io.observe(el));
+
+    let smoothIndex = 0;
+    let lastSpineT = performance.now();
+
+    function animateSpine(now) {
       requestAnimationFrame(animateSpine);
-      
+
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastSpineT) / 1000));
+      lastSpineT = now;
+      const t = now * 0.001;
+
       const spineSection = document.querySelector('.spine-section');
       const rect = spineSection.getBoundingClientRect();
       const sectionHeight = spineSection.offsetHeight;
       const progress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - window.innerHeight)));
-      
-      // Rotate spine
-      spineGroup.rotation.y = progress * Math.PI * 2;
-      
-      // Position cards around spine
-      cards.forEach((card, i) => {
-        const angle = (i / cards.length) * Math.PI * 2 + progress * Math.PI * 2;
-        const radius = 500;
-        const x = Math.cos(angle) * radius + window.innerWidth / 2 - card.offsetWidth / 2;
-        const y = Math.sin(angle) * 250 + window.innerHeight / 2 - card.offsetHeight / 2;
-        
-        card.style.left = x + 'px';
-        card.style.top = y + 'px';
-        card.style.opacity = Math.max(0.3, 1 - Math.abs(Math.sin(angle)) * 0.7);
-        card.style.transform = `scale(${0.85 + Math.cos(angle) * 0.15})`;
-      });
-      
+
+      // Smooth the active step (inertia)
+      smoothIndex = damp(smoothIndex, targetIndex, 10.0, dt);
+      const activeIndex = Math.round(smoothIndex);
+      const activeNorm = cardsData.length <= 1 ? 0 : smoothIndex / (cardsData.length - 1);
+
+      // Rail active styling
+      items.forEach((el, i) => el.classList.toggle('is-active', i === activeIndex));
+
+      // Spine motion: tiny rotation tied to scroll progress (editorial, calm)
+      spineGroup.rotation.y = (progress - 0.5) * 0.35;
+      spineGroup.rotation.x = Math.sin(t * 0.25) * 0.03;
+      spineGroup.rotation.z = Math.cos(t * 0.22) * 0.02;
+
+      // Active orb follows the curve
+      const p = spineCurve.getPointAt(Math.max(0, Math.min(1, activeNorm)));
+      activeOrb.position.copy(p);
+      activeOrb.material.emissiveIntensity = 0.32 + Math.sin(t * 1.1) * 0.06;
+      activeOrb.material.opacity = 0.55 + Math.sin(t * 1.1) * 0.05;
+
+      // Keep everything low-glare
+      spineLineMat.opacity = 0.20 + Math.sin(t * 0.6) * 0.02;
+      nodesMat.opacity = 0.34 + Math.sin(t * 0.65) * 0.03;
+      spineLight.intensity = 0.50 + Math.sin(t * 0.7) * 0.05;
+
       spineRenderer.render(spineScene, spineCamera);
     }
-    animateSpine();
+    requestAnimationFrame(animateSpine);
     
     // Resize
     window.addEventListener('resize', () => {
