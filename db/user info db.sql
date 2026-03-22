@@ -9,4 +9,3 @@ CREATE TABLE userinfo (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE userinfo ADD COLUMN reset_token VARCHAR(200);
-
